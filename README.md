@@ -14,10 +14,11 @@ Linux is not currently supported, though support may be added later using a buil
 
 ## Installation
 
-Currently, until official support is added in PySDL2, the best way to install PySDL2-dll is to install my fork of PySDL2 that automatically checks if PySDL2-dll is installed and loads it on launch (if available). This means that any existing PySDL2 projects will seamlessly load the PySDL2-dll libraries without needing to import it explicitly.
+Currently, until official support is added in PySDL2, PySDL2-dll should be run with my patched version of PySDL2 that fixes bugs with loading macOS frameworks and automatically loads PySDL2-dll when imported. This means that any existing PySDL2 projects will seamlessly load the PySDL2-dll libraries without needing to import it explicitly.
 
 ```
 pip install -U git+https://github.com/a-hurst/py-sdl2.git@sdl2dll
+pip install -U git+https://github.com/a-hurst/pysdl2-dll.git@master
 ```
 
-Running the above command will install both PySDL2-dll and the patched PySDL2 required to properly support it.
+Running the above commands will install both PySDL2-dll and the patched PySDL2 required to properly support it.
