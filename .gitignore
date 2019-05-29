@@ -1,0 +1,12 @@
+.cache
+.settings
+.DS_Store
+*project
+*.pyc
+*.pyo
+*~
+*.class
+*.core
+dlls
+dist
+build
