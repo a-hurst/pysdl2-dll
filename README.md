@@ -1,16 +1,16 @@
 # pysdl2-dll
 
-PySDL2-dll is a Python package that makes it easier to install and use PySDL2 in your Python project. When you install pysdl2-dll, it fetches the official pre-compiled SDL2, SDL2_Mixer, SDL2_ttf, and SDL2_image binaries for the current OS and puts them inside a Python package. Then, when imported, it sets the `PYSDL2_DLL_PATH` variable to the folder inside pysdl2-dll containing the compiled DLLs for your OS so that PySDL2 will load them automatically.
+PySDL2-dll is a Python package that makes it easier to install and use PySDL2 in your Python project. When you install pysdl2-dll, it fetches the official pre-compiled SDL2, SDL2_Mixer, SDL2_ttf, and SDL2_image binaries, as well as unofficial pre-compiled SDL2_gfx binaries, for the current OS and puts them inside a Python package. Then, when imported, it sets the `PYSDL2_DLL_PATH` variable to the folder inside pysdl2-dll containing the compiled DLLs for your OS so that PySDL2 will load them automatically.
 
 ## Requirements
 
-PySDL2-dll supports retrieval/packaging of the SDL2, SDL2_Mixer, SDL2_ttf, and SDL2_image binaries for the following platforms:
+PySDL2-dll supports retrieval/packaging of SDL2, SDL2_Mixer, SDL2_ttf, SDL2_image, and SDL2_gfx binaries for the following platforms:
 
 * macOS (10.6+, 32-bit/64-bit universal)
 * Windows 32-bit
 * Windows 64-bit
 
-Linux is not currently supported, though support may be added later using a build system based on the manylinux Docker image and TravisCI. SDL2_gfx is currently not supported on any plaform, as it lacks official pre-compiled binaries.
+Linux is not currently supported, though support may be added later using a build system based on the manylinux Docker image and TravisCI.
 
 ## Installation
 

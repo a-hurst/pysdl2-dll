@@ -11,26 +11,29 @@ except ImportError:
 	from urllib2 import urlopen # Python 2
 
 
-libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image']
+libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
 
 sdl2_urls = {
 	'macOS': {
-		'SDL2': 'https://www.libsdl.org/release/SDL2-2.0.9.dmg',
+		'SDL2': 'https://www.libsdl.org/release/SDL2-2.0.10.dmg',
 		'SDL2_mixer': 'https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.4.dmg',
 		'SDL2_ttf': 'https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.15.dmg',
-		'SDL2_image': 'https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.4.dmg'
+		'SDL2_image': 'https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5.dmg',
+		'SDL2_gfx': 'https://github.com/a-hurst/sdl2gfx-builds/releases/download/1.0.4/SDL2_gfx-1.0.4.dmg'
 	},
 	'win32': {
-		'SDL2': 'https://www.libsdl.org/release/SDL2-2.0.9-win32-x86.zip',
+		'SDL2': 'https://www.libsdl.org/release/SDL2-2.0.10-win32-x86.zip',
 		'SDL2_mixer': 'https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.4-win32-x86.zip',
 		'SDL2_ttf': 'https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.15-win32-x86.zip',
-		'SDL2_image': 'https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.4-win32-x86.zip'
+		'SDL2_image': 'https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5-win32-x86.zip',
+		'SDL2_gfx': 'https://github.com/a-hurst/sdl2gfx-builds/releases/download/1.0.4/SDL2_gfx-1.0.4-win32-x86.zip'
 	},
 	'win64': {
-		'SDL2': 'https://www.libsdl.org/release/SDL2-2.0.9-win32-x64.zip',
+		'SDL2': 'https://www.libsdl.org/release/SDL2-2.0.10-win32-x64.zip',
 		'SDL2_mixer': 'https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.4-win32-x64.zip',
 		'SDL2_ttf': 'https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.15-win32-x64.zip',
-		'SDL2_image': 'https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.4-win32-x64.zip'
+		'SDL2_image': 'https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5-win32-x64.zip',
+		'SDL2_gfx': 'https://github.com/a-hurst/sdl2gfx-builds/releases/download/1.0.4/SDL2_gfx-1.0.4-win32-x64.zip'
 	}
 }
 

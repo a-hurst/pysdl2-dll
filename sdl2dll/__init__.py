@@ -1,6 +1,6 @@
 """Adds the SDL2 DLLs in the package to the PySDL2 DLL search path"""
 
-__version__ = "2.0.9"
+__version__ = "2.0.10"
 
 import os
 

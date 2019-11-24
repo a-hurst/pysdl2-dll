@@ -18,7 +18,7 @@ getDLLs(get_platform())
 
 setup(
 	name='sdl2dll',
-	version='2.0.9',
+	version='2.0.10',
 	description='A package containing pre-built SDL binaries for PySDL2',
 	author='Austin Hurst',
 	author_email='mynameisaustinhurst@gmail.com',
