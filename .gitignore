@@ -7,6 +7,9 @@
 *~
 *.class
 *.core
+*.egg-info
 dlls
+sdl2dll/dll
 dist
 build
+temp
