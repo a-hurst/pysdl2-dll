@@ -46,7 +46,13 @@ def getDLLs(platform_name):
         if os.path.isdir(d):
             shutil.rmtree(d)
         os.mkdir(d)
-    
+
+    # Generate license disclaimer for SDL2 libraries (all under zlib)
+    sdl_licensepath = os.path.join(licensedir, 'LICENSE.SDL2.txt')
+    with open(sdl_licensepath, 'w') as l:
+        l.write("--- SDL2 License Info ---\n\n")
+        l.write("SDL2, SDL2_mixer, SDL2_ttf, SDL2_image, and SDL2_gfx are all distributed\n")
+        l.write("under the terms of the zlib license: http://www.zlib.net/zlib_license.html\n")
     
     if 'macosx' in platform_name:
         
@@ -56,26 +62,23 @@ def getDLLs(platform_name):
             dllname = lib + '.framework'
             dllpath = os.path.join(mountpoint, dllname)
             dlloutpath = os.path.join(dlldir, dllname)
-            licensepath = os.path.join(mountpoint, 'ReadMe.txt')
-            licensepath2 = os.path.join(mountpoint, 'License.txt')
-            licenseoutpath = os.path.join(licensedir, 'LICENSE.{0}.txt'.format(lib))
             
+            # Download disk image containing library
             dmg = urlopen(sdl2_urls['macOS'][lib])
             outpath = os.path.join('temp', lib + '.dmg')
             with open(outpath, 'wb') as out:
                 out.write(dmg.read())
-                
+            
+            # Mount image, extract framework, then unmount
             sub.check_call(['hdiutil', 'attach', outpath, '-mountpoint', mountpoint])
-            if os.path.exists(licensepath2): # for sdl2_gfx
-                licensepath = licensepath2
-            shutil.copy(licensepath, licenseoutpath)
-            shutil.copytree(dllpath, dlloutpath, symlinks=True)
+            shutil.copytree(dllpath, dlloutpath, symlinks=True, ignore=find_symlinks)
             sub.call(['hdiutil', 'unmount', mountpoint])
 
+            # Extract licence info from frameworks bundled within main framework
             extraframeworkpath = os.path.join(dlloutpath, 'Versions', 'A', 'Frameworks')
             if os.path.exists(extraframeworkpath):
                 for f in os.listdir(extraframeworkpath):
-                    resourcepath = os.path.join(extraframeworkpath, f, 'Resources')
+                    resourcepath = os.path.join(extraframeworkpath, f, 'Versions', 'A', 'Resources')
                     if os.path.exists(resourcepath):
                         for name in os.listdir(resourcepath):
                             if 'LICENSE' in name:
@@ -83,39 +86,57 @@ def getDLLs(platform_name):
                                 outpath = os.path.join(licensedir, name)
                                 shutil.copyfile(licencepath, outpath)
 
-            
     elif platform_name in ['win32', 'win_amd64']:
         
         arch = 'win64' if platform_name == 'win_amd64' else 'win32'
         
         for lib in libraries:
             
+            # Download zip archive containing library
             dllzip = urlopen(sdl2_urls[arch][lib])
             outpath = os.path.join('temp', lib + '.zip')
             with open(outpath, 'wb') as out:
                 out.write(dllzip.read())
             
+            # Extract dlls and licence files from archive
             with ZipFile(outpath, 'r') as z:
                 for name in z.namelist():
                     if name[-4:] == '.dll':
                         z.extract(name, dlldir)
                     elif 'LICENSE' in name:
                         z.extract(name, licensedir)
-                    elif 'README' in name:
-                        z.extract(name, licensedir)
-                        oldname = os.path.join(licensedir, name)
-                        newname = os.path.join(licensedir, 'LICENSE.{0}.txt'.format(lib))
-                        os.rename(oldname, newname)
-                    
                         
     else:
 
+        # Create dummy file indicating that SDL2 binaries are not available on this platform
         dummyfile = os.path.join(dlldir, '.unsupported')
         with open(dummyfile, 'w') as f:
             f.write("No dlls available for this platform!")
 
+        # Remove unneeded licence file
+        os.remove(sdl_licensepath)
+
     shutil.rmtree('temp')
-        
+
+
+def find_symlinks(path, names):
+    """'ignore' filter for shutil.copytree that identifies whether files are
+    symlinks or not. For excluding symlinks when copying .frameworks, since
+    they're not needed for pysdl2 and Python wheels don't support them.
+    """
+    links = []
+    for f in os.listdir(path):
+        filepath = os.path.join(path, f)
+        if os.path.islink(filepath):
+            links.append(f)
+        # Some frameworks have useless duplicates instead of symlinks, so ignore those too
+        elif '.framework' in os.path.basename(path) and f != 'Versions':
+            links.append(f)
+        elif os.path.basename(path) == 'Versions' and f != 'A':
+            links.append(f)
+
+    return links
+
 
 if __name__ == '__main__':
     getDLLs(get_platform())
