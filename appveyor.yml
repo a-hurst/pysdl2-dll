@@ -5,9 +5,9 @@ environment:
 
 install:
   - "pip install wheel"
-
-build:
   - "python setup.py bdist_wheel"
+
+build: off
 
 test_script:
   - "pip install -U dist\\*.whl"
