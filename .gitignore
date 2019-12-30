@@ -8,6 +8,7 @@
 *.class
 *.core
 *.egg-info
+**/LICENSE.*
 dlls
 sdl2dll/dll
 dist

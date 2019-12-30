@@ -3,7 +3,7 @@ import sys
 import shutil
 import subprocess as sub
 from zipfile import ZipFile 
-from wheel.pep425tags import get_platform
+from distutils.util import get_platform
 
 try:
     from urllib.request import urlopen # Python 3.x
@@ -42,7 +42,7 @@ def getDLLs(platform_name):
     
     dlldir = os.path.join('sdl2dll', 'dll')
     licensedir = os.path.join('sdl_licenses')
-    for d in ['temp', dlldir, licensedir]:
+    for d in ['temp', 'build', dlldir, licensedir]:
         if os.path.isdir(d):
             shutil.rmtree(d)
         os.mkdir(d)
@@ -50,7 +50,7 @@ def getDLLs(platform_name):
     # Generate license disclaimer for SDL2 libraries (all under zlib)
     sdl_licensepath = os.path.join(licensedir, 'LICENSE.SDL2.txt')
     with open(sdl_licensepath, 'w') as l:
-        l.write("--- SDL2 License Info ---\n\n")
+        l.write("SDL2 License Info\n---\n\n")
         l.write("SDL2, SDL2_mixer, SDL2_ttf, SDL2_image, and SDL2_gfx are all distributed\n")
         l.write("under the terms of the zlib license: http://www.zlib.net/zlib_license.html\n")
     
@@ -86,9 +86,9 @@ def getDLLs(platform_name):
                                 outpath = os.path.join(licensedir, name)
                                 shutil.copyfile(licencepath, outpath)
 
-    elif platform_name in ['win32', 'win_amd64']:
+    elif platform_name in ['win32', 'win-amd64']:
         
-        arch = 'win64' if platform_name == 'win_amd64' else 'win32'
+        arch = 'win64' if platform_name == 'win-amd64' else 'win32'
         
         for lib in libraries:
             
