@@ -1,0 +1,18 @@
+environment:
+  matrix:
+    - PYTHON: "C:\\Python37"
+    - PYTHON: "C:\\Python37-x64"
+
+install:
+  - "pip install wheel"
+
+build:
+  - "python setup.py bdist_wheel"
+
+test_script:
+  - "pip install -U dist\\*.whl"
+  - "pip install git+https://github.com/a-hurst/py-sdl2.git@sdl2dll"
+  - "python test.py"
+
+artifacts:
+  - path: dist\*
