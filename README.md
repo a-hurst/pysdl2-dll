@@ -1,5 +1,8 @@
 # pysdl2-dll
 
+[![Build Status](https://travis-ci.org/a-hurst/pysdl2-dll.svg?branch=master)](https://travis-ci.org/a-hurst/pysdl2-dll)
+[![Build status](https://ci.appveyor.com/api/projects/status/lnwpe9v50bne3afu?svg=true)](https://ci.appveyor.com/project/a-hurst/pysdl2-dll)
+
 PySDL2-dll is a Python package that makes it easier to install and use PySDL2 in your Python project. When you install pysdl2-dll, it fetches the official pre-compiled SDL2, SDL2\_Mixer, SDL2\_ttf, and SDL2\_image binaries, as well as unofficial pre-compiled SDL2\_gfx binaries, for the current OS and puts them inside a Python package. Then, when imported, it sets the `PYSDL2_DLL_PATH` variable to the folder inside pysdl2-dll containing the compiled DLLs for your OS so that PySDL2 will load them automatically.
 
 ## Requirements
