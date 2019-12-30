@@ -74,7 +74,7 @@ def getDLLs(platform_name):
             shutil.copytree(dllpath, dlloutpath, symlinks=True, ignore=find_symlinks)
             sub.call(['hdiutil', 'unmount', mountpoint])
 
-            # Extract licence info from frameworks bundled within main framework
+            # Extract license info from frameworks bundled within main framework
             extraframeworkpath = os.path.join(dlloutpath, 'Versions', 'A', 'Frameworks')
             if os.path.exists(extraframeworkpath):
                 for f in os.listdir(extraframeworkpath):
@@ -82,9 +82,9 @@ def getDLLs(platform_name):
                     if os.path.exists(resourcepath):
                         for name in os.listdir(resourcepath):
                             if 'LICENSE' in name:
-                                licencepath = os.path.join(resourcepath, name)
+                                licensepath = os.path.join(resourcepath, name)
                                 outpath = os.path.join(licensedir, name)
-                                shutil.copyfile(licencepath, outpath)
+                                shutil.copyfile(licensepath, outpath)
 
     elif platform_name in ['win32', 'win-amd64']:
         
@@ -98,7 +98,7 @@ def getDLLs(platform_name):
             with open(outpath, 'wb') as out:
                 out.write(dllzip.read())
             
-            # Extract dlls and licence files from archive
+            # Extract dlls and license files from archive
             with ZipFile(outpath, 'r') as z:
                 for name in z.namelist():
                     if name[-4:] == '.dll':
@@ -113,7 +113,7 @@ def getDLLs(platform_name):
         with open(dummyfile, 'w') as f:
             f.write("No dlls available for this platform!")
 
-        # Remove unneeded licence file
+        # Remove unneeded license file
         os.remove(sdl_licensepath)
 
     shutil.rmtree('temp')

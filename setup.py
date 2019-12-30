@@ -40,16 +40,31 @@ except ImportError:
 
 # Install the package
 
+with open("README.md", "r") as f:
+    long_description = f.read()
+
 setup(
 	name='sdl2dll',
 	version='2.0.10',
-	description='Pre-built SDL2 binaries for PySDL2',
 	author='Austin Hurst',
 	author_email='mynameisaustinhurst@gmail.com',
     license='Mozilla Public License Version 2.0',
+    description='Pre-built SDL2 binaries for PySDL2',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url='https://github.com/a-hurst/pysdl2-dll',
 	packages=['sdl2dll'],
 	cmdclass=cmdclass,
 	include_package_data=True,
-	install_requires=[]
+	install_requires=[],
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+        "Operating System :: MacOS",
+        "Operating System :: Microsoft :: Windows"
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Topic :: Software Development :: Libraries"
+    ]
 )
