@@ -10,9 +10,9 @@ install:
 build: off
 
 test_script:
-  - "pip install -U dist\\*.whl"
-  - "pip install git+https://github.com/a-hurst/py-sdl2.git@sdl2dll"
-  - "python test.py"
+  - "pip install --no-index --find-links=dist sdl2dll"
+  - "pip install pytest git+https://github.com/a-hurst/py-sdl2.git@sdl2dll"
+  - "python -m pytest"
 
 artifacts:
   - path: dist\*
