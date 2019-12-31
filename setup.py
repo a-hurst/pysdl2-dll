@@ -14,6 +14,16 @@ platform = get_platform() if not override else override
 getDLLs(platform)
 
 
+# Gather list of all dll files so that they can be included in wheels, but not sdist
+
+dllpath = os.path.join('sdl2dll', 'dll')
+dllfiles = []
+for path, _, files in os.walk(dllpath):
+    for f in files:
+        filepath = os.path.join(path, f).replace('sdl2dll/', '')
+        dllfiles.append(filepath)
+
+
 # Patch wheel naming to be platform-specific but Python version/ABI independent
 
 cmdclass = {}
@@ -40,7 +50,7 @@ except ImportError:
 
 # Install the package
 
-with open("README.md", "r") as f:
+with open('README.md', 'r') as f:
     long_description = f.read()
 
 setup(
@@ -51,20 +61,21 @@ setup(
     license='Mozilla Public License Version 2.0',
     description='Pre-built SDL2 binaries for PySDL2',
     long_description=long_description,
-    long_description_content_type="text/markdown",
+    long_description_content_type='text/markdown',
     url='https://github.com/a-hurst/pysdl2-dll',
 	packages=['sdl2dll'],
 	cmdclass=cmdclass,
+    package_data={'sdl2dll': dllfiles},
 	include_package_data=True,
 	install_requires=[],
     classifiers=[
-        "Development Status :: 4 - Beta",
-        "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
-        "Operating System :: MacOS",
-        "Operating System :: Microsoft :: Windows"
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3",
-        "Topic :: Software Development :: Libraries"
+        'Development Status :: 4 - Beta',
+        'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
+        'Operating System :: MacOS',
+        'Operating System :: Microsoft :: Windows',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Topic :: Software Development :: Libraries'
     ]
 )
