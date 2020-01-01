@@ -20,7 +20,8 @@ dllpath = os.path.join('sdl2dll', 'dll')
 dllfiles = []
 for path, _, files in os.walk(dllpath):
     for f in files:
-        filepath = os.path.join(path, f).replace('sdl2dll/', '')
+        parentdir = 'sdl2dll' + os.sep
+        filepath = os.path.join(path, f).replace(parentdir, '')
         dllfiles.append(filepath)
 
 
