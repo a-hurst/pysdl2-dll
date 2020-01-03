@@ -7,11 +7,6 @@ install:
   - python setup.py bdist_wheel
 
 script:
-  - which python
-  - which pip
-  - which pytest
-  - python -m pip freeze
-  - python -m pip uninstall sdl2dll
-  - python -m pip install -U --no-index --find-links=./dist sdl2dll
+  - python -m pip install -U --force-reinstall --no-index --find-links=./dist sdl2dll
   - python -m pip install pytest git+https://github.com/a-hurst/py-sdl2.git@sdl2dll
   - pytest
