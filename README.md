@@ -17,17 +17,11 @@ At present, the following platforms are supported:
 
 Linux is not currently supported as no official binaries are available, though support may be added in future. The pysdl2-dll package can be *installed* on Linux and other unsupported platforms without issue, but it won't have any effect.
 
-Additionally, until PySDL2 0.9.7 is released, you will need to install the latest GitHub version in order for pysdl2-dll to work on macOS. If you have Git installed, you can do this by running 
-
-```
-pip install -U git+https://github.com/marcusva/py-sdl2.git
-```
-
-in a terminal window.
+pysdl2-dll requires PySDL2 0.9.7 or later in order to work correctly on macOS, and to be loaded automatically by PySDL2 when available.
 
 ## Usage
 
-Until official support is added to PySDL2, you will need to import this module manually in your Python scripts before `import sdl2` is run, e.g.:
+As of PySDL2 0.9.7, pysdl2-dll binaries will be used automatically when `import sdl2` is run unless `PYSDL2_DLL_PATH` is explicitly set in the environment. For older versions of PySDL2, you will need to import this module manually in your Python scripts before `import sdl2` is run, e.g.:
 
 ```python
 import sdl2dll
@@ -36,8 +30,13 @@ import sdl2
 sdl2.ext.init()
 ```
 
-Alternatively, you can install a patched version of PySDL2 from Github that imports pysdl2-dll automatically, which will allow PySDL2 projects to seamlessly load the pysdl2-dll libraries without needing to import it explicitly: 
+To override pysdl2-dll you can set the `PYSDL2_DLL_PATH` environment variable to a different path containing SDL2 binaries, or to "system" to force use of system SDL2 libraries (if available), e.g.:
 
+```bash
+export PYSDL2_DLL_PATH=system # on macOS and Linux
 ```
-pip install -U git+https://github.com/a-hurst/py-sdl2.git@sdl2dll
+
+```powershell
+set PYSDL2_DLL_PATH=system # on Windows (for current session only)
+setx PYSDL2_DLL_PATH=system # on Windows (for all future sessions)
 ```
