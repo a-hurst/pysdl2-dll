@@ -55,7 +55,7 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 setup(
-	name='sdl2dll',
+	name='pysdl2-dll',
 	version='2.0.10',
 	author='Austin Hurst',
 	author_email='mynameisaustinhurst@gmail.com',

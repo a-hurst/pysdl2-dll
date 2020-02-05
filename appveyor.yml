@@ -1,4 +1,5 @@
 environment:
+  TWINE_USERNAME: __token__ # password set in Appveyor settings
   matrix:
     - PYTHON: "C:\\Python37"
       PYTHON_ARCH: "32"
@@ -7,15 +8,21 @@ environment:
 
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-  - "pip install wheel"
+  - "pip install wheel twine"
   - "python setup.py bdist_wheel"
 
 build: off
 
 test_script:
   - "pip install --no-index --find-links=dist sdl2dll"
-  - "pip install pytest git+https://github.com/marcusva/py-sdl2.git@sdl2dll"
+  - "pip install pytest git+https://github.com/marcusva/py-sdl2.git"
   - "pytest"
+
+on_success:
+  - >
+    IF "%APPVEYOR_REPO_TAG%" == "true" (
+      python -m twine upload --skip-existing dist/*.whl
+    )
 
 artifacts:
   - path: dist\*

@@ -4,9 +4,13 @@ matrix:
       language: generic
 
 install:
+  - python -m pip install -U wheel twine
   - python setup.py bdist_wheel
 
 script:
   - python -m pip install -U --force-reinstall --no-index --find-links=./dist sdl2dll
-  - python -m pip install pytest git+https://github.com/marcusva/py-sdl2.git@sdl2dll
+  - python -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
   - pytest
+
+ after_success:
+   - if [[ $TRAVIS_TAG ]]; then python -m twine upload --skip-existing dist/*.whl; fi
