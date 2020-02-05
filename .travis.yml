@@ -1,3 +1,7 @@
+env:
+  global:
+    - TWINE_USERNAME=__token__ # password in Travis settings
+
 matrix:
   include:
     - os: osx
@@ -8,9 +12,9 @@ install:
   - python setup.py bdist_wheel
 
 script:
-  - python -m pip install -U --force-reinstall --no-index --find-links=./dist sdl2dll
+  - python -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
   - python -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
   - pytest
 
- after_success:
-   - if [[ $TRAVIS_TAG ]]; then python -m twine upload --skip-existing dist/*.whl; fi
+after_success:
+  - if [[ $TRAVIS_TAG ]]; then python -m twine upload --skip-existing dist/*.whl; fi
