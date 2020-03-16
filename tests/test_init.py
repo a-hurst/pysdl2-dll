@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 import pytest
 
 nodlls = sys.platform not in ('win32', 'darwin')
