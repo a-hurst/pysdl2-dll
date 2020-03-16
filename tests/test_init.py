@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+import pytest
+
+nodlls = sys.platform not in ('win32', 'darwin')
+pytestmark = pytest.mark.skipif(nodlls, reason="No binaries for this platform")
+
 
 def test_sdl2():
     import sdl2
