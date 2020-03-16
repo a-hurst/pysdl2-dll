@@ -5,6 +5,7 @@ env:
 matrix:
   include:
     - os: linux
+      sudo: required
       python: 3.8
       install: python setup.py sdist_wheel # for source distribution
     - os: osx
