@@ -9,7 +9,7 @@ matrix:
     - os: linux
       python: 3.8
       sudo: required
-      install: python setup.py sdist_wheel # for source distribution
+      install: python setup.py sdist # for source distribution
     - os: osx
       language: generic
 
