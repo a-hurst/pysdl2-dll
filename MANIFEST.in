@@ -1,2 +1,2 @@
-graft LICENSE
-graft getdlls.py
+include LICENSE
+include getdlls.py
