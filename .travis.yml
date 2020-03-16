@@ -4,11 +4,16 @@ env:
 
 matrix:
   include:
+    - os: linux
+      python: 3.8
+      install: python setup.py sdist_wheel # for source distribution
     - os: osx
       language: generic
 
-install:
+before_install:
   - python -m pip install -U wheel twine
+
+install:
   - python setup.py bdist_wheel
 
 script:
@@ -16,5 +21,11 @@ script:
   - python -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
   - pytest
 
-after_success:
-  - if [[ $TRAVIS_TAG ]]; then python -m twine upload --skip-existing dist/*.whl; fi
+after_success: |
+  if [[ $TRAVIS_TAG ]]; then
+    if [ $(uname) = "Darwin" ]; then
+      python -m twine upload --skip-existing dist/*.whl
+    else
+      python -m twine upload --skip-existing dist/*.tar.gz
+    fi
+  fi
