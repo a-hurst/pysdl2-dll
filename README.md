@@ -11,7 +11,7 @@ The latest release includes the following versions of the SDL2 binaries:
 
 SDL2 | SDL2\_ttf | SDL2\_mixer | SDL2\_image | SDL2_gfx
 --- | --- | --- | --- | ---
-2.0.12 | 2.0.15 | 2.0.4 | 2.0.5 | 1.0.4
+2.0.14 | 2.0.15 | 2.0.4 | 2.0.5 | 1.0.4
 
 
 ## Installation
@@ -44,4 +44,3 @@ pip install -U pysdl2
 If you are using PySDL2 0.9.7 or later, you don't need to do anything special to use the pysdl2-dll binaries in your project: PySDL2 will load them automatically (and print a message indicating such) if they are available. For older versions of PySDL2, you will need to import this module manually in your scripts (`import sdl2dll`) before PySDL2 is imported.
 
 To override pysdl2-dll and use a different set of binaries, you can set the `PYSDL2_DLL_PATH` environment variable to the path of the folder containing the binaries you want to use instead, or alternatively set it to "system" to force PySDL2 to use the system install of SDL2 if available (e.g. SDL2 installed with `brew` on macOS).
-
