@@ -1,9 +1,9 @@
 environment:
   TWINE_USERNAME: __token__ # password set in Appveyor settings
   matrix:
-    - PYTHON: "C:\\Python37"
+    - PYTHON: "C:\\Python38"
       PYTHON_ARCH: "32"
-    - PYTHON: "C:\\Python37-x64"
+    - PYTHON: "C:\\Python38-x64"
       PYTHON_ARCH: "64"
 
 install:
