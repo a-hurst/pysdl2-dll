@@ -6,12 +6,30 @@ env:
 
 matrix:
   include:
+    # For generic source distribution
     - os: linux
       python: 3.8
       sudo: required
-      install: python setup.py sdist # for source distribution
+      install: python setup.py sdist
+    # For macOS wheels
     - os: osx
       language: generic
+    # For 64-bit x86 manylinux wheels
+    - sudo: required
+      services:
+        - docker
+      env: PLAT=manylinux2010_x86_64
+      install:
+        - docker pull quay.io/pypa/$PLAT
+        - docker run --rm -e PLAT=$PLAT -v `pwd`:/io quay.io/pypa/$PLAT /io/manylinux.sh
+    # For 32-bit x86 manylinux wheels
+    - sudo: required
+      services:
+        - docker
+      env: PLAT=manylinux2010_i686
+      install:
+        - docker pull quay.io/pypa/$PLAT
+        - docker run --rm -e PLAT=$PLAT -v `pwd`:/io quay.io/pypa/$PLAT linux32 /io/manylinux.sh
 
 before_install:
   - python -m pip install -U wheel twine

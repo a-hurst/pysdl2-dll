@@ -1,14 +1,17 @@
 import os
 import sys
 import shutil
+import tarfile
 import subprocess as sub
-from zipfile import ZipFile 
+from zipfile import ZipFile
 from distutils.util import get_platform
 
 try:
     from urllib.request import urlopen # Python 3.x
 except ImportError:
     from urllib2 import urlopen # Python 2
+
+from dllutils import find_symlinks, make_install_lib
 
 
 libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
@@ -99,7 +102,33 @@ def getDLLs(platform_name):
                         z.extract(name, dlldir)
                     elif 'LICENSE' in name:
                         z.extract(name, licensedir)
-                        
+
+    elif 'manylinux' in platform_name or os.getenv('SDL2DLL_UNIX_COMPILE', '0') == '1':
+
+        # Create custom prefix in which to install the SDL2 libs + dependencies
+        basedir = os.getcwd()
+        libdir = os.path.join(basedir, 'sdlprefix')
+        if os.path.isdir(libdir):
+            shutil.rmtree(libdir)
+        os.mkdir(libdir)
+
+        # Build and install everything into the custom prefix
+        buildDLLs(['SDL2'], basedir, libdir)
+
+        # Copy all compiled binaries to dll folder for bundling in wheel
+        for f in os.listdir(os.path.join(libdir, 'lib')):
+            if f.split('.')[-1] == "so":
+                fpath = os.path.join(libdir, 'lib', f)
+                if os.path.islink(fpath):
+                    fpath = os.path.realpath(fpath)
+                libname = os.path.basename(fpath)
+                libname_fixed = '.'.join(libname.split('.')[:3])
+                lib_outpath = os.path.join(dlldir, libname_fixed)
+                shutil.copy(fpath, lib_outpath)
+
+        print("Built binaries:")
+        print(os.listdir(dlldir))
+
     else:
 
         # Create dummy file indicating that SDL2 binaries are not available on this platform
@@ -113,23 +142,45 @@ def getDLLs(platform_name):
     shutil.rmtree('temp')
 
 
-def find_symlinks(path, names):
-    """'ignore' filter for shutil.copytree that identifies whether files are
-    symlinks or not. For excluding symlinks when copying .frameworks, since
-    they're not needed for pysdl2 and Python wheels don't support them.
-    """
-    links = []
-    for f in os.listdir(path):
-        filepath = os.path.join(path, f)
-        if os.path.islink(filepath):
-            links.append(f)
-        # Some frameworks have useless duplicates instead of symlinks, so ignore those too
-        elif '.framework' in os.path.basename(path) and f != 'Versions':
-            links.append(f)
-        elif os.path.basename(path) == 'Versions' and f != 'A':
-            links.append(f)
+def buildDLLs(libraries, basedir, libdir):
 
-    return links
+        suffix = '.tar.gz' # source code
+
+        # Set required environment variables for custom prefix
+        buildenv = os.environ.copy()
+        pkgconfig_dir = os.path.join(libdir, 'lib', 'pkgconfig')
+        builtlib_dir = os.path.join(libdir, 'lib')
+        include_dir = os.path.join(libdir, 'include')
+        buildenv['PKG_CONFIG_PATH'] = os.path.abspath(pkgconfig_dir)
+        buildenv['LD_LIBRARY_PATH'] = os.path.abspath(builtlib_dir)
+        buildenv['LDFLAGS'] = "-L" + os.path.abspath(builtlib_dir)
+        buildenv['CXXFLAGS'] = '-I{0}'.format(os.path.abspath(include_dir))
+
+        for lib in libraries:
+
+            libversion = libversions[lib]
+            print('\n======= Downloading {0} {1} =======\n'.format(lib, libversion))
+
+            # Download tar archive containing source
+            liburl = sdl2_urls[lib].format(libversion, suffix)
+            srctar = urlopen(liburl)
+            outpath = os.path.join('temp', lib + suffix)
+            with open(outpath, 'wb') as out:
+                out.write(srctar.read())
+
+            # Extract source from archive
+            sourcepath = os.path.join('temp', lib + '-' + libversion)
+            with tarfile.open(outpath, 'r:gz') as z:
+                z.extractall(path='temp')
+
+            # Build the library
+            print('======= Compiling {0} {1} =======\n'.format(lib, libversion))
+            success = make_install_lib(sourcepath, libdir, buildenv, None)
+            if not success:
+                raise RuntimeError("Error building {0}".format(lib))
+            print('\n======= {0} {1} built sucessfully =======\n'.format(lib, libversion))
+            os.chdir(basedir)
+
 
 
 if __name__ == '__main__':
