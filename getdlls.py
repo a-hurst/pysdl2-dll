@@ -142,6 +142,9 @@ def getDLLs(platform_name):
                 lib_outpath = os.path.join(dlldir, libname_fixed)
                 shutil.copy(fpath, lib_outpath)
 
+        # Update library runpaths to allow loading from within sdl2dll folder
+        set_relative_runpaths(dlldir)
+
         print("Built binaries:")
         print(os.listdir(dlldir))
 
@@ -301,6 +304,26 @@ def make_install_lib(src_path, prefix, buildenv, extra_args=None):
             success = False
             break
 
+    os.chdir(orig_path)
+    return success
+
+
+def set_relative_runpaths(libdir):
+    """Fixes the runpaths of all .so files in a folder to be relative to their
+    own location, such that libraries will be able to find and load their
+    dependencies if they exist the same folder.
+    """
+    libs = [f for f in os.listdir(libdir) if '.so' in f]
+    orig_path = os.getcwd()
+    os.chdir(libdir)
+    success = True
+    cmd = ["patchelf", "--set-rpath", "$ORIGIN"]
+    for lib in libs:
+        p = sub.Popen(cmd + [lib], stdout=sys.stdout, stderr=sys.stderr)
+        p.communicate()
+        if p.returncode != 0:
+            success = False
+            break
     os.chdir(orig_path)
     return success
 

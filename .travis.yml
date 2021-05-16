@@ -43,7 +43,7 @@ install:
 script:
   - python -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
   - python -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
-  - pytest -s
+  - pytest -v -rP
 
 after_success: |
   if [[ $TRAVIS_TAG ]]; then
