@@ -6,8 +6,9 @@ export SDL2DLL_PLATFORM=manylinux2010
 
 # Install required and optional dependencies for SDL2 so that it compiles with support
 # for different audio/video/input backends
-yum install -y libtool alsa-lib-devel pulseaudio-libs-devel libX11-devel \
-    libXext-devel libXrandr-devel libXcursor-devel libXi-devel libXinerama-devel \
+yum install -y libtool \
+    alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel nas-devel \
+    libX11-devel libXext-devel libXrandr-devel libXcursor-devel libXi-devel libXinerama-devel \
     libXxf86vm-devel libXScrnSaver-devel mesa-libGL-devel dbus-devel libudev-devel \
     mesa-libEGL-devel libsamplerate-devel libusb-devel ibus-devel
 
