@@ -153,7 +153,7 @@ def buildDLLs(libraries, basedir, libdir):
         buildenv['PKG_CONFIG_PATH'] = os.path.abspath(pkgconfig_dir)
         buildenv['LD_LIBRARY_PATH'] = os.path.abspath(builtlib_dir)
         buildenv['LDFLAGS'] = "-L" + os.path.abspath(builtlib_dir)
-        buildenv['CXXFLAGS'] = '-I{0}'.format(os.path.abspath(include_dir))
+        buildenv['CPPFLAGS'] = '-I{0}'.format(os.path.abspath(include_dir))
 
         for lib in libraries:
 
