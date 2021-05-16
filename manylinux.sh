@@ -17,9 +17,10 @@ cd /io
 
 # Run unit tests on built pysdl2-dll wheel
 export SDL_VIDEODRIVER="dummy"
+export SDL_AUDIODRIVER="dummy"
 /opt/python/cp37-cp37m/bin/python -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
 /opt/python/cp37-cp37m/bin/python -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
-/opt/python/cp37-cp37m/bin/pytest
+/opt/python/cp37-cp37m/bin/pytest -s
 
 
 # Copy built manylinux wheel to a new folder
