@@ -3,7 +3,7 @@ import os
 import sys
 import pytest
 
-plaform = os.getenv('SDL2DLL_PLATFORM')
+platform = os.getenv('SDL2DLL_PLATFORM')
 manylinux = platform and 'manylinux' in platform
 nodlls = not manylinux and sys.platform not in ('win32', 'darwin')
 pytestmark = pytest.mark.skipif(nodlls, reason="No binaries for this platform")

@@ -15,7 +15,7 @@ yum install -y libtool alsa-lib-devel pulseaudio-libs-devel libX11-devel \
 
 # Compile SDL2, addon libraries, and any necessary dependencies
 cd /io
-python -u setup.py bdist_wheel
+/opt/python/cp37-cp37m/bin/python -u setup.py bdist_wheel
 
 # Run unit tests on built pysdl2-dll wheel
 python -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
