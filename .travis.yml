@@ -21,7 +21,7 @@ matrix:
       env: PLAT=manylinux2010_x86_64
       install:
         - docker pull quay.io/pypa/$PLAT
-        - docker run --rm -it PLAT=$PLAT -v `pwd`:/io quay.io/pypa/$PLAT /io/manylinux.sh
+        - docker run --rm -it -v `pwd`:/io quay.io/pypa/$PLAT /io/manylinux.sh
     # For 32-bit x86 manylinux wheels
     - sudo: required
       services:
@@ -29,7 +29,7 @@ matrix:
       env: PLAT=manylinux2010_i686
       install:
         - docker pull quay.io/pypa/$PLAT
-        - docker run --rm -it PLAT=$PLAT -v `pwd`:/io quay.io/pypa/$PLAT linux32 /io/manylinux.sh
+        - docker run --rm -it -v `pwd`:/io quay.io/pypa/$PLAT linux32 /io/manylinux.sh
 
 before_install:
   - python -m pip install -U wheel twine
