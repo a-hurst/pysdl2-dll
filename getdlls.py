@@ -112,7 +112,7 @@ def getDLLs(platform_name):
 
         # Build and install everything into the custom prefix
         sdl2_urls['SDL2_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
-        buildDLLs(['SDL2', 'SDL2_ttf', 'SDL2_mixer', 'SDL2_gfx'], basedir, libdir)
+        buildDLLs(libraries, basedir, libdir)
 
         # Copy all compiled binaries to dll folder for bundling in wheel
         for f in os.listdir(os.path.join(libdir, 'lib')):
@@ -174,7 +174,10 @@ def buildDLLs(libraries, basedir, libdir):
 
             # Check for any external dependencies and set correct build order
             dependencies = []
-            ignore = ['libvorbisidec'] # only needed for special non-standard builds
+            ignore = [
+                'libvorbisidec', # only needed for special non-standard builds
+                'libwebp' # currently breaks build process, some libtool issue?
+            ] 
             build_first = ['zlib', 'harfbuzz']
             build_last = ['libvorbis', 'opusfile', 'flac']
             ext_dir = os.path.join(sourcepath, 'external')

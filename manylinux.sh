@@ -16,6 +16,7 @@ cd /io
 /opt/python/cp37-cp37m/bin/python -u setup.py bdist_wheel
 
 # Run unit tests on built pysdl2-dll wheel
+export SDL_VIDEODRIVER="dummy"
 /opt/python/cp37-cp37m/bin/python -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
 /opt/python/cp37-cp37m/bin/python -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
 /opt/python/cp37-cp37m/bin/pytest
