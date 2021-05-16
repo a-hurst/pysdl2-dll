@@ -111,7 +111,8 @@ def getDLLs(platform_name):
         os.mkdir(libdir)
 
         # Build and install everything into the custom prefix
-        buildDLLs(['SDL2', 'SDL2_ttf', 'SDL2_mixer'], basedir, libdir)
+        sdl2_urls['SDL2_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
+        buildDLLs(['SDL2', 'SDL2_ttf', 'SDL2_mixer', 'SDL2_gfx'], basedir, libdir)
 
         # Copy all compiled binaries to dll folder for bundling in wheel
         for f in os.listdir(os.path.join(libdir, 'lib')):
@@ -216,7 +217,7 @@ def buildDLLs(libraries, basedir, libdir):
             print('======= Compiling {0} {1} =======\n'.format(lib, libversion))
             xtra_args = None
             if lib == 'SDL2_ttf':
-                xtra_args = '--with-ft-prefix={0}'.format(os.path.abspath(libdir))
+                xtra_args = ['--with-ft-prefix={0}'.format(os.path.abspath(libdir))]
             success = make_install_lib(sourcepath, libdir, buildenv, xtra_args)
             if not success:
                 raise RuntimeError("Error building {0}".format(lib))
