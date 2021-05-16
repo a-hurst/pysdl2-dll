@@ -119,8 +119,21 @@ def getDLLs(platform_name):
         buildDLLs(libraries, basedir, libdir)
 
         # Copy all compiled binaries to dll folder for bundling in wheel
+        unneeded = [
+            'tiffxx',     # C++ TIFF library
+            'webpdemux',  # WebP demuxer
+            'FLAC++',     # C++ FLAC library
+            'out123',     # mpg123 export library
+            'vorbisenc',  # OGG vorbis encoder
+            'opusurl',    # Opus URL streaming
+        ]
         for f in os.listdir(os.path.join(libdir, 'lib')):
-            if f.split('.')[-1] == "so":
+            skip = False
+            for name in unneeded:
+                if name in f:
+                    skip = True
+                    break
+            if f.split('.')[-1] == "so" and not skip:
                 fpath = os.path.join(libdir, 'lib', f)
                 if os.path.islink(fpath):
                     fpath = os.path.realpath(fpath)
