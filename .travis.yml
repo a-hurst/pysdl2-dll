@@ -23,6 +23,7 @@ matrix:
         - docker pull quay.io/pypa/$PLAT
         - ls -la
         - docker run --rm -it -v `pwd`:/io quay.io/pypa/$PLAT /io/manylinux.sh
+      script: skip
     # For 32-bit x86 manylinux wheels
     - sudo: required
       services:
@@ -31,6 +32,7 @@ matrix:
       install:
         - docker pull quay.io/pypa/$PLAT
         - docker run --rm -it -v `pwd`:/io quay.io/pypa/$PLAT linux32 /io/manylinux.sh
+      script: skip
 
 before_install:
   - python -m pip install -U wheel twine
