@@ -111,7 +111,7 @@ def getDLLs(platform_name):
         os.mkdir(libdir)
 
         # Build and install everything into the custom prefix
-        buildDLLs(['SDL2'], basedir, libdir)
+        buildDLLs(['SDL2', 'SDL2_ttf', 'SDL2_mixer'], basedir, libdir)
 
         # Copy all compiled binaries to dll folder for bundling in wheel
         for f in os.listdir(os.path.join(libdir, 'lib')):
@@ -171,9 +171,53 @@ def buildDLLs(libraries, basedir, libdir):
             with tarfile.open(outpath, 'r:gz') as z:
                 z.extractall(path='temp')
 
+            # Check for any external dependencies and set correct build order
+            dependencies = []
+            ignore = ['libvorbisidec'] # only needed for special non-standard builds
+            build_first = ['zlib', 'harfbuzz']
+            build_last = ['libvorbis', 'opusfile', 'flac']
+            ext_dir = os.path.join(sourcepath, 'external')
+            if os.path.exists(ext_dir):
+                dep_dirs = os.listdir(ext_dir)
+                deps_first, deps, deps_last = ([], [], [])
+                for dep in dep_dirs:
+                    dep_path = os.path.join(ext_dir, dep)
+                    if not os.path.isdir(dep_path):
+                        continue
+                    depname, depversion = dep.split('-')
+                    if depname in ignore:
+                        continue
+                    elif depname in build_first:
+                        deps_first.append(dep)
+                    elif depname in build_last:
+                        deps_last.append(dep)
+                    else:
+                        deps.append(dep)
+                dependencies = deps_first + deps + deps_last
+
+            # Build any external dependencies
+            extra_args = {
+                'opusfile': ['--disable-http'],
+                'freetype': ['--enable-freetype-config']
+            }
+            for dep in dependencies:
+                depname, depversion = dep.split('-')
+                dep_path = os.path.join(ext_dir, dep)
+                print('======= Compiling {0} dependency {1} =======\n'.format(lib, dep))
+                xtra_args = None
+                if depname in extra_args.keys():
+                    xtra_args = extra_args[depname]
+                success = make_install_lib(dep_path, libdir, buildenv, xtra_args)
+                if not success:
+                    raise RuntimeError("Error building {0}".format(dep))
+                print('\n======= {0} built sucessfully =======\n'.format(dep))
+
             # Build the library
             print('======= Compiling {0} {1} =======\n'.format(lib, libversion))
-            success = make_install_lib(sourcepath, libdir, buildenv, None)
+            xtra_args = None
+            if lib == 'SDL2_ttf':
+                xtra_args = '--with-ft-prefix={0}'.format(os.path.abspath(libdir))
+            success = make_install_lib(sourcepath, libdir, buildenv, xtra_args)
             if not success:
                 raise RuntimeError("Error building {0}".format(lib))
             print('\n======= {0} {1} built sucessfully =======\n'.format(lib, libversion))
