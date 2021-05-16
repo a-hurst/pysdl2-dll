@@ -30,6 +30,10 @@ sdl2_urls = {
     'SDL2_gfx': 'https://github.com/a-hurst/sdl2gfx-builds/releases/download/{0}/SDL2_gfx-{0}{1}'
 }
 
+override_urls = {
+    'libwebp': 'http://storage.googleapis.com/downloads.webmproject.org/releases/webp/{0}.tar.gz'
+}
+
 
 def getDLLs(platform_name):
     
@@ -160,23 +164,15 @@ def buildDLLs(libraries, basedir, libdir):
             libversion = libversions[lib]
             print('\n======= Downloading {0} {1} =======\n'.format(lib, libversion))
 
-            # Download tar archive containing source
+            # Download and extract tar archive containing source
             liburl = sdl2_urls[lib].format(libversion, suffix)
-            srctar = urlopen(liburl)
-            outpath = os.path.join('temp', lib + suffix)
-            with open(outpath, 'wb') as out:
-                out.write(srctar.read())
-
-            # Extract source from archive
-            sourcepath = os.path.join('temp', lib + '-' + libversion)
-            with tarfile.open(outpath, 'r:gz') as z:
-                z.extractall(path='temp')
+            libfolder = lib + '-' + libversion
+            sourcepath = fetch_source(libfolder, liburl, outdir='temp')
 
             # Check for any external dependencies and set correct build order
             dependencies = []
             ignore = [
                 'libvorbisidec', # only needed for special non-standard builds
-                'libwebp' # currently breaks build process, some libtool issue?
             ] 
             build_first = ['zlib', 'harfbuzz']
             build_last = ['libvorbis', 'opusfile', 'flac']
@@ -207,6 +203,11 @@ def buildDLLs(libraries, basedir, libdir):
             for dep in dependencies:
                 depname, depversion = dep.split('-')
                 dep_path = os.path.join(ext_dir, dep)
+                if depname in override_urls.keys():
+                    print('======= Downloading alternate source for {0} =======\n'.format(dep))
+                    liburl = override_urls[depname].format(dep)
+                    os.rename(dep_path, dep_path + '_bad')
+                    dep_path = fetch_source(dep, liburl, outdir=ext_dir)
                 print('======= Compiling {0} dependency {1} =======\n'.format(lib, dep))
                 xtra_args = None
                 if depname in extra_args.keys():
@@ -248,6 +249,22 @@ def find_symlinks(path, names):
             links.append(f)
 
     return links
+
+
+def fetch_source(libfolder, liburl, outdir):
+    """Downloads and decompresses the source code for a given library.
+    """
+    # Download tarfile to temporary folder
+    srctar = urlopen(liburl)
+    outpath = os.path.join(outdir, libfolder + '.tar.gz')
+    with open(outpath, 'wb') as out:
+        out.write(srctar.read())
+
+    # Extract source from archive
+    with tarfile.open(outpath, 'r:gz') as z:
+        z.extractall(path=outdir)
+
+    return os.path.join(outdir, libfolder)
 
 
 def make_install_lib(src_path, prefix, buildenv, extra_args=None):
