@@ -145,6 +145,9 @@ def getDLLs(platform_name):
         # Update library runpaths to allow loading from within sdl2dll folder
         set_relative_runpaths(dlldir)
 
+        # Rename zlib to avoid name collision with Python's zlib
+        rename_library(dlldir, 'libz', 'libz-pysdl2', fix_links=['libpng16'])
+
         print("Built binaries:")
         print(os.listdir(dlldir))
 
@@ -317,13 +320,43 @@ def set_relative_runpaths(libdir):
     orig_path = os.getcwd()
     os.chdir(libdir)
     success = True
-    cmd = ["patchelf", "--set-rpath", "$ORIGIN"]
+
+    cmd = ['patchelf', '--set-rpath', '$ORIGIN']
     for lib in libs:
         p = sub.Popen(cmd + [lib], stdout=sys.stdout, stderr=sys.stderr)
         p.communicate()
         if p.returncode != 0:
             success = False
             break
+
+    os.chdir(orig_path)
+    return success
+
+
+def rename_library(libdir, name, newname, fix_links):
+    """Renames a library to avoid name collisions, patching other libraries
+    that depend on it accordingly.
+    """
+    libs = [f for f in os.listdir(libdir) if '.so' in f]
+    orig_path = os.getcwd()
+    os.chdir(libdir)
+    success = True
+
+    # Rename the library
+    libname = [f for f in libs if name in f][0]
+    libname_new = libname.replace(name, newname)
+    os.rename(libname, libname_new)
+
+    # Update names in any libraries that link to the renamed one
+    cmd = ['patchelf', '--replace-needed', libname, libname_new]
+    to_patch = [f for f in libs if f.split('.')[0] in fix_links]
+    for lib in to_patch:
+        p = sub.Popen(cmd + [lib], stdout=sys.stdout, stderr=sys.stderr)
+        p.communicate()
+        if p.returncode != 0:
+            success = False
+            break
+
     os.chdir(orig_path)
     return success
 
