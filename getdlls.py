@@ -310,7 +310,7 @@ def make_install_lib(src_path, prefix, buildenv, extra_args=None):
 
     buildcmds = [
         ['./configure', '--prefix={0}'.format(prefix)],
-        ['make'],
+        ['make', '-j2'],
         ['make', 'install']
     ]
     for cmd in buildcmds:
