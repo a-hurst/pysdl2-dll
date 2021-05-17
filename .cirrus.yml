@@ -1,0 +1,16 @@
+
+task:
+  name: "Build $IMAGE wheel"
+  env:
+    matrix:
+      - IMAGE: manylinux2010_x86_64
+      - IMAGE: manylinux2010_i686
+  
+  container:
+    image: quay.io/pypa/$IMAGE
+  
+  script:
+    - ./manylinux.sh
+
+  binaries_artifacts:
+    path: "dist/*"
