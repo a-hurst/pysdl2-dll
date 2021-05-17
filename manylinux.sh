@@ -13,7 +13,7 @@ yum install -y libtool \
     mesa-libEGL-devel libsamplerate-devel libusb-devel ibus-devel
 
 # Compile SDL2, addon libraries, and any necessary dependencies
-if [ -d "/io"]; then
+if [ -d "/io" ]; then
     cd /io
 fi
 /opt/python/cp37-cp37m/bin/python -u setup.py bdist_wheel
