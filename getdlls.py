@@ -114,6 +114,21 @@ def getDLLs(platform_name):
             shutil.rmtree(libdir)
         os.mkdir(libdir)
 
+        # Download and use license files from official Windows binaries
+        for lib in libraries:
+            # Download zip archive containing library
+            libversion = libversions[lib]
+            dllzip = urlopen(sdl2_urls[lib].format(libversion, '-win32-x64.zip'))
+            outpath = os.path.join('temp', lib + '.zip')
+            with open(outpath, 'wb') as out:
+                out.write(dllzip.read())
+
+            # Extract license files from archive
+            with ZipFile(outpath, 'r') as z:
+                for name in z.namelist():
+                    if 'LICENSE' in name:
+                        z.extract(name, licensedir)
+
         # Build and install everything into the custom prefix
         sdl2_urls['SDL2_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
         buildDLLs(libraries, basedir, libdir)
