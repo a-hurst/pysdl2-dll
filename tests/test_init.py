@@ -57,12 +57,12 @@ def test_audio_backends():
     for index in range(audio.SDL_GetNumAudioDrivers()):
         # Get input/output device names for each audio driver
         drivername = audio.SDL_GetAudioDriver(index)
-        os.environ["SDL_AUDIODRIVER"] = drivername.decode("utf-8")
+        os.environ["SDL_AUDIODRIVER"] = drivername.decode('utf-8')
         # Need to reinitialize subsystem for each driver
         sdl2.SDL_InitSubSystem(sdl2.SDL_INIT_AUDIO)
         driver = audio.SDL_GetCurrentAudioDriver()
         if driver is not None:
-            driver = driver.decode("utf-8")
+            driver = driver.decode('utf-8')
             devices[driver] = {'input': [], 'output': []}
             outnum = audio.SDL_GetNumAudioDevices(False)
             innum = audio.SDL_GetNumAudioDevices(True)
@@ -115,7 +115,9 @@ def test_sdl2mixer_formats():
         ret = sdlmixer.Mix_Init(flags)
         err = sdlmixer.Mix_GetError()
         if err:
+            err = err.decode('utf-8')
             print("Error loading {0} library: {1}".format(lib, err))
+            sdl2.SDL_ClearError()
         if ret & flags == flags:
             supported.append(lib)
         sdlmixer.Mix_Quit()
@@ -144,7 +146,9 @@ def test_sdl2image_formats():
         ret = sdlimage.IMG_Init(flags)
         err = sdlimage.IMG_GetError()
         if err:
+            err = err.decode('utf-8')
             print("Error loading {0} library: {1}".format(lib, err))
+            sdl2.SDL_ClearError()
         if ret & flags == flags:
             supported.append(lib)
         sdlimage.IMG_Quit()
