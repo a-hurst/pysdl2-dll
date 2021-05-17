@@ -121,12 +121,14 @@ def test_sdl2mixer_formats():
         if ret & flags == flags:
             supported.append(lib)
         sdlmixer.Mix_Quit()
+    sdl2.SDL_Quit()
 
-    # Test for and print out supported formats
-    assert len(supported) # only fail if none supported
+    # Print out supported formats
     print("Supported mixer libraries:")
     print(supported)
-    sdl2.SDL_Quit()
+
+    # Ensure all available formats supported by binaries
+    assert len(supported) == len(libs.keys())
 
 
 def test_sdl2image_formats():
@@ -152,9 +154,11 @@ def test_sdl2image_formats():
         if ret & flags == flags:
             supported.append(lib)
         sdlimage.IMG_Quit()
+    sdl2.SDL_Quit()
 
     # Test for and print out supported formats
-    assert len(supported) # only fail if none supported
     print("Supported image libraries:")
     print(supported)
-    sdl2.SDL_Quit()
+
+    # Ensure all available formats supported by binaries
+    assert len(supported) == len(libs.keys())
