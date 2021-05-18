@@ -1,3 +1,42 @@
+# Build source distribution
+task:
+  name: "Build sdist for unsupported platforms"
+  
+  container:
+    image: python:3.8-slim
+
+  install_script:
+    - python setup.py sdist
+
+  script:
+    - python3 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
+    - python3 -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
+    - pytest -v -rP
+
+  binaries_artifacts:
+    path: "dist/*"
+
+
+# Build macOS wheel
+task:
+  name: "Build macOS (x86_64) wheel"
+  
+  osx_instance:
+    image: catalina-base
+
+  install_script:
+    - brew install python
+    - python3 -m pip install -U wheel twine
+    - python3 setup.py bdist_wheel
+
+  script:
+    - python3 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
+    - python3 -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
+    - pytest -v -rP
+
+  binaries_artifacts:
+    path: "dist/*"
+
 
 # Build 32-bit x86 manylinux wheel
 task:
@@ -22,27 +61,6 @@ task:
 
   script:
     - ./manylinux.sh
-
-  binaries_artifacts:
-    path: "dist/*"
-
-
-# Build macOS wheel
-task:
-  name: "Build macOS (x86_64) wheel"
-  
-  osx_instance:
-    image: catalina-base
-
-  install_script:
-    - brew install python
-    - python3 -m pip install -U wheel twine
-    - python3 setup.py bdist_wheel
-
-  script:
-    - python3 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
-    - python3 -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
-    - pytest -v -rP
 
   binaries_artifacts:
     path: "dist/*"

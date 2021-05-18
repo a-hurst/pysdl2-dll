@@ -1,11 +1,11 @@
 # pysdl2-dll
 
-[![Build Status](https://travis-ci.org/a-hurst/pysdl2-dll.svg?branch=master)](https://travis-ci.org/a-hurst/pysdl2-dll)
+[![Build Status](https://api.cirrus-ci.com/github/a-hurst/pysdl2-dll.svg)](https://cirrus-ci.com/github/a-hurst/pysdl2-dll>)
 [![Build Status](https://ci.appveyor.com/api/projects/status/lnwpe9v50bne3afu?svg=true)](https://ci.appveyor.com/project/a-hurst/pysdl2-dll)
 
 pysdl2-dll is a Python package that bundles the SDL2 binaries in pip-installable form for macOS and Windows, making it easier to create and run scripts/packages that use the [PySDL2](https://github.com/marcusva/py-sdl2) library.
 
-It uses the official SDL2, SDL2\_mixer, SDL2\_ttf, and SDL2\_image binaries for macOS and Windows, as well as [unofficial SDL2\_gfx binaries](https://github.com/a-hurst/sdl2gfx-builds) for the same platforms.
+It uses the official SDL2, SDL2\_mixer, SDL2\_ttf, and SDL2\_image binaries for macOS and Windows, as well as [unofficial SDL2\_gfx binaries](https://github.com/a-hurst/sdl2gfx-builds) for the same platforms. For Linux, the SDL2 binaries and their dependencies are all built from source using the official Python [manylinux](https://github.com/pypa/manylinux) images for maximum compatibility.
 
 The latest release includes the following versions of the SDL2 binaries:
 
@@ -28,10 +28,14 @@ pip install pysdl2-dll # install latest release version
 At present, the following platforms are supported:
 
 * macOS (10.6+, 64-bit)
-* Windows 32-bit
-* Windows 64-bit
+* Windows (32-bit)
+* Windows (64-bit)
+* Linux (32-bit x86)
+* Linux (64-bit x86)
 
-Linux is not currently supported as no official binaries are available, though support may be added in future with a manylinux build system (pull requests welcome). The pysdl2-dll package can be *installed* on Linux and other unsupported platforms without issue, but it won't have any effect.
+For Linux, you must have pip 19.0 or newer in order to be able to install the wheels. Note that the Linux wheels will not work on distributions that are based on a C library other than GLIBC (e.g. Alpine Linux). Linux 64-bit ARM support is planned (PRs welcome).
+
+The pysdl2-dll package can be *installed* on platforms other than the ones listed above, but it won't have any effect.
 
 pysdl2-dll requires PySDL2 0.9.7 or later in order to work correctly on macOS, and for PySDL2 to load the binaries automatically when available. To update to the latest PySDL2, you can run:
 
