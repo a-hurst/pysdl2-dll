@@ -3,7 +3,7 @@ task:
   name: "Build sdist for unsupported platforms"
   
   container:
-    image: python:3.8-slim
+    image: python:3.8
 
   install_script:
     - python setup.py sdist
