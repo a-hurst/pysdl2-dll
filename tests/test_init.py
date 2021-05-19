@@ -82,7 +82,7 @@ def test_audio_backends():
     print("Audio backends supported by binary:")
     print(backends)
 
-    print("Available audio drivers and devices:")
+    print("\nAvailable audio drivers and devices:")
     for driver in devices.keys():
         print(driver)
         print(" - input: {0}".format(str(devices[driver]['input'])))

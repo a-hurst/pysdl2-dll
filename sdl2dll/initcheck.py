@@ -1,4 +1,4 @@
-"""Utilities for sanity-checking the pysdl2-dll environment on import."""
+"""Utilities to check the pysdl2-dll environment for problems on import."""
 
 import os
 import sys
@@ -13,13 +13,6 @@ def pretty_warn(msg, warntype):
     warnings.showwarning = _warning
     warnings.warn(msg, warntype)
     warnings.showwarning = original
-
-
-def _is_sdist():
-    """Checks whether pysdl2-dll was installed as a binary-less source dist."""
-    root_path = os.path.abspath(os.path.dirname(__file__))
-    dll_dir = os.path.join(root_path, 'dll')
-    return os.path.isdir(dll_dir)
 
 
 def _should_update_pip_for_wheels():
@@ -46,6 +39,14 @@ def _should_update_pip_for_wheels():
     return should_update
 
 
+def is_sdist():
+    """Checks whether pysdl2-dll was installed as a binary-less source dist."""
+    root_path = os.path.abspath(os.path.dirname(__file__))
+    dll_dir = os.path.join(root_path, 'dll')
+    is_bdist = os.path.exists(dll_dir) and len(os.listdir(dll_dir)) > 1
+    return is_bdist == False
+
+
 def init_check():
     """Checks the pysdl2-dll environment and warns about any important issues."""
     sdist_msg = (
@@ -56,7 +57,7 @@ def init_check():
         "NOTE: Binary SDL2 wheels may be available for this platform. Please "
         "update pip to the latest version and try reinstalling pysdl2-dll."
     )
-    if _is_sdist():
+    if is_sdist():
         msg = sdist_msg
         if _should_update_pip_for_wheels():
             msg += "\n\n" + pip_update_msg
