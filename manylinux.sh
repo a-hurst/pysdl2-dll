@@ -5,8 +5,7 @@ set -e -u -x
 # Install required and optional dependencies for SDL2 so that it compiles with support
 # for as many different audio/video/input backends as possible
 
-if [ command -v yum &> /dev/null ]
-then
+if command -v yum &> /dev/null; then
     # For manylinux2014 and earlier (based on CentOS)
     yum install -y libtool
 
