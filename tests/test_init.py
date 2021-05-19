@@ -104,6 +104,20 @@ def test_render_backends():
     print(renderers)
 
 
+def test_video_backends():
+    import sdl2
+
+    # Get names of all supported SDL2 video drivers
+    backends = []
+    num_drivers = sdl2.SDL_GetNumVideoDrivers()
+    for i in range(0, num_drivers):
+        drivername = sdl2.SDL_GetVideoDriver(i)
+        backends.append(drivername.decode('utf-8'))
+    
+    print("Available SDL2 video backends:")
+    print(backends)
+
+
 def test_sdl2mixer_formats():
     import sdl2
     from sdl2 import sdlmixer
