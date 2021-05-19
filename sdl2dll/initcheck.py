@@ -43,8 +43,7 @@ def is_sdist():
     """Checks whether pysdl2-dll was installed as a binary-less source dist."""
     root_path = os.path.abspath(os.path.dirname(__file__))
     dll_dir = os.path.join(root_path, 'dll')
-    is_bdist = os.path.exists(dll_dir) and len(os.listdir(dll_dir)) > 1
-    return is_bdist == False
+    return '.unsupported' in os.listdir(dll_dir)
 
 
 def init_check():
