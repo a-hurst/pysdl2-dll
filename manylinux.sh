@@ -40,8 +40,8 @@ else
     apt-get install -y libgl1-mesa-dev libgles1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev
 
     # Install input libraries
-    apt-get install -y libdbus-1-dev libudev-dev libibus-1.0-dev fcitx-libs-dev \
-        libxkbcommon-dev
+    apt-get install -y libdbus-1-dev libudev-dev libusb-1.0-0-dev libibus-1.0-dev \
+        fcitx-libs-dev libxkbcommon-dev
 
 fi
 
