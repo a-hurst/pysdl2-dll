@@ -10,6 +10,10 @@ from getdlls import getDLLs
 # Get the necessary SDL2 DLLs for the platform
 
 override = os.getenv('SDL2DLL_PLATFORM')
+if override and 'manylinux' in override:
+    versions = ['manylinux1', 'manylinux2010', 'manylinux2014']
+    if override not in versions:
+        override = None
 platform = get_platform() if not override else override
 getDLLs(platform)
 
@@ -39,6 +43,9 @@ try:
                 system = 'macosx_10_6_x86_64'
             elif platform in ['win32', 'win-amd64']:
                 system = platform.replace('-', '_')
+            elif 'manylinux' in platform:
+                arch = get_platform().split('-')[-1]
+                system = '_'.join([platform, arch])
             else:
                 system = 'any'
             return 'py2.py3', 'none', system
@@ -74,6 +81,7 @@ setup(
         'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
         'Operating System :: MacOS',
         'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',

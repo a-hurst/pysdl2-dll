@@ -16,7 +16,7 @@ build: off
 test_script:
   - "pip install --no-index --find-links=dist pysdl2-dll"
   - "pip install pytest git+https://github.com/marcusva/py-sdl2.git"
-  - "pytest"
+  - "pytest -v -rP"
 
 on_success:
   - if [%APPVEYOR_REPO_TAG%]==[true] python -m twine upload --skip-existing dist/*.whl
