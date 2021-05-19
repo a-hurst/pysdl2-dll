@@ -3,12 +3,13 @@
 __version__ = "2.0.14"
 
 import os
-
+from .initcheck import init_check
 
 def get_dllpath():
-	root_path = os.path.abspath(os.path.dirname(__file__))
-	return os.path.join(root_path, 'dll')
+    root_path = os.path.abspath(os.path.dirname(__file__))
+    return os.path.join(root_path, 'dll')
 
+init_check()
 dll_path = os.getenv('PYSDL2_DLL_PATH')
 if dll_path == None:
-	os.environ['PYSDL2_DLL_PATH'] = get_dllpath()
+    os.environ['PYSDL2_DLL_PATH'] = get_dllpath()
