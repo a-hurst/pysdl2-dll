@@ -7,12 +7,12 @@ import warnings
 
 def pretty_warn(msg, warntype):
     """Prints a suppressable warning without stack or line info."""
-    original = warnings.showwarning
-    def _warning(message, category, filename, lineno, file=None, line=None):
-        print(message)
-    warnings.showwarning = _warning
+    original = warnings.formatwarning
+    def _pretty_fmt(message, category, filename, lineno, line=None):
+        return "{0}: {1}\n".format(category.__name__, message)
+    warnings.formatwarning = _pretty_fmt
     warnings.warn(msg, warntype)
-    warnings.showwarning = original
+    warnings.formatwarning = original
 
 
 def _should_update_pip_for_wheels():
@@ -48,23 +48,24 @@ def is_sdist():
     """Checks whether pysdl2-dll was installed as a binary-less source dist."""
     root_path = os.path.abspath(os.path.dirname(__file__))
     dll_dir = os.path.join(root_path, 'dll')
-    return '.unsupported' in os.listdir(dll_dir)
+    no_dll_dir = os.path.isdir(dll_dir) == False
+    return no_dll_dir or '.unsupported' in os.listdir(dll_dir)
 
 
 def init_check():
     """Checks the pysdl2-dll environment and warns about any important issues."""
     sdist_msg = (
-        "UserWarning: pysdl2-dll is installed as source-only, meaning that "
-        "it does not contain any binaries and will be ignored by PySDL2."
+        "pysdl2-dll is installed as source-only, meaning that it does not "
+        "contain any binaries and will be ignored by PySDL2."
     )
     pip_update_msg = (
         "NOTE: Binary SDL2 wheels may be available for this platform. Please "
         "update pip to the latest version and try reinstalling pysdl2-dll."
     )
     ms_store_msg = (
-        "RuntimeWarning: pysdl2-dll does not yet work correctly with Python "
-        "installed from the Microsoft Store. Please reinstall Python from "
-        "Python.org if you encounter any issues."
+        "pysdl2-dll does not yet work correctly with Python installed from "
+        "the Microsoft Store. Please reinstall Python from Python.org if you "
+        "encounter any issues."
     )
 
     if is_sdist():
