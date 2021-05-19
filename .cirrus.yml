@@ -42,8 +42,11 @@ task:
 task:
   name: "Build manylinux2010 (i686) wheel"
 
+  env:
+    SDL2DLL_PLATFORM: manylinux2010
+
   container:
-    image: quay.io/pypa/manylinux2010_i686
+    image: quay.io/pypa/{$SDL2DLL_PLATFORM}_i686
 
   script:
     - linux32 ./manylinux.sh
@@ -55,9 +58,12 @@ task:
 # Build 64-bit x86 manylinux wheel
 task:
   name: "Build manylinux2010 (x86_64) wheel"
+
+  env:
+    SDL2DLL_PLATFORM: manylinux2010
   
   container:
-    image: quay.io/pypa/manylinux2010_x86_64
+    image: quay.io/pypa/{$SDL2DLL_PLATFORM}_x86_64
 
   script:
     - ./manylinux.sh
