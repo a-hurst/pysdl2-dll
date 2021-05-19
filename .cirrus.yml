@@ -4,6 +4,8 @@ task:
   
   container:
     image: python:3.8
+    cpu: 1
+    memory: 1G
 
   install_script:
     - python setup.py sdist
@@ -46,7 +48,8 @@ task:
     SDL2DLL_PLATFORM: manylinux2010
 
   container:
-    image: quay.io/pypa/{$SDL2DLL_PLATFORM}_i686
+    image: quay.io/pypa/$SDL2DLL_PLATFORM_i686
+    memory: 1G
 
   script:
     - linux32 ./manylinux.sh
@@ -63,7 +66,8 @@ task:
     SDL2DLL_PLATFORM: manylinux2010
   
   container:
-    image: quay.io/pypa/{$SDL2DLL_PLATFORM}_x86_64
+    image: quay.io/pypa/$SDL2DLL_PLATFORM_x86_64
+    memory: 1G
 
   script:
     - ./manylinux.sh
