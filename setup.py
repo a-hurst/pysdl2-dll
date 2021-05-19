@@ -10,10 +10,6 @@ from getdlls import getDLLs
 # Get the necessary SDL2 DLLs for the platform
 
 override = os.getenv('SDL2DLL_PLATFORM')
-if override and 'manylinux' in override:
-    versions = ['manylinux1', 'manylinux2010', 'manylinux2014']
-    if override not in versions:
-        override = None
 platform = get_platform() if not override else override
 getDLLs(platform)
 
