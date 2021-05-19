@@ -51,14 +51,16 @@ def test_audio_backends():
     import sdl2
     from sdl2 import audio
 
-    # Get names of all available SDL2 audio drivers
+    # Get names of all available SDL2 audio backends and devices
+    backends = []
     devices = {}
     sdl2.SDL_Init(0)
     for index in range(audio.SDL_GetNumAudioDrivers()):
         # Get input/output device names for each audio driver
         drivername = audio.SDL_GetAudioDriver(index)
+        backends.append(drivername.decode('utf-8'))
+        # Try loading each audio driver and listing avaliable devices
         os.environ["SDL_AUDIODRIVER"] = drivername.decode('utf-8')
-        # Need to reinitialize subsystem for each driver
         sdl2.SDL_InitSubSystem(sdl2.SDL_INIT_AUDIO)
         driver = audio.SDL_GetCurrentAudioDriver()
         if driver is not None:
@@ -77,6 +79,9 @@ def test_audio_backends():
         sdl2.SDL_QuitSubSystem(sdl2.SDL_INIT_AUDIO)
     sdl2.SDL_Quit()
 
+    print("Audio backends supported by binary:")
+    print(backends)
+
     print("Available audio drivers and devices:")
     for driver in devices.keys():
         print(driver)
@@ -87,12 +92,16 @@ def test_audio_backends():
 def test_render_backends():
     import sdl2
 
-    print("\nAvailable SDL2 renderers:")
+    # Get names of all supported SDL2 render drivers
+    renderers = []
     num_drivers = sdl2.SDL_GetNumRenderDrivers()
     for i in range(0, num_drivers):
         info = sdl2.render.SDL_RendererInfo()
         sdl2.SDL_GetRenderDriverInfo(i, info)
-        print(" - " + info.name.decode('utf-8'))
+        renderers.append(info.name.decode('utf-8'))
+    
+    print("Available SDL2 renderers:")
+    print(renderers)
 
 
 def test_sdl2mixer_formats():
