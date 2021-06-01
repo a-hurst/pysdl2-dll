@@ -12,7 +12,7 @@ except ImportError:
     from urllib2 import urlopen # Python 2
 
 
-libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
+libraries = ['SDL2', 'SDL2_gfx', 'SDL2_image', 'SDL2_mixer', 'SDL2_ttf']
 
 libversions = {
     'SDL2': '2.0.14',
@@ -320,7 +320,9 @@ def make_install_lib(src_path, prefix, buildenv, extra_args=None, config={}):
 
     # If updated config.guess/config.sub files provided, use those
     for name in config.keys():
-        with open(name, 'wb') as out:
+        subdir_path = os.path.join('config', name)
+        filepath = subdir_path if os.path.isfile(subdir_path) else name
+        with open(filepath, 'wb') as out:
             out.write(config[name])
 
     buildcmds = [
