@@ -182,6 +182,7 @@ def getDLLs(platform_name):
 def buildDLLs(libraries, basedir, libdir):
 
         suffix = '.tar.gz' # source code
+        arch = os.uname()[-1]
 
         # Set required environment variables for custom prefix
         buildenv = os.environ.copy()
@@ -192,6 +193,13 @@ def buildDLLs(libraries, basedir, libdir):
         buildenv['LD_LIBRARY_PATH'] = os.path.abspath(builtlib_dir)
         buildenv['LDFLAGS'] = "-L" + os.path.abspath(builtlib_dir)
         buildenv['CPPFLAGS'] = '-I{0}'.format(os.path.abspath(include_dir))
+
+        # Fetch updated config.guess/config.sub scripts (needed for gfx on non-x86)
+        cfgfiles = {}
+        cfgnames = ['config.guess', 'config.sub']
+        cfgurl = 'https://git.savannah.gnu.org/cgit/config.git/plain/{0}'
+        for name in cfgnames:
+            cfgfiles[name] = urlopen(cfgurl.format(name)).read()
 
         for lib in libraries:
 
@@ -246,7 +254,7 @@ def buildDLLs(libraries, basedir, libdir):
                 xtra_args = None
                 if depname in extra_args.keys():
                     xtra_args = extra_args[depname]
-                success = make_install_lib(dep_path, libdir, buildenv, xtra_args)
+                success = make_install_lib(dep_path, libdir, buildenv, xtra_args, cfgfiles)
                 if not success:
                     raise RuntimeError("Error building {0}".format(dep))
                 print('\n======= {0} built sucessfully =======\n'.format(dep))
@@ -256,7 +264,9 @@ def buildDLLs(libraries, basedir, libdir):
             xtra_args = None
             if lib == 'SDL2_ttf':
                 xtra_args = ['--with-ft-prefix={0}'.format(os.path.abspath(libdir))]
-            success = make_install_lib(sourcepath, libdir, buildenv, xtra_args)
+            elif lib == 'SDL2_gfx' and not arch in ['i386', 'x86_64']:
+                xtra_args = ['--disable-mmx']
+            success = make_install_lib(sourcepath, libdir, buildenv, xtra_args, cfgfiles)
             if not success:
                 raise RuntimeError("Error building {0}".format(lib))
             print('\n======= {0} {1} built sucessfully =======\n'.format(lib, libversion))
@@ -301,12 +311,17 @@ def fetch_source(libfolder, liburl, outdir):
     return os.path.join(outdir, libfolder)
 
 
-def make_install_lib(src_path, prefix, buildenv, extra_args=None):
+def make_install_lib(src_path, prefix, buildenv, extra_args=None, config={}):
     """Builds and installs a library into a given prefix using GNU Make.
     """
     orig_path = os.getcwd()
     os.chdir(src_path)
     success = True
+
+    # If updated config.guess/config.sub files provided, use those
+    for name in config.keys():
+        with open(name, 'wb') as out:
+            out.write(config[name])
 
     buildcmds = [
         ['./configure', '--prefix={0}'.format(prefix)],

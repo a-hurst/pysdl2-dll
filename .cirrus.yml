@@ -76,3 +76,23 @@ task:
 
   binaries_artifacts:
     path: "dist/*"
+
+
+# Build 64-bit ARM manylinux wheel
+task:
+  name: "Build $SDL2DLL_PLATFORM (ARM64) wheel"
+
+  env:
+    matrix:
+      - SDL2DLL_PLATFORM: manylinux2014
+  
+  container:
+    image: quay.io/pypa/$SDL2DLL_PLATFORM_aarch64
+    memory: 1G
+
+  script:
+    - ./manylinux.sh
+
+  binaries_artifacts:
+    path: "dist/*"
+  
