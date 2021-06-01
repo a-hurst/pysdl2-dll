@@ -94,8 +94,8 @@ task:
     memory: 4G
 
   script:
-    - docker pull quay.io/pypa/manylinux2014_aarch64
-    - docker run --rm -e SDL2DLL_PLATFORM=manylinux2014 -v `pwd`:/io quay.io/pypa/manylinux2014_aarch64 /io/manylinux.sh
+    - docker pull quay.io/pypa/manylinux_2_24_aarch64
+    - docker run --rm -e SDL2DLL_PLATFORM=manylinux_2_24 -v `pwd`:/io --platform arm64 quay.io/pypa/manylinux_2_24_aarch64 /io/manylinux.sh
 
   binaries_artifacts:
     path: "dist/*"
