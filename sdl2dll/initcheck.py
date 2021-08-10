@@ -62,17 +62,9 @@ def init_check():
         "NOTE: Binary SDL2 wheels may be available for this platform. Please "
         "update pip to the latest version and try reinstalling pysdl2-dll."
     )
-    ms_store_msg = (
-        "pysdl2-dll does not yet work correctly with Python installed from "
-        "the Microsoft Store. Please reinstall Python from Python.org if you "
-        "encounter any issues."
-    )
 
     if is_sdist():
         msg = sdist_msg
         if _should_update_pip_for_wheels():
             msg += "\n\n" + pip_update_msg
         pretty_warn(msg, UserWarning)
-    
-    elif _using_ms_store_python():
-        pretty_warn(ms_store_msg, RuntimeWarning)
