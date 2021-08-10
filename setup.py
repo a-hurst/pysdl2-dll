@@ -59,7 +59,7 @@ with open('README.md', 'r') as f:
 
 setup(
 	name='pysdl2-dll',
-	version='2.0.14.post2',
+	version='2.0.16',
 	author='Austin Hurst',
 	author_email='mynameisaustinhurst@gmail.com',
     license='Mozilla Public License Version 2.0',
