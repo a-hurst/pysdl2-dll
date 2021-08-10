@@ -10,8 +10,8 @@ if command -v yum &> /dev/null; then
     yum install -y libtool
 
     # Install audio libraries and backends (ALSA, PulseAudio, JACK, NAS, libsamplerate)
-    #yum install -y alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel \
-    #    nas-devel libsamplerate-devel
+    yum install -y alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel \
+        nas-devel libsamplerate-devel
 
     # Install X11 and related libraries
     yum install -y libX11-devel libXext-devel libXrandr-devel libXcursor-devel \
