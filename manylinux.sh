@@ -58,6 +58,7 @@ fi
 
 export SDL_VIDEODRIVER="dummy"
 export SDL_AUDIODRIVER="dummy"
+export PYTHONFAULTHANDLER=1
 /opt/python/cp37-cp37m/bin/python -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
 /opt/python/cp37-cp37m/bin/python -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
 /opt/python/cp37-cp37m/bin/pytest -v -rP
