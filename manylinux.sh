@@ -7,7 +7,7 @@ set -e -u -x
 
 if command -v yum &> /dev/null; then
     # For manylinux2014 and earlier (based on CentOS)
-    yum install -y libtool
+    yum install -y libtool epel-release
 
     # Install audio libraries and backends (ALSA, PulseAudio, JACK, NAS, libsamplerate)
     yum install -y alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel \
