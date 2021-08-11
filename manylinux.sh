@@ -9,8 +9,8 @@ if command -v yum &> /dev/null; then
     # For manylinux2014 and earlier (based on CentOS)
     yum install -y libtool
 
-    # Install audio libraries and backends (ALSA, PulseAudio, JACK, NAS, libsamplerate)
-    yum install -y alsa-lib-devel pulseaudio-libs-devel nas-devel libsamplerate-devel
+    # Install audio libraries and backends (ALSA, PulseAudio, libsamplerate)
+    yum install -y alsa-lib-devel pulseaudio-libs-devel libsamplerate-devel
 
     # Install X11 and related libraries
     yum install -y libX11-devel libXext-devel libXrandr-devel libXcursor-devel \
@@ -57,7 +57,6 @@ fi
 
 export SDL_VIDEODRIVER="dummy"
 export SDL_AUDIODRIVER="dummy"
-export PYTHONFAULTHANDLER=1
 /opt/python/cp37-cp37m/bin/python -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
 /opt/python/cp37-cp37m/bin/python -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
 /opt/python/cp37-cp37m/bin/pytest -v -rP
