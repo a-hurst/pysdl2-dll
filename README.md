@@ -9,7 +9,7 @@ It uses the official SDL2, SDL2\_mixer, SDL2\_ttf, and SDL2\_image binaries for 
 
 The latest release includes the following versions of the SDL2 binaries:
 
-SDL2 | SDL2\_ttf | SDL2\_mixer | SDL2\_image | SDL2_gfx
+SDL2 | SDL2\_ttf | SDL2\_mixer | SDL2\_image | SDL2\_gfx
 --- | --- | --- | --- | ---
 2.0.16 | 2.0.15 | 2.0.4 | 2.0.5 | 1.0.4
 
@@ -27,9 +27,9 @@ pip install pysdl2-dll # install latest release version
 
 At present, the following platforms are supported:
 
-* macOS (10.6+, 64-bit)
-* Windows (32-bit)
-* Windows (64-bit)
+* macOS (10.6+, 64-bit x86)
+* Windows (32-bit x86)
+* Windows (64-bit x86)
 * Linux (32-bit x86)
 * Linux (64-bit x86)
 
@@ -45,7 +45,7 @@ Because the wheels are not built against any specfic version of Python, pysdl2-d
 
 ### Linux Requirements
 
-There are currently two versions the Linux wheels: one based on the `manylinux2014` standard (for 32-bit and 64-bit x86), and another based on the `manylinux_2_24` standard (for 64-bit x86 only). The `manylinux_2_24` SDL2 binaries require a more recent version of Linux, but offer dynamic support for more features such as Wayland windowing, sndio and JACK audio, and OpenGL ES v1 rendering.
+There are currently two versions the Linux wheels: "legacy" wheels based on the `manylinux2014` standard (for 32-bit and 64-bit x86), and "modern" wheels based on the `manylinux_2_24` standard (for 64-bit x86 only). The `manylinux_2_24` SDL2 binaries require a more recent version of Linux, but offer dynamic support for more features such as Wayland windowing, sndio and JACK audio, and OpenGL ES v1 rendering.
 
 You must have pip 19.3 or newer to install the `manylinux_2014` wheels, and pip 20.3 or newer to install the `manylinux_2_24` wheels. Distributions that use musl C instead of glibc (e.g. Alpine Linux) are not supported.
 
