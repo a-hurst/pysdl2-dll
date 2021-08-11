@@ -45,7 +45,7 @@ task:
   name: "Build $SDL2DLL_PLATFORM (i686) wheel"
 
   env:
-    SDL2DLL_PLATFORM: manylinux2010
+    SDL2DLL_PLATFORM: manylinux2014
 
   container:
     image: quay.io/pypa/$SDL2DLL_PLATFORM_i686
@@ -64,7 +64,7 @@ task:
 
   env:
     matrix:
-      - SDL2DLL_PLATFORM: manylinux2010
+      - SDL2DLL_PLATFORM: manylinux2014
       - SDL2DLL_PLATFORM: manylinux_2_24
   
   container:

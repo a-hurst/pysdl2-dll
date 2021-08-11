@@ -41,11 +41,13 @@ pysdl2-dll requires PySDL2 0.9.7 or later in order to work correctly on macOS, a
 pip install -U pysdl2
 ```
 
+Because the wheels are not built against any specfic version of Python, pysdl2-dll supports all versions and implementations of Python that are supported by PySDL2.
+
 ### Linux Requirements
 
-There are currently two versions the Linux wheels: one based on the `manylinux2010` standard (for 32-bit and 64-bit x86), and another based on the `manylinux_2_24` standard (for 64-bit x86 only). The `manylinux_2_24` SDL2 binaries require a more recent version of Linux, but offer dynamic support for more features such as Wayland windowing, sndio and JACK audio, and OpenGL ES v1 rendering.
+There are currently two versions the Linux wheels: one based on the `manylinux2014` standard (for 32-bit and 64-bit x86), and another based on the `manylinux_2_24` standard (for 64-bit x86 only). The `manylinux_2_24` SDL2 binaries require a more recent version of Linux, but offer dynamic support for more features such as Wayland windowing, sndio and JACK audio, and OpenGL ES v1 rendering.
 
-You must have pip 19.0 or newer to install the `manylinux_2010` wheels, and pip 20.3 or newer to install the `manylinux_2_24` wheels. Distributions that use musl C instead of glibc (e.g. Alpine Linux) are not supported.
+You must have pip 19.3 or newer to install the `manylinux_2014` wheels, and pip 20.3 or newer to install the `manylinux_2_24` wheels. Distributions that use musl C instead of glibc (e.g. Alpine Linux) are not supported.
 
 ## Usage
 
