@@ -69,7 +69,7 @@ task:
   
   container:
     image: quay.io/pypa/$SDL2DLL_PLATFORM_x86_64
-    memory: 1G
+    memory: 2G
 
   script:
     - ./manylinux.sh
