@@ -42,7 +42,8 @@ else
     python -m pip install meson ninja
     curl $PIPEWIRE_URL/$PIPEWIRE_VERSION/pipewire-$PIPEWIRE_VERSION.tar.gz | tar -xz
     cd pipewire-$PIPEWIRE_VERSION
-    ./autogen.sh --prefix=/usr && make & make install
+    ./autogen.sh --prefix=/usr
+    make & make install
     cd ..
 
     # Install audio libraries and backends (ALSA, PulseAudio, JACK, sndio, NAS, libsamplerate)
