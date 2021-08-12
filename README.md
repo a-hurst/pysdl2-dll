@@ -1,6 +1,6 @@
 # pysdl2-dll
 
-[![Build Status](https://api.cirrus-ci.com/github/a-hurst/pysdl2-dll.svg)](https://cirrus-ci.com/github/a-hurst/pysdl2-dll>)
+[![Build Status](https://api.cirrus-ci.com/github/a-hurst/pysdl2-dll.svg)](https://cirrus-ci.com/github/a-hurst/pysdl2-dll)
 [![Build Status](https://ci.appveyor.com/api/projects/status/lnwpe9v50bne3afu?svg=true)](https://ci.appveyor.com/project/a-hurst/pysdl2-dll)
 
 pysdl2-dll is a Python package that bundles the SDL2 binaries in pip-installable form for macOS and Windows, making it easier to create and run scripts/packages that use the [PySDL2](https://github.com/marcusva/py-sdl2) library.
