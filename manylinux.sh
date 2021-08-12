@@ -4,7 +4,7 @@ set -e -u -x
 
 # Initialize the PATH and initial directory
 
-export PATH=$PATH:/opt/python/cp37-cp37m/bin
+export PATH=/opt/python/cp37-cp37m/bin:$PATH
 
 if [ -d "/io" ]; then
     cd /io
@@ -38,7 +38,7 @@ else
 
     # Install Pipewire from source (done before other audio backends to minimize build time)
     export PIPEWIRE_VERSION=0.3.33
-    export PIPEWIRE_URL=https://gitlab.freedesktop.org/pipewire/-/archive
+    export PIPEWIRE_URL=https://gitlab.freedesktop.org/pipewire/pipewire/-/archive
     python -m pip install meson ninja
     curl $PIPEWIRE_URL/$PIPEWIRE_VERSION/pipewire-$PIPEWIRE_VERSION.tar.gz | tar -xz
     cd pipewire-$PIPEWIRE_VERSION
