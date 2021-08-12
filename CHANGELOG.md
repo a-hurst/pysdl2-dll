@@ -1,5 +1,13 @@
 # pysdl2-dll changelog
 
+### Version 2.0.16
+
+- Bumped the SDL2 binary version from 2.0.14 to 2.0.16.
+- Removed `RuntimeWarning` when importing with Microsoft Store Python, which is properly supported as of PySDL2 0.9.8.
+- Increased the target for the "legacy" manylinux wheels from `manylinux2010` to `manylinux2014`, due to an incompatibility with SDL2 2.0.16's use of the `dbus` library and the very old `dbus` version included in the official `manylinux2010` images.
+- Removed dynamic support for the ancient Network Audio System (libaudio) backend in the "legacy" manylinux wheels, due to the package not being available for 32-bit `manylinux2014` images.
+- Added experimental dynamic support for Pipewire audio (>= 0.3) in the "modern" manylinux wheels.
+
 ### Version 2.0.14.post2
 
 - Added support for Linux (x86, 32-bit and 64-bit), using the official `manylinux` images to build SDL2 and its companion libraries from source.
