@@ -2,6 +2,15 @@
 set -e -u -x
 
 
+# Initialize the PATH and initial directory
+
+export PATH=$PATH:/opt/python/cp37-cp37m/bin
+
+if [ -d "/io" ]; then
+    cd /io
+fi
+
+
 # Install required and optional dependencies for SDL2 so that it compiles with support
 # for as many different audio/video/input backends as possible
 
@@ -25,7 +34,16 @@ if command -v yum &> /dev/null; then
 else
     # For manylinux_2_24 and later (based on Debian)
     apt-get update
-    apt-get install -y libtool 
+    apt-get install -y libtool libdbus-1-dev
+
+    # Install Pipewire from source (done before other audio backends to minimize build time)
+    export PIPEWIRE_VERSION=0.3.33
+    export PIPEWIRE_URL=https://gitlab.freedesktop.org/pipewire/-/archive
+    python -m pip install meson ninja
+    curl $PIPEWIRE_URL/$PIPEWIRE_VERSION/pipewire-$PIPEWIRE_VERSION.tar.gz | tar -xz
+    cd pipewire-$PIPEWIRE_VERSION
+    ./autogen.sh --prefix=/usr && make & make install
+    cd ..
 
     # Install audio libraries and backends (ALSA, PulseAudio, JACK, sndio, NAS, libsamplerate)
     apt-get install -y libasound2-dev libpulse-dev libjack-jackd2-dev libsndio-dev \
@@ -47,16 +65,13 @@ fi
 
 # Compile SDL2, addon libraries, and any necessary dependencies
 
-if [ -d "/io" ]; then
-    cd /io
-fi
-/opt/python/cp37-cp37m/bin/python -u setup.py bdist_wheel
+python -u setup.py bdist_wheel
 
 
 # Run unit tests on built pysdl2-dll wheel
 
 export SDL_VIDEODRIVER="dummy"
 export SDL_AUDIODRIVER="dummy"
-/opt/python/cp37-cp37m/bin/python -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
-/opt/python/cp37-cp37m/bin/python -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
-/opt/python/cp37-cp37m/bin/pytest -v -rP
+python -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
+python -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
+pytest -v -rP
