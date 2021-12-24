@@ -84,19 +84,13 @@ task:
 
   env:
     matrix:
-      - SDL2DLL_PLATFORM: manylinux2014
-
-  compute_engine_instance:
-    image_project: cirrus-images
-    image: family/docker-builder
-    platform: linux
-    cpu: 4
-    memory: 4G
+      - SDL2DLL_PLATFORM: manylinux_2_24
+  
+  arm_container:
+    image: quay.io/pypa/$SDL2DLL_PLATFORM_aarch64
 
   script:
-    - docker pull quay.io/pypa/manylinux_2_24_aarch64
-    - docker run --rm -e SDL2DLL_PLATFORM=manylinux_2_24 -v `pwd`:/io --platform arm64 quay.io/pypa/manylinux_2_24_aarch64 /io/manylinux.sh
+    - ./manylinux.sh
 
   binaries_artifacts:
     path: "dist/*"
-  
