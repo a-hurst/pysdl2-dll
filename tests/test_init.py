@@ -42,4 +42,4 @@ def test_version():
     pkg_version = sdl2dll.__version__
     dll_version = sdl2.dll.version
     dll_version_str = sdl2.dll.dll._version_int_to_str(dll_version)
-    assert pkg_version in dll_version_str
+    assert dll_version_str in pkg_version
