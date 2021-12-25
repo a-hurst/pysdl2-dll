@@ -27,12 +27,14 @@ pip install pysdl2-dll # install latest release version
 
 At present, the following platforms are supported:
 
-* macOS (10.6+, 64-bit x86)
+* macOS (10.6+, 64-bit x86*)
 * Windows (32-bit x86)
 * Windows (64-bit x86)
 * Linux (32-bit x86)
 * Linux (64-bit x86)
 * Linux (64-bit ARM)
+
+*Apple Silicon wheels will be available as soon as official universal binaries of the SDL2\_ttf, SDL2\_mixer, and SDL2\_image libraries are released.
 
 The pysdl2-dll package can be *installed* on platforms other than the ones listed above, but it won't have any effect.
 
