@@ -24,7 +24,7 @@ task:
   name: "Build macOS (x86_64) wheel"
   
   osx_instance:
-    image: catalina-base
+    image: monterey-base
 
   install_script:
     - brew install python
