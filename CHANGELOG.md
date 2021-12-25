@@ -1,5 +1,11 @@
 # pysdl2-dll changelog
 
+### Version 2.0.18 (Unreleased)
+
+- Bumped the SDL2 binary version from 2.0.16 to 2.0.18.
+- Added support for 64-bit ARM `manylinux_2_24` wheels!
+
+
 ### Version 2.0.16
 
 - Bumped the SDL2 binary version from 2.0.14 to 2.0.16.
