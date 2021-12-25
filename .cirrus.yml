@@ -88,6 +88,7 @@ task:
   
   arm_container:
     image: quay.io/pypa/$SDL2DLL_PLATFORM_aarch64
+    memory: 2G
 
   script:
     - ./manylinux.sh

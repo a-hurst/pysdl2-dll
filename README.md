@@ -32,6 +32,7 @@ At present, the following platforms are supported:
 * Windows (64-bit)
 * Linux (32-bit x86)
 * Linux (64-bit x86)
+* Linux (64-bit ARM)
 
 The pysdl2-dll package can be *installed* on platforms other than the ones listed above, but it won't have any effect.
 
@@ -43,7 +44,7 @@ pip install -U pysdl2
 
 ### Linux Requirements
 
-There are currently two versions the Linux wheels: one based on the `manylinux2010` standard (for 32-bit and 64-bit x86), and another based on the `manylinux_2_24` standard (for 64-bit x86 only). The `manylinux_2_24` SDL2 binaries require a more recent version of Linux, but offer dynamic support for more features such as Wayland windowing, sndio and JACK audio, and OpenGL ES v1 rendering.
+There are currently two versions the Linux wheels: one based on the `manylinux2010` standard (for 32-bit and 64-bit x86), and another based on the `manylinux_2_24` standard (for 64-bit x86 and 64-bit ARM only). The `manylinux_2_24` SDL2 binaries require a more recent version of Linux, but offer dynamic support for more features such as Wayland windowing, sndio and JACK audio, and OpenGL ES v1 rendering.
 
 You must have pip 19.0 or newer to install the `manylinux_2010` wheels, and pip 20.3 or newer to install the `manylinux_2_24` wheels. Distributions that use musl C instead of glibc (e.g. Alpine Linux) are not supported.
 
