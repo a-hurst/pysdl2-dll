@@ -12,7 +12,7 @@ except ImportError:
     from urllib2 import urlopen # Python 2
 
 
-libraries = ['SDL2', 'SDL2_gfx', 'SDL2_image', 'SDL2_mixer', 'SDL2_ttf']
+libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
 
 libversions = {
     'SDL2': '2.0.14',

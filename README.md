@@ -44,7 +44,8 @@ pip install -U pysdl2
 
 ### Linux Requirements
 
-There are currently two versions the Linux wheels: one based on the `manylinux2010` standard (for 32-bit and 64-bit x86), and another based on the `manylinux_2_24` standard (for 64-bit x86 and 64-bit ARM only). The `manylinux_2_24` SDL2 binaries require a more recent version of Linux, but offer dynamic support for more features such as Wayland windowing, sndio and JACK audio, and OpenGL ES v1 rendering.
+There are currently two versions the Linux wheels: "legacy" wheels based on the `manylinux2014` standard (for 32-bit and 64-bit x86), and "modern" wheels based on the `manylinux_2_24` standard (for 64-bit x86 and 64-bit ARM only). The `manylinux_2_24` SDL2 binaries require a more recent version of Linux, but offer dynamic support for additional features such as Wayland windowing, Pipewire/sndio/JACK audio, and OpenGL ES v1 rendering.
+
 
 You must have pip 19.0 or newer to install the `manylinux_2010` wheels, and pip 20.3 or newer to install the `manylinux_2_24` wheels. Distributions that use musl C instead of glibc (e.g. Alpine Linux) are not supported.
 
