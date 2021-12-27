@@ -68,7 +68,7 @@ else
     export WAYLAND_URL=https://gitlab.freedesktop.org/wayland/wayland/-/archive
     curl $WAYLAND_URL/$WAYLAND_VERSION/wayland-$WAYLAND_VERSION.tar.gz | tar -xz
     cd wayland-$WAYLAND_VERSION
-    meson build/
+    meson build --buildtype=release -Ddocumentation=false
     ninja -C build/ install
     cd ..
 
