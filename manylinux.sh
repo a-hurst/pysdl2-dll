@@ -32,6 +32,16 @@ if command -v yum &> /dev/null; then
     # Install input libraries
     yum install -y dbus-devel libudev-devel libusb-devel ibus-devel
 
+    # Install Wayland from source
+    export WAYLAND_VERSION=1.20.0
+    export WAYLAND_URL=https://gitlab.freedesktop.org/wayland/wayland/-/archive
+    python3.7 -m pip install meson ninja
+    curl $WAYLAND_URL/$WAYLAND_VERSION/wayland-$WAYLAND_VERSION.tar.gz | tar -xz
+    cd wayland-$WAYLAND_VERSION
+    meson build/
+    ninja -C build/ install
+    cd ..
+
 else
     # For manylinux_2_24 and later (based on Debian)
     apt-get update
@@ -61,6 +71,15 @@ else
     # Install input libraries
     apt-get install -y libdbus-1-dev libudev-dev libusb-1.0-0-dev libibus-1.0-dev \
         fcitx-libs-dev libxkbcommon-dev
+
+    # Update Wayland to newer version for libdecor
+    export WAYLAND_VERSION=1.20.0
+    export WAYLAND_URL=https://gitlab.freedesktop.org/wayland/wayland/-/archive
+    curl $WAYLAND_URL/$WAYLAND_VERSION/wayland-$WAYLAND_VERSION.tar.gz | tar -xz
+    cd wayland-$WAYLAND_VERSION
+    meson build/
+    ninja -C build/ install
+    cd ..
 
     # Install libdecor once wayland and other depedencies are installed
     apt-get install -y libpango1.0-dev
