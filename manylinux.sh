@@ -66,7 +66,7 @@ else
     apt-get install -y libffi-dev libxml2-dev
     export WAYLAND_VERSION=1.20.0
     export WAYLAND_URL=https://gitlab.freedesktop.org/wayland/wayland/-/archive
-    curl $WAYLAND_URL/$WAYLAND_VERSION/wayland-$WAYLAND_VERSION.tar.xz | tar -xz
+    curl $WAYLAND_URL/$WAYLAND_VERSION/wayland-$WAYLAND_VERSION.tar.gz | tar -xz
     cd wayland-$WAYLAND_VERSION
     meson build --buildtype=release -Ddocumentation=false
     ninja -C build/ install
@@ -75,7 +75,7 @@ else
     # Update wayland-protocols to newer version for libdecor
     export PROTOCOLS_VERSION=1.24
     export PROTOCOLS_URL=https://gitlab.freedesktop.org/wayland/wayland-protocols/-/archive
-    curl $PROTOCOLS_URL/$PROTOCOLS_VERSION/wayland-protocols-$PROTOCOLS_VERSION.tar.xz | tar -xz
+    curl $PROTOCOLS_URL/$PROTOCOLS_VERSION/wayland-protocols-$PROTOCOLS_VERSION.tar.gz | tar -xz
     cd wayland-protocols-$PROTOCOLS_VERSION
     meson build --buildtype=release
     ninja -C build/ install
