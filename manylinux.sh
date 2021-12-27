@@ -23,10 +23,11 @@ if command -v yum &> /dev/null; then
 
     # Install X11 and related libraries
     yum install -y libX11-devel libXext-devel libXrandr-devel libXcursor-devel \
-        libXinerama-devel libXi-devel libXxf86vm-devel libXScrnSaver-devel
+        libXinerama-devel libXi-devel libXxf86vm-devel libXScrnSaver-devel \
+        libXfixes-devel
 
     # Install OpenGL renderers (OpenGL, OpenGL ES v2)
-    yum install -y mesa-libGL-devel mesa-libEGL-devel
+    yum install -y mesa-libGL-devel mesa-libEGL-devel mesa-libgbm-devel
 
     # Install input libraries
     yum install -y dbus-devel libudev-devel libusb-devel ibus-devel
@@ -47,12 +48,12 @@ else
     cd ..
 
     # Install audio libraries and backends (ALSA, PulseAudio, JACK, sndio, NAS, libsamplerate)
-    apt-get install -y libasound2-dev libpulse-dev libjack-jackd2-dev libsndio-dev \
-        libaudio-dev libsamplerate0-dev
+    apt-get install -y libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev \
+        libsamplerate0-dev
 
     # Install X11, Wayland, and related libraries
-    apt-get install -y libx11-dev libxext-dev libxrandr-dev libxcursor-dev \
-        libxinerama-dev libxi-dev libxxf86vm-dev libxss-dev libwayland-dev
+    apt-get install -y libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev \
+        libxi-dev libxinerama-dev libxxf86vm-dev libxss-dev libwayland-dev
 
     # Install OpenGL renderers (OpenGL, OpenGL ES v1, OpenGL ES v2)
     apt-get install -y libgl1-mesa-dev libgles1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev
@@ -60,6 +61,16 @@ else
     # Install input libraries
     apt-get install -y libdbus-1-dev libudev-dev libusb-1.0-0-dev libibus-1.0-dev \
         fcitx-libs-dev libxkbcommon-dev
+
+    # Install libdecor once wayland and other depedencies are installed
+    apt-get install -y libpango1.0-dev
+    export LIBDECOR_VERSION=0.1.0
+    export LIBDECOR_URL=https://gitlab.gnome.org/jadahl/libdecor/-/archive
+    curl $LIBDECOR_URL/$LIBDECOR_VERSION/libdecor-$LIBDECOR_VERSION.tar.gz | tar -xz
+    cd libdecor-$LIBDECOR_VERSION
+    meson build --buildtype release
+    meson install -C build
+    cd ..
 
 fi
 
