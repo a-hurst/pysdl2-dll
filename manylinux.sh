@@ -35,7 +35,7 @@ if command -v yum &> /dev/null; then
 else
     # For manylinux_2_24 and later (based on Debian)
     apt-get update
-    apt-get install -y libtool libdbus-1-dev libffi-dev
+    apt-get install -y libtool libdbus-1-dev
 
     # Install Pipewire from source (done before other audio backends to minimize build time)
     export PIPEWIRE_VERSION=0.3.33
@@ -63,6 +63,7 @@ else
         fcitx-libs-dev libxkbcommon-dev
 
     # Update Wayland to newer version for libdecor
+    apt-get install -y libffi-dev libxml2-dev
     export WAYLAND_VERSION=1.20.0
     export WAYLAND_URL=https://gitlab.freedesktop.org/wayland/wayland/-/archive
     curl $WAYLAND_URL/$WAYLAND_VERSION/wayland-$WAYLAND_VERSION.tar.gz | tar -xz
