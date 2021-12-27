@@ -62,35 +62,6 @@ else
     apt-get install -y libdbus-1-dev libudev-dev libusb-1.0-0-dev libibus-1.0-dev \
         fcitx-libs-dev libxkbcommon-dev
 
-    # Update Wayland to newer version for libdecor
-    apt-get install -y libffi-dev libxml2-dev
-    export WAYLAND_VERSION=1.20.0
-    export WAYLAND_URL=https://gitlab.freedesktop.org/wayland/wayland/-/archive
-    curl $WAYLAND_URL/$WAYLAND_VERSION/wayland-$WAYLAND_VERSION.tar.gz | tar -xz
-    cd wayland-$WAYLAND_VERSION
-    meson build --buildtype=release -Ddocumentation=false
-    ninja -C build/ install
-    cd ..
-
-    # Update wayland-protocols to newer version for libdecor
-    export PROTOCOLS_VERSION=1.24
-    export PROTOCOLS_URL=https://gitlab.freedesktop.org/wayland/wayland-protocols/-/archive
-    curl $PROTOCOLS_URL/$PROTOCOLS_VERSION/wayland-protocols-$PROTOCOLS_VERSION.tar.gz | tar -xz
-    cd wayland-protocols-$PROTOCOLS_VERSION
-    meson build --buildtype=release
-    ninja -C build/ install
-    cd ..
-
-    # Install libdecor once wayland and other depedencies are installed
-    apt-get install -y libpango1.0-dev
-    export LIBDECOR_VERSION=0.1.0
-    export LIBDECOR_URL=https://gitlab.gnome.org/jadahl/libdecor/-/archive
-    curl $LIBDECOR_URL/$LIBDECOR_VERSION/libdecor-$LIBDECOR_VERSION.tar.gz | tar -xz
-    cd libdecor-$LIBDECOR_VERSION
-    meson build --buildtype release
-    meson install -C build
-    cd ..
-
 fi
 
 
