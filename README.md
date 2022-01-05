@@ -52,6 +52,8 @@ There are currently two versions the Linux wheels: "legacy" wheels based on the 
 
 You must have pip 19.3 or newer to install the `manylinux2014` wheels, and pip 20.3 or newer to install the `manylinux_2_24` wheels. Distributions that use musl C instead of glibc (e.g. Alpine Linux) are not supported.
 
+**Note**: pysdl2-dll is currently not built with libdecor support, meaning that native Wayland (non-XWayland) window decorations will be unavailable when using these binaries (see issue #9 for details). Given that SDL2 defaults to using XWayland this shouldn't be an issue for most users, but suggestions and/or PRs to fix the issue are welcome!
+
 ## Usage
 
 If you are using PySDL2 0.9.7 or later, you don't need to do anything special to use the pysdl2-dll binaries in your project: PySDL2 will load them automatically (and print a message indicating such) if they are available. For older versions of PySDL2, you will need to import this module manually in your scripts (`import sdl2dll`) before PySDL2 is imported.
