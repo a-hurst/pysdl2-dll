@@ -355,7 +355,7 @@ def meson_install_lib(src_path, prefix, buildenv, extra_args=None):
     success = True
 
     buildcmds = [
-        ['meson' '-Dprefix={0}'.format(prefix), 'build']
+        ['meson' '-Dprefix={0}'.format(prefix), 'build'],
         ['meson', 'compile', '-C', 'build'],
         ['meson', 'install', '-C', 'build']
     ]
