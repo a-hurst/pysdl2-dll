@@ -216,8 +216,8 @@ def buildDLLs(libraries, basedir, libdir):
             ignore = [
                 'libvorbisidec', # only needed for special non-standard builds
             ] 
-            build_first = ['zlib', 'harfbuzz']
-            build_last = ['libvorbis', 'opusfile', 'flac']
+            build_first = ['zlib']
+            build_last = ['libvorbis', 'opusfile', 'flac', 'harfbuzz']
             ext_dir = os.path.join(sourcepath, 'external')
             if os.path.exists(ext_dir):
                 dep_dirs = os.listdir(ext_dir)
