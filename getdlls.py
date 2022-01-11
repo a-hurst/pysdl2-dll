@@ -242,6 +242,7 @@ def buildDLLs(libraries, basedir, libdir):
                 'opusfile': ['--disable-http'],
                 'freetype': ['--enable-freetype-config']
             }
+            meson_libs = ['harfbuzz']
             for dep in dependencies:
                 depname, depversion = dep.split('-')
                 dep_path = os.path.join(ext_dir, dep)
@@ -254,7 +255,10 @@ def buildDLLs(libraries, basedir, libdir):
                 xtra_args = None
                 if depname in extra_args.keys():
                     xtra_args = extra_args[depname]
-                success = make_install_lib(dep_path, libdir, buildenv, xtra_args, cfgfiles)
+                if depname in meson_libs:
+                    success = meson_install_lib(dep_path, libdir, buildenv, xtra_args)
+                else:
+                    success = make_install_lib(dep_path, libdir, buildenv, xtra_args, cfgfiles)
                 if not success:
                     raise RuntimeError("Error building {0}".format(dep))
                 print('\n======= {0} built sucessfully =======\n'.format(dep))
@@ -333,6 +337,29 @@ def make_install_lib(src_path, prefix, buildenv, extra_args=None, config={}):
     for cmd in buildcmds:
         if cmd[0] == './configure' and extra_args:
             cmd = cmd + extra_args
+        p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, env=buildenv)
+        p.communicate()
+        if p.returncode != 0:
+            success = False
+            break
+
+    os.chdir(orig_path)
+    return success
+
+
+def meson_install_lib(src_path, prefix, buildenv, extra_args=None):
+    """Builds and installs a library into a given prefix using meson.
+    """
+    orig_path = os.getcwd()
+    os.chdir(src_path)
+    success = True
+
+    buildcmds = [
+        ['meson' '-Dprefix={0}'.format(prefix), 'build']
+        ['meson', 'compile', '-C', 'build'],
+        ['meson', 'install', '-C', 'build']
+    ]
+    for cmd in buildcmds:
         p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, env=buildenv)
         p.communicate()
         if p.returncode != 0:

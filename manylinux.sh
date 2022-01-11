@@ -67,6 +67,7 @@ fi
 
 # Compile SDL2, addon libraries, and any necessary dependencies
 
+python3.7 -m pip install meson
 python3.7 -u setup.py bdist_wheel
 
 
