@@ -215,7 +215,8 @@ def buildDLLs(libraries, basedir, libdir):
             dependencies = []
             ignore = [
                 'libvorbisidec', # only needed for special non-standard builds
-            ] 
+                'freetype', # bundled with TTF by default in latest release
+            ]
             build_first = ['zlib']
             build_last = ['libvorbis', 'opusfile', 'flac', 'harfbuzz']
             ext_dir = os.path.join(sourcepath, 'external')
@@ -255,10 +256,7 @@ def buildDLLs(libraries, basedir, libdir):
                 xtra_args = None
                 if depname in extra_args.keys():
                     xtra_args = extra_args[depname]
-                if depname in meson_libs:
-                    success = meson_install_lib(dep_path, libdir, buildenv, xtra_args)
-                else:
-                    success = make_install_lib(dep_path, libdir, buildenv, xtra_args, cfgfiles)
+                success = make_install_lib(dep_path, libdir, buildenv, xtra_args, cfgfiles)
                 if not success:
                     raise RuntimeError("Error building {0}".format(dep))
                 print('\n======= {0} built sucessfully =======\n'.format(dep))
@@ -267,7 +265,7 @@ def buildDLLs(libraries, basedir, libdir):
             print('======= Compiling {0} {1} =======\n'.format(lib, libversion))
             xtra_args = None
             if lib == 'SDL2_ttf':
-                xtra_args = ['--with-ft-prefix={0}'.format(os.path.abspath(libdir))]
+                xtra_args = ['--enable-harfbuzz-builtin=no']
             elif lib == 'SDL2_gfx' and not arch in ['i386', 'x86_64']:
                 xtra_args = ['--disable-mmx']
             success = make_install_lib(sourcepath, libdir, buildenv, xtra_args, cfgfiles)
