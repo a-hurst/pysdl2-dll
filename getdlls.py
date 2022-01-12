@@ -242,9 +242,7 @@ def buildDLLs(libraries, basedir, libdir):
             # Build any external dependencies
             extra_args = {
                 'opusfile': ['--disable-http'],
-                'freetype': ['--enable-freetype-config']
             }
-            meson_libs = ['harfbuzz']
             for dep in dependencies:
                 depname, depversion = dep.split('-')
                 dep_path = os.path.join(ext_dir, dep)
