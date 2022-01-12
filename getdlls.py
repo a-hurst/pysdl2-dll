@@ -215,9 +215,11 @@ def buildDLLs(libraries, basedir, libdir):
             dependencies = []
             ignore = [
                 'libvorbisidec', # only needed for special non-standard builds
+                'freetype', # built by default in current TTF release
+                'harfbuzz', # built by default in current TTF release
             ]
             build_first = ['zlib']
-            build_last = ['libvorbis', 'opusfile', 'flac', 'harfbuzz']
+            build_last = ['libvorbis', 'opusfile', 'flac']
             ext_dir = os.path.join(sourcepath, 'external')
             if os.path.exists(ext_dir):
                 dep_dirs = os.listdir(ext_dir)
@@ -263,13 +265,7 @@ def buildDLLs(libraries, basedir, libdir):
             # Build the library
             print('======= Compiling {0} {1} =======\n'.format(lib, libversion))
             xtra_args = None
-            if lib == 'SDL2_ttf':
-                xtra_args = [
-                    '--with-ft-prefix={0}'.format(os.path.abspath(libdir)),
-                    '--enable-freetype-builtin=no',
-                    '--enable-harfbuzz-builtin=no'
-                ]
-            elif lib == 'SDL2_gfx' and not arch in ['i386', 'x86_64']:
+            if lib == 'SDL2_gfx' and not arch in ['i386', 'x86_64']:
                 xtra_args = ['--disable-mmx']
             success = make_install_lib(sourcepath, libdir, buildenv, xtra_args, cfgfiles)
             if not success:
@@ -338,29 +334,6 @@ def make_install_lib(src_path, prefix, buildenv, extra_args=None, config={}):
     for cmd in buildcmds:
         if cmd[0] == './configure' and extra_args:
             cmd = cmd + extra_args
-        p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, env=buildenv)
-        p.communicate()
-        if p.returncode != 0:
-            success = False
-            break
-
-    os.chdir(orig_path)
-    return success
-
-
-def meson_install_lib(src_path, prefix, buildenv, extra_args=None):
-    """Builds and installs a library into a given prefix using meson.
-    """
-    orig_path = os.getcwd()
-    os.chdir(src_path)
-    success = True
-
-    buildcmds = [
-        ['meson', '-Dprefix={0}'.format(prefix), 'build'],
-        ['meson', 'compile', '-C', 'build'],
-        ['meson', 'install', '-C', 'build']
-    ]
-    for cmd in buildcmds:
         p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, env=buildenv)
         p.communicate()
         if p.returncode != 0:
