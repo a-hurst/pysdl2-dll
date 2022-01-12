@@ -215,7 +215,6 @@ def buildDLLs(libraries, basedir, libdir):
             dependencies = []
             ignore = [
                 'libvorbisidec', # only needed for special non-standard builds
-                'freetype', # bundled with TTF by default in latest release
             ]
             build_first = ['zlib']
             build_last = ['libvorbis', 'opusfile', 'flac', 'harfbuzz']
@@ -265,7 +264,11 @@ def buildDLLs(libraries, basedir, libdir):
             print('======= Compiling {0} {1} =======\n'.format(lib, libversion))
             xtra_args = None
             if lib == 'SDL2_ttf':
-                xtra_args = ['--enable-harfbuzz-builtin=no']
+                xtra_args = [
+                    '--with-ft-prefix={0}'.format(os.path.abspath(libdir)),
+                    '--enable-freetype-builtin=no',
+                    '--enable-harfbuzz-builtin=no'
+                ]
             elif lib == 'SDL2_gfx' and not arch in ['i386', 'x86_64']:
                 xtra_args = ['--disable-mmx']
             success = make_install_lib(sourcepath, libdir, buildenv, xtra_args, cfgfiles)
