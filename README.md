@@ -34,7 +34,7 @@ At present, the following platforms are supported:
 * Linux (64-bit x86)
 * Linux (64-bit ARM)
 
-*Apple Silicon wheels will be available as soon as official universal binaries of the SDL2\_ttf, SDL2\_mixer, and SDL2\_image libraries are released.
+*Apple Silicon wheels will be available as soon as official universal binaries of the SDL2\_mixer and SDL2\_image libraries are released.
 
 The pysdl2-dll package can be *installed* on platforms other than the ones listed above, but it won't have any effect.
 
