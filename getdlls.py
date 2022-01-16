@@ -15,9 +15,9 @@ except ImportError:
 libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
 
 libversions = {
-    'SDL2': '2.0.18',
+    'SDL2': '2.0.20',
     'SDL2_mixer': '2.0.4',
-    'SDL2_ttf': '2.0.15',
+    'SDL2_ttf': '2.0.18',
     'SDL2_image': '2.0.5',
     'SDL2_gfx': '1.0.4'
 }
@@ -215,8 +215,10 @@ def buildDLLs(libraries, basedir, libdir):
             dependencies = []
             ignore = [
                 'libvorbisidec', # only needed for special non-standard builds
-            ] 
-            build_first = ['zlib', 'harfbuzz']
+                'freetype', # built by default in current TTF release
+                'harfbuzz', # built by default in current TTF release
+            ]
+            build_first = ['zlib']
             build_last = ['libvorbis', 'opusfile', 'flac']
             ext_dir = os.path.join(sourcepath, 'external')
             if os.path.exists(ext_dir):
@@ -240,7 +242,6 @@ def buildDLLs(libraries, basedir, libdir):
             # Build any external dependencies
             extra_args = {
                 'opusfile': ['--disable-http'],
-                'freetype': ['--enable-freetype-config']
             }
             for dep in dependencies:
                 depname, depversion = dep.split('-')
@@ -262,9 +263,7 @@ def buildDLLs(libraries, basedir, libdir):
             # Build the library
             print('======= Compiling {0} {1} =======\n'.format(lib, libversion))
             xtra_args = None
-            if lib == 'SDL2_ttf':
-                xtra_args = ['--with-ft-prefix={0}'.format(os.path.abspath(libdir))]
-            elif lib == 'SDL2_gfx' and not arch in ['i386', 'x86_64']:
+            if lib == 'SDL2_gfx' and not arch in ['i386', 'x86_64']:
                 xtra_args = ['--disable-mmx']
             success = make_install_lib(sourcepath, libdir, buildenv, xtra_args, cfgfiles)
             if not success:

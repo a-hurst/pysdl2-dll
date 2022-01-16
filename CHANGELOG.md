@@ -1,5 +1,11 @@
 # pysdl2-dll changelog
 
+### Version 2.0.20 (unreleased)
+
+- Bumped the SDL2 binary version from 2.0.18 to 2.0.20.
+- Bumped the SDL\_ttf binary version from 2.0.15 to 2.0.18.
+
+
 ### Version 2.0.18
 
 - Bumped the SDL2 binary version from 2.0.16 to 2.0.18.
