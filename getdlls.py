@@ -85,7 +85,7 @@ def getDLLs(platform_name):
                                 shutil.copyfile(licensepath, outpath)
 
             # Extract license info for statically-linked libraries
-            resourcepath = os.path.join(dlloutpath, f, 'Resources')
+            resourcepath = os.path.join(dlloutpath, 'Resources')
             for name in os.listdir(resourcepath):
                 if 'LICENSE' in name or name == "FTL.TXT":
                     licensepath = os.path.join(resourcepath, name)
