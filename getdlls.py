@@ -84,6 +84,14 @@ def getDLLs(platform_name):
                                 outpath = os.path.join(licensedir, name)
                                 shutil.copyfile(licensepath, outpath)
 
+            # Extract license info for statically-linked libraries
+            resourcepath = os.path.join(dlloutpath, f, 'Resources')
+            for name in os.listdir(resourcepath):
+                if 'LICENSE' in name or name == "FTL.TXT":
+                    licensepath = os.path.join(resourcepath, name)
+                    outpath = os.path.join(licensedir, name)
+                    shutil.copyfile(licensepath, outpath)
+
     elif platform_name in ['win32', 'win-amd64']:
         
         suffix = '-win32-x64.zip' if platform_name == 'win-amd64' else '-win32-x86.zip'
