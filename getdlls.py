@@ -171,6 +171,13 @@ def getDLLs(platform_name):
         # Rename zlib to avoid name collision with Python's zlib
         rename_library(dlldir, 'libz', 'libz-pysdl2', fix_links=['libpng16'])
 
+        # Strip debug symbols from the binaries to reduce file size
+        success = strip_debug_symbols(os.path.join(libdir, 'lib'))
+        if success:
+            print("\n*** Successfully stripped debug symbols from binaries ***\n")
+        else:
+            print("\n*** NOTE: Failed to strip debug symbols from binaries ***\n")
+
         print("Built binaries:")
         print(os.listdir(dlldir))
 
@@ -278,14 +285,6 @@ def buildDLLs(libraries, basedir, libdir):
                 raise RuntimeError("Error building {0}".format(lib))
             print('\n======= {0} {1} built sucessfully =======\n'.format(lib, libversion))
             os.chdir(basedir)
-
-        # If requested, strip debug symbols from the compiled binaries
-        print('======= Stripping Debug Symbols From Binaries =======\n')
-        cmd = ['strip', '--strip-debug', libdir + '/*']
-        p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr)
-        p.communicate()
-        if p.returncode != 0:
-            print("NOTE: failed to strip debug symbols from binaries.")
 
 
 # Helper functions for facilitating the compiling and/or bundling of binaries
@@ -405,6 +404,16 @@ def rename_library(libdir, name, newname, fix_links):
 
     os.chdir(orig_path)
     return success
+
+
+def strip_debug_symbols(libpath):
+    """Strips the debug symbols from a folder of compiled binaries to reduce
+    file size.
+    """
+    cmd = ['strip', '--strip-debug', libpath + '/*']
+    p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr)
+    p.communicate()
+    return p.returncode != 0
 
 
 if __name__ == '__main__':
