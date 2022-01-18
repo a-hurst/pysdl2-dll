@@ -406,14 +406,24 @@ def rename_library(libdir, name, newname, fix_links):
     return success
 
 
-def strip_debug_symbols(libpath):
+def strip_debug_symbols(libdir):
     """Strips the debug symbols from a folder of compiled binaries to reduce
     file size.
     """
-    cmd = ['strip', '--strip-debug', libpath + '/*']
-    p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr)
-    p.communicate()
-    return p.returncode != 0
+    libs = [f for f in os.listdir(libdir) if '.so' in f]
+    success = True
+
+    # Strip debug symbols from each compiled library
+    for lib in libs:
+        libpath = os.path.join(libdir, lib)
+        cmd = ['strip', '--strip-debug', libpath]
+        p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr)
+        p.communicate()
+        if p.returncode != 0:
+            success = False
+            break
+
+    return success
 
 
 if __name__ == '__main__':
