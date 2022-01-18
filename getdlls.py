@@ -172,11 +172,11 @@ def getDLLs(platform_name):
         rename_library(dlldir, 'libz', 'libz-pysdl2', fix_links=['libpng16'])
 
         # Strip debug symbols from the binaries to reduce file size
-        success = strip_debug_symbols(os.path.join(libdir, 'lib'))
+        success = strip_debug_symbols(dlldir)
         if success:
-            print("\n*** Successfully stripped debug symbols from binaries ***\n")
+            print("*** Successfully stripped debug symbols from binaries ***\n")
         else:
-            print("\n*** NOTE: Failed to strip debug symbols from binaries ***\n")
+            print("*** NOTE: Failed to strip debug symbols from binaries ***\n")
 
         print("Built binaries:")
         print(os.listdir(dlldir))
