@@ -279,6 +279,13 @@ def buildDLLs(libraries, basedir, libdir):
             print('\n======= {0} {1} built sucessfully =======\n'.format(lib, libversion))
             os.chdir(basedir)
 
+        # If requested, strip debug symbols from the compiled binaries
+        print('======= Stripping Debug Symbols From Binaries =======\n')
+        cmd = ['strip', '--strip-debug', libdir + '/*']
+        p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr)
+        p.communicate()
+        if p.returncode != 0:
+            print("NOTE: failed to strip debug symbols from binaries.")
 
 
 # Helper functions for facilitating the compiling and/or bundling of binaries
