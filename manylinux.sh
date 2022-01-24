@@ -65,6 +65,13 @@ else
 fi
 
 
+# If this is a tagged release, set env to strip the debug symbols from the binaries
+
+if [ -z "$CIRRUS_TAG" ]; then
+    export SDL2DLL_RELEASE=1
+fi
+
+
 # Compile SDL2, addon libraries, and any necessary dependencies
 
 python3.7 -u setup.py bdist_wheel

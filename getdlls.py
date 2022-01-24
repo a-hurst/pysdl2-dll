@@ -171,12 +171,13 @@ def getDLLs(platform_name):
         # Rename zlib to avoid name collision with Python's zlib
         rename_library(dlldir, 'libz', 'libz-pysdl2', fix_links=['libpng16'])
 
-        # Strip debug symbols from the binaries to reduce file size
-        success = strip_debug_symbols(dlldir)
-        if success:
-            print("*** Successfully stripped debug symbols from binaries ***\n")
-        else:
-            print("*** NOTE: Failed to strip debug symbols from binaries ***\n")
+        # If release, strip debug symbols from the binaries to reduce file size
+        if os.getenv("SDL2DLL_RELEASE", 0) == 1:
+            success = strip_debug_symbols(dlldir)
+            if success:
+                print("*** Successfully stripped debug symbols from binaries ***\n")
+            else:
+                print("*** NOTE: Failed to strip debug symbols from binaries ***\n")
 
         print("Built binaries:")
         print(os.listdir(dlldir))

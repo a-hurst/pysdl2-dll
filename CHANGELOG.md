@@ -1,5 +1,10 @@
 # pysdl2-dll changelog
 
+### Version 2.0.22 (Unreleased)
+
+- Stripped debug symbols from manylinux binaries for smaller size.
+
+
 ### Version 2.0.20
 
 - Bumped the SDL2 binary version from 2.0.18 to 2.0.20.
