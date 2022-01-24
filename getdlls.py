@@ -279,7 +279,9 @@ def buildDLLs(libraries, basedir, libdir):
             # Build the library
             print('======= Compiling {0} {1} =======\n'.format(lib, libversion))
             xtra_args = None
-            if lib == 'SDL2_gfx' and not arch in ['i386', 'x86_64']:
+            if lib == 'SDL2':
+                xtra_args = ['--disable-udev']
+            elif lib == 'SDL2_gfx' and not arch in ['i386', 'x86_64']:
                 xtra_args = ['--disable-mmx']
             success = make_install_lib(sourcepath, libdir, buildenv, xtra_args, cfgfiles)
             if not success:
