@@ -62,6 +62,16 @@ else
     apt-get install -y libdbus-1-dev libudev-dev libusb-1.0-0-dev libibus-1.0-dev \
         fcitx-libs-dev libxkbcommon-dev
 
+    # Update Wayland to a supported version (=> 1.18.0 required as of SDL 2.0.22)
+    apt-get install -y libffi-dev libxml2-dev
+    export WAYLAND_VERSION=1.20.0
+    export WAYLAND_URL=https://gitlab.freedesktop.org/wayland/wayland/-/archive
+    curl $WAYLAND_URL/$WAYLAND_VERSION/wayland-$WAYLAND_VERSION.tar.gz | tar -xz
+    cd wayland-$WAYLAND_VERSION
+    meson build --buildtype=release -Ddocumentation=false
+    ninja -C build/ install
+    cd ..
+
 fi
 
 
