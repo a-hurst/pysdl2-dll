@@ -23,14 +23,16 @@ if command -v yum &> /dev/null; then
 
     # Install X11 and related libraries
     yum install -y libX11-devel libXext-devel libXrandr-devel libXcursor-devel \
-        libXinerama-devel libXi-devel libXxf86vm-devel libXScrnSaver-devel \
-        libXfixes-devel
+        libXfixes-devel libXi-devel libXinerama-devel libXxf86vm-devel \
+        libXScrnSaver-devel
 
     # Install OpenGL renderers (OpenGL, OpenGL ES v2)
-    yum install -y mesa-libGL-devel mesa-libEGL-devel mesa-libgbm-devel
+    yum install -y mesa-libGL-devel mesa-libGLES-devel mesa-libEGL-devel \
+        mesa-libgbm-devel
 
     # Install input libraries
-    yum install -y dbus-devel libudev-devel libusb-devel ibus-devel
+    yum install -y dbus-devel libudev-devel ibus-devel fcitx-devel \
+        systemd-devel libxkbcommon-devel libusb-devel 
 
 else
     # For manylinux_2_24 and later (based on Debian)

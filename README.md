@@ -11,7 +11,7 @@ The latest release includes the following versions of the SDL2 binaries:
 
 SDL2 | SDL2\_ttf | SDL2\_mixer | SDL2\_image | SDL2\_gfx
 --- | --- | --- | --- | ---
-2.0.20 | 2.0.18 | 2.0.4 | 2.0.5 | 1.0.4
+2.0.22 | 2.0.18 | 2.0.4 | 2.0.5 | 1.0.4
 
 
 ## Installation
