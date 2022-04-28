@@ -31,8 +31,8 @@ if command -v yum &> /dev/null; then
         mesa-libgbm-devel
 
     # Install input libraries
-    yum install -y dbus-devel libudev-devel ibus-devel fcitx-devel \
-        systemd-devel libxkbcommon-devel libusb-devel 
+    yum install -y dbus-devel libudev-devel ibus-devel systemd-devel \
+        libxkbcommon-devel libusb-devel
 
 else
     # For manylinux_2_24 and later (based on Debian)
