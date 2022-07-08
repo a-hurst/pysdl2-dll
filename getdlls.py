@@ -254,7 +254,7 @@ def buildDLLs(libraries, basedir, libdir):
             download_sh = os.path.join(ext_dir, 'download.sh')
             if os.path.exists(ext_dir):
                 if os.path.exists(download_sh):
-                    print('======= Downloading optional dependencies for {0} =======\n'.format(lib))
+                    print('\n======= Downloading optional libraries for {0} =======\n'.format(lib))
                     download_external(ext_dir)
                 dep_dirs = os.listdir(ext_dir)
                 deps_first, deps, deps_last = ([], [], [])
@@ -378,6 +378,8 @@ def make_install_lib(src_path, prefix, buildenv, extra_args=None, config={}):
         ['make', '-j2'],
         ['make', 'install']
     ]
+    if not os.path.exists("configure"):
+        buildcmds = ['./autogen.sh'] + buildcmds
     for cmd in buildcmds:
         if cmd[0] == './configure' and extra_args:
             cmd = cmd + extra_args
