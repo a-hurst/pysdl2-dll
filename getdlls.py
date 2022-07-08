@@ -32,7 +32,7 @@ sdl2_urls = {
 }
 
 override_urls = {
-    'libwebp': 'http://storage.googleapis.com/downloads.webmproject.org/releases/webp/{0}.tar.gz'
+    #'libwebp': 'http://storage.googleapis.com/downloads.webmproject.org/releases/webp/{0}.tar.gz'
 }
 
 
@@ -262,7 +262,7 @@ def buildDLLs(libraries, basedir, libdir):
                     dep_path = os.path.join(ext_dir, dep)
                     if not os.path.isdir(dep_path):
                         continue
-                    depname, depversion = dep.split('-')
+                    depname = dep.split('-')[0]
                     if depname in ignore:
                         continue
                     elif depname in build_first:
@@ -278,7 +278,7 @@ def buildDLLs(libraries, basedir, libdir):
                 'opusfile': ['--disable-http'],
             }
             for dep in dependencies:
-                depname, depversion = dep.split('-')
+                depname = dep.split('-')[0]
                 dep_path = os.path.join(ext_dir, dep)
                 if depname in override_urls.keys():
                     print('======= Downloading alternate source for {0} =======\n'.format(dep))
