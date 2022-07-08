@@ -245,6 +245,7 @@ def buildDLLs(libraries, basedir, libdir):
             dependencies = []
             ignore = [
                 'libvorbisidec', # only needed for special non-standard builds
+                'tremor', # only for platforms that can't do floating point math
                 'freetype', # built by default in current TTF release
                 'harfbuzz', # built by default in current TTF release
             ]
@@ -254,8 +255,9 @@ def buildDLLs(libraries, basedir, libdir):
             download_sh = os.path.join(ext_dir, 'download.sh')
             if os.path.exists(ext_dir):
                 if os.path.exists(download_sh):
-                    print('\n======= Downloading optional libraries for {0} =======\n'.format(lib))
+                    print('======= Downloading optional libraries for {0} =======\n'.format(lib))
                     download_external(ext_dir)
+                    print('')
                 dep_dirs = os.listdir(ext_dir)
                 deps_first, deps, deps_last = ([], [], [])
                 for dep in dep_dirs:
