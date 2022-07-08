@@ -94,5 +94,5 @@ python3.7 -u setup.py bdist_wheel
 export SDL_VIDEODRIVER="dummy"
 export SDL_AUDIODRIVER="dummy"
 python3.7 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
-python3.7 -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
+python3.7 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
 pytest -v -rP
