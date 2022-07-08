@@ -23,14 +23,16 @@ if command -v yum &> /dev/null; then
 
     # Install X11 and related libraries
     yum install -y libX11-devel libXext-devel libXrandr-devel libXcursor-devel \
-        libXinerama-devel libXi-devel libXxf86vm-devel libXScrnSaver-devel \
-        libXfixes-devel
+        libXfixes-devel libXi-devel libXinerama-devel libXxf86vm-devel \
+        libXScrnSaver-devel
 
     # Install OpenGL renderers (OpenGL, OpenGL ES v2)
-    yum install -y mesa-libGL-devel mesa-libEGL-devel mesa-libgbm-devel
+    yum install -y mesa-libGL-devel mesa-libGLES-devel mesa-libEGL-devel \
+        mesa-libgbm-devel
 
     # Install input libraries
-    yum install -y dbus-devel libudev-devel libusb-devel ibus-devel
+    yum install -y dbus-devel libudev-devel ibus-devel systemd-devel \
+        libxkbcommon-devel libusb-devel
 
 else
     # For manylinux_2_24 and later (based on Debian)
@@ -62,6 +64,16 @@ else
     apt-get install -y libdbus-1-dev libudev-dev libusb-1.0-0-dev libibus-1.0-dev \
         fcitx-libs-dev libxkbcommon-dev
 
+    # Update Wayland to a supported version (=> 1.18.0 required as of SDL 2.0.22)
+    apt-get install -y libffi-dev libxml2-dev
+    export WAYLAND_VERSION=1.20.0
+    export WAYLAND_URL=https://gitlab.freedesktop.org/wayland/wayland/-/archive
+    curl $WAYLAND_URL/$WAYLAND_VERSION/wayland-$WAYLAND_VERSION.tar.gz | tar -xz
+    cd wayland-$WAYLAND_VERSION
+    meson build --buildtype=release -Ddocumentation=false
+    ninja -C build/ install
+    cd ..
+
 fi
 
 
@@ -82,5 +94,5 @@ python3.7 -u setup.py bdist_wheel
 export SDL_VIDEODRIVER="dummy"
 export SDL_AUDIODRIVER="dummy"
 python3.7 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
-python3.7 -m pip install pytest git+https://github.com/marcusva/py-sdl2.git
+python3.7 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
 pytest -v -rP
