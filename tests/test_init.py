@@ -41,5 +41,5 @@ def test_version():
     import sdl2dll
     pkg_version = sdl2dll.__version__
     dll_version = sdl2.dll.version_tuple
-    dll_version_str = sdl2.dll.dll._version_tuple_to_str(dll_version)
+    dll_version_str = sdl2.dll._version_tuple_to_str(dll_version)
     assert dll_version_str in pkg_version
