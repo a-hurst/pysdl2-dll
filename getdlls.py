@@ -114,6 +114,14 @@ def getDLLs(platform_name):
                     elif 'LICENSE' in name:
                         z.extract(name, licensedir)
 
+            # Move any optional dlls and licenses into their respective root folders
+            for d in [dlldir, licensedir]:
+                optdir = os.path.join(d, 'optional')
+                if os.path.isdir(optdir):
+                    for f in os.listdir(optdir):
+                        outpath = os.path.join(d, os.path.basename(f))
+                        shutil.move(f, outpath)
+
     elif 'manylinux' in platform_name or os.getenv('SDL2DLL_UNIX_COMPILE', '0') == '1':
 
         # Create custom prefix in which to install the SDL2 libs + dependencies
@@ -137,6 +145,13 @@ def getDLLs(platform_name):
                 for name in z.namelist():
                     if 'LICENSE' in name:
                         z.extract(name, licensedir)
+
+            # Move any optional licenses into the root license folder
+            optdir = os.path.join(licensedir, 'optional')
+            if os.path.isdir(optdir):
+                for f in os.listdir(optdir):
+                    outpath = os.path.join(licensedir, os.path.basename(f))
+                    shutil.move(f, outpath)
 
         # Build and install everything into the custom prefix
         sdl2_urls['SDL2_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
@@ -238,7 +253,11 @@ def buildDLLs(libraries, basedir, libdir):
             build_first = ['zlib']
             build_last = ['libvorbis', 'opusfile', 'flac']
             ext_dir = os.path.join(sourcepath, 'external')
+            download_sh = os.path.join(ext_dir, 'download.sh')
             if os.path.exists(ext_dir):
+                if os.path.exists(download_sh):
+                    print('======= Downloading optional dependencies for {0} =======\n'.format(lib))
+                    download_external(ext_dir)
                 dep_dirs = os.listdir(ext_dir)
                 deps_first, deps, deps_last = ([], [], [])
                 for dep in dep_dirs:
@@ -326,6 +345,20 @@ def fetch_source(libfolder, liburl, outdir):
         z.extractall(path=outdir)
 
     return os.path.join(outdir, libfolder)
+
+
+def download_external(ext_path):
+    """Downloads the available optional dependencies for a library.
+    """
+    orig_path = os.getcwd()
+    os.chdir(ext_path)
+    
+    p = sub.Popen("./download.sh", stdout=sys.stdout, stderr=sys.stderr)
+    p.communicate()
+    if p.returncode != 0:
+        raise RuntimeError("Unable to download external libraries.")
+
+    os.chdir(orig_path)
 
 
 def make_install_lib(src_path, prefix, buildenv, extra_args=None, config={}):
