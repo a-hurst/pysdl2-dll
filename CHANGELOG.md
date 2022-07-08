@@ -1,7 +1,8 @@
 # pysdl2-dll changelog
 
-### Version 2.0.22 (Unreleased)
+### Version 2.0.22
 
+- Bumped the SDL2 binary version from 2.0.20 to 2.0.22.
 - Stripped debug symbols from manylinux binaries for smaller size.
 - Fixed joystick and gamecontroller subsystem support with the manylinux binaries by removing support for the libudev input backend. This is necessary because SDL2 doesn't fall back cleanly to another controller input API if libudev doesn't work, and udev seems to be famous for having problems with SDL2 binaries that aren't installed with the system package manager.
 
