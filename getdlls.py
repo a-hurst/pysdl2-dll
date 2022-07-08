@@ -16,17 +16,18 @@ libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
 
 libversions = {
     'SDL2': '2.0.22',
-    'SDL2_mixer': '2.0.4',
-    'SDL2_ttf': '2.0.18',
-    'SDL2_image': '2.0.5',
+    'SDL2_mixer': '2.6.0',
+    'SDL2_ttf': '2.20.0',
+    'SDL2_image': '2.6.0',
     'SDL2_gfx': '1.0.4'
 }
 
+url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/SDL2{LIB}-{0}{1}'
 sdl2_urls = {
     'SDL2': 'https://www.libsdl.org/release/SDL2-{0}{1}',
-    'SDL2_mixer': 'https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-{0}{1}',
-    'SDL2_ttf': 'https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-{0}{1}',
-    'SDL2_image': 'https://www.libsdl.org/projects/SDL_image/release/SDL2_image-{0}{1}',
+    'SDL2_mixer': url_fmt.replace('{LIB}', '_mixer'),
+    'SDL2_ttf': url_fmt.replace('{LIB}', '_ttf'),
+    'SDL2_image': url_fmt.replace('{LIB}', '_image'),
     'SDL2_gfx': 'https://github.com/a-hurst/sdl2gfx-builds/releases/download/{0}/SDL2_gfx-{0}{1}'
 }
 
