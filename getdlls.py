@@ -119,8 +119,7 @@ def getDLLs(platform_name):
                 optdir = os.path.join(d, 'optional')
                 if os.path.isdir(optdir):
                     for f in os.listdir(optdir):
-                        outpath = os.path.join(d, os.path.basename(f))
-                        shutil.move(f, outpath)
+                        shutil.move(os.path.join(optdir, f), os.path.join(d, f))
 
     elif 'manylinux' in platform_name or os.getenv('SDL2DLL_UNIX_COMPILE', '0') == '1':
 
@@ -150,8 +149,7 @@ def getDLLs(platform_name):
             optdir = os.path.join(licensedir, 'optional')
             if os.path.isdir(optdir):
                 for f in os.listdir(optdir):
-                    outpath = os.path.join(licensedir, os.path.basename(f))
-                    shutil.move(f, outpath)
+                    shutil.move(os.path.join(optdir, f), os.path.join(licensedir, f))
 
         # Build and install everything into the custom prefix
         sdl2_urls['SDL2_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
