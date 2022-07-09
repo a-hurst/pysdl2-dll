@@ -296,6 +296,12 @@ def buildDLLs(libraries, basedir, libdir):
             # If requested, build library and dependencies using CMake
             if lib in cmake_opts.keys():
                 opts = cmake_opts[lib]
+                if lib == "SDL2_mixer":
+                    # Work around bug in current CMakeLists.txt
+                    cmake_txt = os.path.join(sourcepath, "CMakeLists.txt")
+                    old = "SDL2MIXER_FLAC_LIBFLAC_SHARED OR NOT"
+                    new = "SDL2MIXER_MOD_MODPLUG_SHARED OR NOT"
+                    patch_file(cmake_txt, old, new)
                 print('======= Compiling {0} {1} =======\n'.format(lib, libversion))
                 success = cmake_install_lib(sourcepath, libdir, buildenv, opts)
                 if not success:
@@ -538,6 +544,15 @@ def strip_debug_symbols(libdir):
             break
 
     return success
+
+
+def patch_file(fpath, find, replace):
+    """Finds and replaces a given string in a file.
+    """
+    with open(fpath, 'r') as f:
+        content = f.read()
+    with open(fpath, 'w') as f:
+        f.write(content.replace(find, replace))
 
 
 if __name__ == '__main__':
