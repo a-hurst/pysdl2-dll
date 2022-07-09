@@ -35,6 +35,18 @@ override_urls = {
     #'libwebp': 'http://storage.googleapis.com/downloads.webmproject.org/releases/webp/{0}.tar.gz'
 }
 
+cmake_opts = {
+    'SDL2_mixer': {
+        'SDL2MIXER_VENDORED': 'ON',
+        'SDL2MIXER_FLAC_LIBFLAC': 'OFF', # Match macOS and Windows binaries, which use dr_flac
+    },
+    'SDL2_image': {
+        'SDL2IMAGE_VENDORED': 'ON',
+        'SDL2IMAGE_TIF': 'ON',
+        'SDL2IMAGE_WEBP': 'ON',
+    }
+}
+
 
 def getDLLs(platform_name):
     
@@ -250,7 +262,7 @@ def buildDLLs(libraries, basedir, libdir):
                 'harfbuzz', # built by default in current TTF release
             ]
             build_first = ['zlib']
-            build_last = ['libvorbis', 'opusfile', 'flac']
+            build_last = ['opusfile']
             ext_dir = os.path.join(sourcepath, 'external')
             download_sh = os.path.join(ext_dir, 'download.sh')
             if os.path.exists(ext_dir):
@@ -274,6 +286,17 @@ def buildDLLs(libraries, basedir, libdir):
                     else:
                         deps.append(dep)
                 dependencies = deps_first + deps + deps_last
+
+            # If requested, build library and dependencies using CMake
+            if lib in cmake_opts.keys():
+                opts = cmake_opts[lib]
+                print('======= Compiling {0} {1} =======\n'.format(lib, libversion))
+                success = cmake_install_lib(sourcepath, libdir, buildenv, opts)
+                if not success:
+                    raise RuntimeError("Error building {0}".format(lib))
+                print('\n======= {0} {1} built sucessfully =======\n'.format(lib, libversion))
+                os.chdir(basedir)
+                continue
 
             # Build any external dependencies
             extra_args = {
@@ -385,6 +408,50 @@ def make_install_lib(src_path, prefix, buildenv, extra_args=None, config={}):
     for cmd in buildcmds:
         if cmd[0] == './configure' and extra_args:
             cmd = cmd + extra_args
+        p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, env=buildenv)
+        p.communicate()
+        if p.returncode != 0:
+            success = False
+            break
+
+    os.chdir(orig_path)
+    return success
+
+
+def build_cmake_opts(optdict):
+    """Generates a list of CMake options from a Python dict.
+    """
+    opts = []
+    tmp = "-D{0}={1}"
+    for arg, value in optdict.items():
+        opt = tmp.format(arg, value)
+        opts.append(opt)
+
+    return opts
+
+
+def cmake_install_lib(src_path, prefix, buildenv, opts=None):
+    """Builds and installs a library into a given prefix using CMake.
+    """
+    orig_path = os.getcwd()
+    os.chdir(src_path)
+    success = True
+
+    # Create a build directory and switch to it
+    os.mkdir('build')
+    os.chdir('build')
+
+    # Initialize CMake options
+    if not opts:
+        opts = {}
+    opts['CMAKE_INSTALL_PREFIX'] = prefix
+
+    buildcmds = [
+        ['cmake', '..'] + build_cmake_opts(opts),
+        ['make', '-j2'],
+        ['make', 'install']
+    ]
+    for cmd in buildcmds:
         p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, env=buildenv)
         p.communicate()
         if p.returncode != 0:
