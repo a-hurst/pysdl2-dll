@@ -191,8 +191,9 @@ def getDLLs(platform_name):
                 if os.path.islink(fpath):
                     fpath = os.path.realpath(fpath)
                 libname = os.path.basename(fpath)
-                libname_fixed = '.'.join(libname.split('.')[:3])
-                lib_outpath = os.path.join(dlldir, libname_fixed)
+                if libname.split('.')[0] in ['libogg', 'libopus']:
+                    libname = '.'.join(libname.split('.')[:3])
+                lib_outpath = os.path.join(dlldir, libname)
                 shutil.copy(fpath, lib_outpath)
 
         # Update library runpaths to allow loading from within sdl2dll folder
