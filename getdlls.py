@@ -170,7 +170,9 @@ def getDLLs(platform_name):
         # Copy all compiled binaries to dll folder for bundling in wheel
         for f in os.listdir(os.path.join(libdir, 'lib')):
             fpath = os.path.join(libdir, 'lib', f)
-            if f.split('.')[-1] == "so" and not os.path.islink(fpath):
+            if f.split('.')[-1] == "so":
+                if os.path.islink(fpath):
+                    fpath = os.path.realpath(fpath)
                 libname = os.path.basename(fpath)
                 if libname.split('.')[0] in ['libogg', 'libopus']:
                     # libopusfile expects truncated .so names
