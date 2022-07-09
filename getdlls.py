@@ -451,6 +451,7 @@ def cmake_install_lib(src_path, prefix, buildenv, opts=None):
     if not opts:
         opts = {}
     opts['CMAKE_INSTALL_PREFIX'] = prefix
+    opts['CMAKE_INSTALL_LIBDIR'] = 'lib'
     opts['CMAKE_INSTALL_RPATH'] = prefix
 
     buildcmds = [
