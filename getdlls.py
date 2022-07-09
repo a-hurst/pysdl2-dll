@@ -390,6 +390,7 @@ def cmake_install_lib(src_path, prefix, buildenv, opts=None):
     opts['CMAKE_INSTALL_PREFIX'] = prefix
     opts['CMAKE_INSTALL_LIBDIR'] = 'lib'
     opts['CMAKE_INSTALL_RPATH'] = prefix
+    opts['CMAKE_BUILD_TYPE'] = 'Debug'
 
     buildcmds = [
         ['cmake', '..'] + build_cmake_opts(opts),
