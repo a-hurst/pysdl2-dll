@@ -40,6 +40,10 @@ cmake_opts = {
         'SDL2MIXER_VENDORED': 'ON',
         'SDL2MIXER_FLAC_LIBFLAC': 'OFF', # Match macOS and Windows binaries, which use dr_flac
     },
+    'SDL2_ttf': {
+        'SDL2TTF_VENDORED': 'ON',
+        'SDL2TTF_HARFBUZZ': 'ON',
+    },
     'SDL2_image': {
         'SDL2IMAGE_VENDORED': 'ON',
         'SDL2IMAGE_TIF': 'ON',
@@ -195,7 +199,8 @@ def getDLLs(platform_name):
         set_relative_runpaths(dlldir)
 
         # Rename zlib to avoid name collision with Python's zlib
-        rename_library(dlldir, 'libz', 'libz-pysdl2', fix_links=['libpng16'])
+        if any(['libz' in name for name in os.listdir(dlldir)]):
+            rename_library(dlldir, 'libz', 'libz-pysdl2', fix_links=['libpng16'])
 
         # If release, strip debug symbols from the binaries to reduce file size
         if os.getenv("SDL2DLL_RELEASE", 0) == 1:
