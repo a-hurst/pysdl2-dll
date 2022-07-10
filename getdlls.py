@@ -44,6 +44,7 @@ cmake_opts = {
         'SDL2IMAGE_VENDORED': 'ON',
         'SDL2IMAGE_TIF': 'ON',
         'SDL2IMAGE_WEBP': 'ON',
+        'WEBP_HAVE_FLAG_SSE41': '0', # Don't require SSE4.1 at runtime
     }
 }
 
@@ -260,8 +261,6 @@ def buildDLLs(libraries, basedir, libdir):
             if lib in cmake_opts.keys():
                 # Build using CMake
                 opts = cmake_opts[lib]
-                if arch == 'i686':
-                    opts['CMAKE_CXX_FLAGS'] = "-msse2" # WebP needs SSE2 to not crash
                 success = cmake_install_lib(sourcepath, libdir, buildenv, opts)
             else:
                 # Build using autotools
