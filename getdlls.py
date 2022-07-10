@@ -260,7 +260,7 @@ def buildDLLs(libraries, basedir, libdir):
             if lib in cmake_opts.keys():
                 # Build using CMake
                 opts = cmake_opts[lib]
-                if arch == 'i386':
+                if arch == 'i686':
                     opts['CMAKE_CXX_FLAGS'] = "-msse2" # WebP needs SSE2 to not crash
                 success = cmake_install_lib(sourcepath, libdir, buildenv, opts)
             else:
@@ -268,7 +268,7 @@ def buildDLLs(libraries, basedir, libdir):
                 xtra_args = None
                 if lib == 'SDL2':
                     xtra_args = ['--enable-libudev=no']
-                elif lib == 'SDL2_gfx' and not arch in ['i386', 'x86_64']:
+                elif lib == 'SDL2_gfx' and not arch in ['i686', 'x86_64']:
                     xtra_args = ['--disable-mmx']
                 success = make_install_lib(sourcepath, libdir, buildenv, xtra_args, cfgfiles)
 
