@@ -260,6 +260,8 @@ def buildDLLs(libraries, basedir, libdir):
             if lib in cmake_opts.keys():
                 # Build using CMake
                 opts = cmake_opts[lib]
+                if arch == 'i386':
+                    opts['CMAKE_CXX_FLAGS'] = "-msse2" # WebP needs SSE2 to not crash
                 success = cmake_install_lib(sourcepath, libdir, buildenv, opts)
             else:
                 # Build using autotools
