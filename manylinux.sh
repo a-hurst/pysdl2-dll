@@ -79,8 +79,9 @@ fi
 
 # If this is a tagged release, set env to strip the debug symbols from the binaries
 
-if [ ! -z "$CIRRUS_TAG" ]; then
+if [ ! -z ${CIRRUS_TAG:-} ]; then
     export SDL2DLL_RELEASE=1
+    echo "Building version ${CIRRUS_TAG} for release"
 fi
 
 
