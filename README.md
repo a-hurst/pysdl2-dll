@@ -28,7 +28,7 @@ pip install pysdl2-dll # install latest release version
 At present, the following platforms are supported:
 
 * macOS (10.7+, 64-bit x86)
-* macOS (11.0+, 64-bit xARM)
+* macOS (11.0+, 64-bit ARM)
 * Windows (32-bit x86)
 * Windows (64-bit x86)
 * Linux (32-bit x86)
@@ -44,6 +44,8 @@ pip install -U pysdl2
 ```
 
 Because the wheels are not built against any specfic version of Python, pysdl2-dll supports all versions and implementations of Python that are supported by PySDL2.
+
+**Note:** As of pysdl2-dll `2.0.22.post1`, the macOS binaries no longer have built-in support for the WebP image format in SDL\_image or the Modplug, Opus, or native MIDI backends in SDL\_mixer. This is due to changes in the official macOS binaries from the libSDL team, which will hopefully be brought back to full feature parity with the official Windows binaries in a future release.
 
 ### Linux Requirements
 
