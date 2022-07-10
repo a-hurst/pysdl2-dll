@@ -396,7 +396,10 @@ def cmake_install_lib(src_path, prefix, buildenv, opts=None):
     opts['CMAKE_INSTALL_PREFIX'] = prefix
     opts['CMAKE_INSTALL_LIBDIR'] = 'lib'
     opts['CMAKE_INSTALL_RPATH'] = prefix
-    opts['CMAKE_BUILD_TYPE'] = 'Debug'
+    if os.getenv("SDL2DLL_RELEASE", 0) == 1:
+        opts['CMAKE_BUILD_TYPE'] = 'Release'
+    else:
+        opts['CMAKE_BUILD_TYPE'] = 'Debug'
 
     buildcmds = [
         ['cmake', '..'] + build_cmake_opts(opts),
