@@ -16,22 +16,35 @@ libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
 
 libversions = {
     'SDL2': '2.0.22',
-    'SDL2_mixer': '2.0.4',
-    'SDL2_ttf': '2.0.18',
-    'SDL2_image': '2.0.5',
+    'SDL2_mixer': '2.6.0',
+    'SDL2_ttf': '2.20.0',
+    'SDL2_image': '2.6.0',
     'SDL2_gfx': '1.0.4'
 }
 
+url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/SDL2{LIB}-{0}{1}'
 sdl2_urls = {
     'SDL2': 'https://www.libsdl.org/release/SDL2-{0}{1}',
-    'SDL2_mixer': 'https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-{0}{1}',
-    'SDL2_ttf': 'https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-{0}{1}',
-    'SDL2_image': 'https://www.libsdl.org/projects/SDL_image/release/SDL2_image-{0}{1}',
+    'SDL2_mixer': url_fmt.replace('{LIB}', '_mixer'),
+    'SDL2_ttf': url_fmt.replace('{LIB}', '_ttf'),
+    'SDL2_image': url_fmt.replace('{LIB}', '_image'),
     'SDL2_gfx': 'https://github.com/a-hurst/sdl2gfx-builds/releases/download/{0}/SDL2_gfx-{0}{1}'
 }
 
-override_urls = {
-    'libwebp': 'http://storage.googleapis.com/downloads.webmproject.org/releases/webp/{0}.tar.gz'
+cmake_opts = {
+    'SDL2_mixer': {
+        'SDL2MIXER_VENDORED': 'ON',
+        'SDL2MIXER_FLAC_LIBFLAC': 'OFF', # Match macOS and Windows binaries, which use dr_flac
+    },
+    'SDL2_ttf': {
+        'SDL2TTF_VENDORED': 'ON',
+        'SDL2TTF_HARFBUZZ': 'ON',
+    },
+    'SDL2_image': {
+        'SDL2IMAGE_VENDORED': 'ON',
+        'SDL2IMAGE_TIF': 'ON',
+        'SDL2IMAGE_WEBP': 'ON',
+    }
 }
 
 
@@ -113,6 +126,13 @@ def getDLLs(platform_name):
                     elif 'LICENSE' in name:
                         z.extract(name, licensedir)
 
+            # Move any optional dlls and licenses into their respective root folders
+            for d in [dlldir, licensedir]:
+                optdir = os.path.join(d, 'optional')
+                if os.path.isdir(optdir):
+                    for f in os.listdir(optdir):
+                        shutil.move(os.path.join(optdir, f), os.path.join(d, f))
+
     elif 'manylinux' in platform_name or os.getenv('SDL2DLL_UNIX_COMPILE', '0') == '1':
 
         # Create custom prefix in which to install the SDL2 libs + dependencies
@@ -137,39 +157,31 @@ def getDLLs(platform_name):
                     if 'LICENSE' in name:
                         z.extract(name, licensedir)
 
+            # Move any optional licenses into the root license folder
+            optdir = os.path.join(licensedir, 'optional')
+            if os.path.isdir(optdir):
+                for f in os.listdir(optdir):
+                    shutil.move(os.path.join(optdir, f), os.path.join(licensedir, f))
+
         # Build and install everything into the custom prefix
         sdl2_urls['SDL2_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
         buildDLLs(libraries, basedir, libdir)
 
         # Copy all compiled binaries to dll folder for bundling in wheel
-        unneeded = [
-            'tiffxx',     # C++ TIFF library
-            'webpdemux',  # WebP demuxer
-            'FLAC++',     # C++ FLAC library
-            'out123',     # mpg123 export library
-            'vorbisenc',  # OGG vorbis encoder
-            'opusurl',    # Opus URL streaming
-        ]
         for f in os.listdir(os.path.join(libdir, 'lib')):
-            skip = False
-            for name in unneeded:
-                if name in f:
-                    skip = True
-                    break
-            if f.split('.')[-1] == "so" and not skip:
-                fpath = os.path.join(libdir, 'lib', f)
+            fpath = os.path.join(libdir, 'lib', f)
+            if f.split('.')[-1] == "so":
                 if os.path.islink(fpath):
                     fpath = os.path.realpath(fpath)
                 libname = os.path.basename(fpath)
-                libname_fixed = '.'.join(libname.split('.')[:3])
-                lib_outpath = os.path.join(dlldir, libname_fixed)
+                if libname.split('.')[0] in ['libogg', 'libopus']:
+                    # libopusfile expects truncated .so names
+                    libname = '.'.join(libname.split('.')[:3])
+                lib_outpath = os.path.join(dlldir, libname)
                 shutil.copy(fpath, lib_outpath)
 
         # Update library runpaths to allow loading from within sdl2dll folder
         set_relative_runpaths(dlldir)
-
-        # Rename zlib to avoid name collision with Python's zlib
-        rename_library(dlldir, 'libz', 'libz-pysdl2', fix_links=['libpng16'])
 
         # If release, strip debug symbols from the binaries to reduce file size
         if os.getenv("SDL2DLL_RELEASE", 0) == 1:
@@ -227,63 +239,43 @@ def buildDLLs(libraries, basedir, libdir):
             libfolder = lib + '-' + libversion
             sourcepath = fetch_source(libfolder, liburl, outdir='temp')
 
-            # Check for any external dependencies and set correct build order
-            dependencies = []
-            ignore = [
-                'libvorbisidec', # only needed for special non-standard builds
-                'freetype', # built by default in current TTF release
-                'harfbuzz', # built by default in current TTF release
-            ]
-            build_first = ['zlib']
-            build_last = ['libvorbis', 'opusfile', 'flac']
+            # Check for and download any external dependencies
             ext_dir = os.path.join(sourcepath, 'external')
-            if os.path.exists(ext_dir):
-                dep_dirs = os.listdir(ext_dir)
-                deps_first, deps, deps_last = ([], [], [])
-                for dep in dep_dirs:
-                    dep_path = os.path.join(ext_dir, dep)
-                    if not os.path.isdir(dep_path):
-                        continue
-                    depname, depversion = dep.split('-')
-                    if depname in ignore:
-                        continue
-                    elif depname in build_first:
-                        deps_first.append(dep)
-                    elif depname in build_last:
-                        deps_last.append(dep)
-                    else:
-                        deps.append(dep)
-                dependencies = deps_first + deps + deps_last
+            download_sh = os.path.join(ext_dir, 'download.sh')
+            if os.path.exists(download_sh):
+                print('======= Downloading optional libraries for {0} =======\n'.format(lib))
+                download_external(ext_dir)
+                print('')
 
-            # Build any external dependencies
-            extra_args = {
-                'opusfile': ['--disable-http'],
-            }
-            for dep in dependencies:
-                depname, depversion = dep.split('-')
-                dep_path = os.path.join(ext_dir, dep)
-                if depname in override_urls.keys():
-                    print('======= Downloading alternate source for {0} =======\n'.format(dep))
-                    liburl = override_urls[depname].format(dep)
-                    os.rename(dep_path, dep_path + '_bad')
-                    dep_path = fetch_source(dep, liburl, outdir=ext_dir)
-                print('======= Compiling {0} dependency {1} =======\n'.format(lib, dep))
-                xtra_args = None
-                if depname in extra_args.keys():
-                    xtra_args = extra_args[depname]
-                success = make_install_lib(dep_path, libdir, buildenv, xtra_args, cfgfiles)
-                if not success:
-                    raise RuntimeError("Error building {0}".format(dep))
-                print('\n======= {0} built sucessfully =======\n'.format(dep))
+            # Apply any patches to the source if necessary
+            if lib == 'SDL2_mixer':
+                # Work around bug in 2.6.0 CMakeLists.txt
+                cmake_txt = os.path.join(sourcepath, 'CMakeLists.txt')
+                old = 'SDL2MIXER_FLAC_LIBFLAC_SHARED OR NOT'
+                new = 'SDL2MIXER_MOD_MODPLUG_SHARED OR NOT'
+                patch_file(cmake_txt, old, new)
+            if lib == 'SDL2_image':
+                # Ensure libwebp isn't compiled with mandatory SSE4.1 support
+                cpu_cmake = os.path.join(ext_dir, 'libwebp', 'cmake', 'cpu.cmake')
+                old = 'NOT ENABLE_SIMD'
+                new = 'WEBP_SIMD_FLAG STREQUAL "SSE41" OR NOT ENABLE_SIMD'
+                patch_file(cpu_cmake, old, new)
 
-            # Build the library
+            # Build library and its dependencies
             print('======= Compiling {0} {1} =======\n'.format(lib, libversion))
-            xtra_args = None
-            if lib == 'SDL2':
-                xtra_args = ['--enable-libudev=no']
-            elif lib == 'SDL2_gfx' and not arch in ['i386', 'x86_64']:
-                xtra_args = ['--disable-mmx']
-            success = make_install_lib(sourcepath, libdir, buildenv, xtra_args, cfgfiles)
+            if lib in cmake_opts.keys():
+                # Build using CMake
+                opts = cmake_opts[lib]
+                success = cmake_install_lib(sourcepath, libdir, buildenv, opts)
+            else:
+                # Build using autotools
+                xtra_args = None
+                if lib == 'SDL2':
+                    xtra_args = ['--enable-libudev=no']
+                elif lib == 'SDL2_gfx' and not arch in ['i686', 'x86_64']:
+                    xtra_args = ['--disable-mmx']
+                success = make_install_lib(sourcepath, libdir, buildenv, xtra_args, cfgfiles)
+
             if not success:
                 raise RuntimeError("Error building {0}".format(lib))
             print('\n======= {0} {1} built sucessfully =======\n'.format(lib, libversion))
@@ -327,6 +319,20 @@ def fetch_source(libfolder, liburl, outdir):
     return os.path.join(outdir, libfolder)
 
 
+def download_external(ext_path):
+    """Downloads the available optional dependencies for a library.
+    """
+    orig_path = os.getcwd()
+    os.chdir(ext_path)
+    
+    p = sub.Popen("./download.sh", stdout=sys.stdout, stderr=sys.stderr)
+    p.communicate()
+    if p.returncode != 0:
+        raise RuntimeError("Unable to download external libraries.")
+
+    os.chdir(orig_path)
+
+
 def make_install_lib(src_path, prefix, buildenv, extra_args=None, config={}):
     """Builds and installs a library into a given prefix using GNU Make.
     """
@@ -346,9 +352,61 @@ def make_install_lib(src_path, prefix, buildenv, extra_args=None, config={}):
         ['make', '-j2'],
         ['make', 'install']
     ]
+    if not os.path.exists("configure"):
+        buildcmds = ['./autogen.sh'] + buildcmds
     for cmd in buildcmds:
         if cmd[0] == './configure' and extra_args:
             cmd = cmd + extra_args
+        p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, env=buildenv)
+        p.communicate()
+        if p.returncode != 0:
+            success = False
+            break
+
+    os.chdir(orig_path)
+    return success
+
+
+def build_cmake_opts(optdict):
+    """Generates a list of CMake options from a Python dict.
+    """
+    opts = []
+    tmp = "-D{0}={1}"
+    for arg, value in optdict.items():
+        opt = tmp.format(arg, value)
+        opts.append(opt)
+
+    return opts
+
+
+def cmake_install_lib(src_path, prefix, buildenv, opts=None):
+    """Builds and installs a library into a given prefix using CMake.
+    """
+    orig_path = os.getcwd()
+    os.chdir(src_path)
+    success = True
+
+    # Create a build directory and switch to it
+    os.mkdir('build')
+    os.chdir('build')
+
+    # Initialize CMake options
+    if not opts:
+        opts = {}
+    opts['CMAKE_INSTALL_PREFIX'] = prefix
+    opts['CMAKE_INSTALL_LIBDIR'] = 'lib'
+    opts['CMAKE_INSTALL_RPATH'] = prefix
+    if os.getenv("SDL2DLL_RELEASE", 0) == 1:
+        opts['CMAKE_BUILD_TYPE'] = 'Release'
+    else:
+        opts['CMAKE_BUILD_TYPE'] = 'Debug'
+
+    buildcmds = [
+        ['cmake', '..'] + build_cmake_opts(opts),
+        ['make', '-j2'],
+        ['make', 'install']
+    ]
+    for cmd in buildcmds:
         p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, env=buildenv)
         p.communicate()
         if p.returncode != 0:
@@ -427,6 +485,15 @@ def strip_debug_symbols(libdir):
             break
 
     return success
+
+
+def patch_file(fpath, find, replace):
+    """Finds and replaces a given string in a file.
+    """
+    with open(fpath, 'r') as f:
+        content = f.read()
+    with open(fpath, 'w') as f:
+        f.write(content.replace(find, replace))
 
 
 if __name__ == '__main__':

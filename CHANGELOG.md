@@ -1,5 +1,14 @@
 # pysdl2-dll changelog
 
+### Version 2.0.22.post1 (Unreleased)
+
+- Bumped the SDL2\_mixer binary version from 2.0.4 to 2.6.0.
+- Bumped the SDL2\_image binary version from 2.0.5 to 2.6.0..
+- Bumped the SDL2\_ttf binary version from 2.0.18 to 2.20.0
+- Migrated the build system for the mixer, image, and ttf binaries to CMake.
+- Added universal2 wheels for Apple Silicon Macs now that all the official binaries are ARM-native.
+
+
 ### Version 2.0.22
 
 - Bumped the SDL2 binary version from 2.0.20 to 2.0.22.

@@ -11,7 +11,7 @@ The latest release includes the following versions of the SDL2 binaries:
 
 SDL2 | SDL2\_ttf | SDL2\_mixer | SDL2\_image | SDL2\_gfx
 --- | --- | --- | --- | ---
-2.0.22 | 2.0.18 | 2.0.4 | 2.0.5 | 1.0.4
+2.0.22 | 2.20.0 | 2.6.0 | 2.6.0 | 1.0.4
 
 
 ## Installation
@@ -27,14 +27,13 @@ pip install pysdl2-dll # install latest release version
 
 At present, the following platforms are supported:
 
-* macOS (10.6+, 64-bit x86*)
+* macOS (10.7+, 64-bit x86)
+* macOS (11.0+, 64-bit ARM)
 * Windows (32-bit x86)
 * Windows (64-bit x86)
 * Linux (32-bit x86)
 * Linux (64-bit x86)
 * Linux (64-bit ARM)
-
-*Apple Silicon wheels will be available as soon as official universal binaries of the SDL2\_mixer and SDL2\_image libraries are released.
 
 The pysdl2-dll package can be *installed* on platforms other than the ones listed above, but it won't have any effect.
 
@@ -45,6 +44,8 @@ pip install -U pysdl2
 ```
 
 Because the wheels are not built against any specfic version of Python, pysdl2-dll supports all versions and implementations of Python that are supported by PySDL2.
+
+**Note:** As of pysdl2-dll `2.0.22.post1`, the macOS binaries no longer have built-in support for the WebP image format in SDL\_image or the Modplug, Opus, or native MIDI backends in SDL\_mixer. This is due to changes in the official macOS binaries from the libSDL team, which will hopefully be brought back to full feature parity with the official Windows binaries in a future release.
 
 ### Linux Requirements
 

@@ -21,7 +21,7 @@ task:
 
 # Build macOS wheel
 task:
-  name: "Build macOS (x86_64) wheel"
+  name: "Build macOS (x86_64 & ARM64) wheels"
   
   osx_instance:
     image: monterey-base
@@ -30,6 +30,7 @@ task:
     - brew install python
     - python3 -m pip install -U wheel twine
     - python3 setup.py bdist_wheel
+    - MACOS_LEGACY_WHEEL=1 python3 setup.py bdist_wheel
 
   script:
     - python3 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
