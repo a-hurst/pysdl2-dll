@@ -44,7 +44,6 @@ cmake_opts = {
         'SDL2IMAGE_VENDORED': 'ON',
         'SDL2IMAGE_TIF': 'ON',
         'SDL2IMAGE_WEBP': 'ON',
-        'WEBP_HAVE_FLAG_SSE41': '0', # Don't require SSE4.1 at runtime
     }
 }
 
@@ -249,12 +248,18 @@ def buildDLLs(libraries, basedir, libdir):
                 print('')
 
             # Apply any patches to the source if necessary
-            if lib == "SDL2_mixer":
-                # Work around bug in current CMakeLists.txt
-                cmake_txt = os.path.join(sourcepath, "CMakeLists.txt")
-                old = "SDL2MIXER_FLAC_LIBFLAC_SHARED OR NOT"
-                new = "SDL2MIXER_MOD_MODPLUG_SHARED OR NOT"
+            if lib == 'SDL2_mixer':
+                # Work around bug in 2.6.0 CMakeLists.txt
+                cmake_txt = os.path.join(sourcepath, 'CMakeLists.txt')
+                old = 'SDL2MIXER_FLAC_LIBFLAC_SHARED OR NOT'
+                new = 'SDL2MIXER_MOD_MODPLUG_SHARED OR NOT'
                 patch_file(cmake_txt, old, new)
+            if lib == 'SDL2_image':
+                # Ensure libwebp isn't compiled with mandatory SSE4.1 support
+                cpu_cmake = os.path.join(ext_dir, 'libwebp', 'cmake', 'cpu.cmake')
+                old = 'NOT ENABLE_SIMD'
+                new = 'WEBP_SIMD_FLAG STREQUAL "SSE41" OR NOT ENABLE_SIMD'
+                patch_file(cpu_cmake, old, new)
 
             # Build library and its dependencies
             print('======= Compiling {0} {1} =======\n'.format(lib, libversion))
