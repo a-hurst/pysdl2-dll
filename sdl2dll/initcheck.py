@@ -33,7 +33,10 @@ def _should_update_pip_for_wheels():
     elif sys.platform == 'darwin':
         import platform
         mac_major_version = int(platform.mac_ver()[0].split(".")[0])
+        apple_silicon = platform.machine() == 'arm64'
         if mac_major_version > 10 and pip_version < (20, 3):
+            should_update = True
+        if apple_silicon and pip_version < (21, 0):
             should_update = True
 
     return should_update
