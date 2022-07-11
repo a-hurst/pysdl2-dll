@@ -33,6 +33,10 @@ sdl2_urls = {
 }
 
 cmake_opts = {
+    'SDL2': {
+        'SDL_SSE2': 'ON',
+        'SDL_ARMNEON': 'ON',
+    },
     'SDL2_mixer': {
         'SDL2MIXER_VENDORED': 'ON',
         'SDL2MIXER_FLAC_LIBFLAC': 'OFF', # Match macOS and Windows binaries, which use dr_flac
