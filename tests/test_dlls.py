@@ -114,11 +114,7 @@ def test_sdl2mixer_formats():
     print(supported)
 
     # Ensure all available formats supported by binaries
-    # NOTE: Temporary workaround missing binaries in official .dmg
-    if is_macos:
-        assert len(supported) > 0
-    else:
-        assert len(supported) == len(libs.keys())
+    assert len(supported) == len(libs.keys())
 
 
 def test_sdl2image_formats():
@@ -151,8 +147,4 @@ def test_sdl2image_formats():
     print(supported)
 
     # Ensure all available formats supported by binaries
-    # NOTE: Temporary workaround missing binaries in official .dmg
-    if is_macos:
-        assert len(supported) > 0
-    else:
-        assert len(supported) == len(libs.keys())
+    assert len(supported) == len(libs.keys())
