@@ -45,7 +45,6 @@ pip install -U pysdl2
 
 Because the wheels are not built against any specfic version of Python, pysdl2-dll supports all versions and implementations of Python that are supported by PySDL2.
 
-**Note:** As of pysdl2-dll `2.0.22.post1`, the macOS binaries no longer have built-in support for the WebP image format in SDL\_image or the Modplug, Opus, or native MIDI backends in SDL\_mixer. This is due to changes in the official macOS binaries from the libSDL team, which will hopefully be brought back to full feature parity with the official Windows binaries in a future release.
 
 ### Linux Requirements
 
@@ -54,6 +53,7 @@ There are currently two versions the Linux wheels: "legacy" wheels based on the 
 You must have pip 19.3 or newer to install the `manylinux2014` wheels, and pip 20.3 or newer to install the `manylinux_2_24` wheels. Distributions that use musl C instead of glibc (e.g. Alpine Linux) are not supported.
 
 **Note**: pysdl2-dll is currently not built with libdecor support, meaning that native Wayland (non-XWayland) window decorations will be unavailable when using these binaries (see issue #9 for details). Given that SDL2 defaults to using XWayland this shouldn't be an issue for most users, but suggestions and/or PRs to fix the issue are welcome!
+
 
 ## Usage
 

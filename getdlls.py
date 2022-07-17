@@ -72,21 +72,30 @@ def getDLLs(platform_name):
             dllname = lib + '.framework'
             dllpath = os.path.join(mountpoint, dllname)
             dlloutpath = os.path.join(dlldir, dllname)
+            optpath = os.path.join(mountpoint, 'optional')
+            extraframeworkpath = os.path.join(dlloutpath, 'Versions', 'A', 'Frameworks')
             
             # Download disk image containing library
-            libversion = libversions[lib]
-            dmg = urlopen(sdl2_urls[lib].format(libversion, '.dmg'))
+            if lib in ['SDL2_image', 'SDL2_mixer']:
+                # NOTE: Temporary workaround for optional frameworks until 2.8.0
+                dmg = urlopen('https://www.libsdl.org/tmp/{0}-2.7.0.dmg'.format(lib))
+            else:
+                libversion = libversions[lib]
+                dmg = urlopen(sdl2_urls[lib].format(libversion, '.dmg'))
             outpath = os.path.join('temp', lib + '.dmg')
             with open(outpath, 'wb') as out:
                 out.write(dmg.read())
             
-            # Mount image, extract framework, then unmount
+            # Mount image, extract framework (and any optional frameworks), then unmount
             sub.check_call(['hdiutil', 'attach', outpath, '-mountpoint', mountpoint])
             shutil.copytree(dllpath, dlloutpath, symlinks=True, ignore=find_symlinks)
+            if os.path.isdir(optpath):
+                shutil.copytree(
+                    optpath, extraframeworkpath, symlinks=True, ignore=find_symlinks
+                )
             sub.call(['hdiutil', 'unmount', mountpoint])
 
             # Extract license info from frameworks bundled within main framework
-            extraframeworkpath = os.path.join(dlloutpath, 'Versions', 'A', 'Frameworks')
             if os.path.exists(extraframeworkpath):
                 for f in os.listdir(extraframeworkpath):
                     resourcepath = os.path.join(extraframeworkpath, f, 'Versions', 'A', 'Resources')
