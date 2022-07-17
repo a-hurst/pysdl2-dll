@@ -193,7 +193,7 @@ def getDLLs(platform_name):
         set_relative_runpaths(dlldir)
 
         # If release, strip debug symbols from the binaries to reduce file size
-        if os.getenv("SDL2DLL_RELEASE", 0) == 1:
+        if int(os.getenv("SDL2DLL_RELEASE", 0)) == 1:
             success = strip_debug_symbols(dlldir)
             if success:
                 print("*** Successfully stripped debug symbols from binaries ***\n")
@@ -405,7 +405,7 @@ def cmake_install_lib(src_path, prefix, buildenv, opts=None):
     opts['CMAKE_INSTALL_PREFIX'] = prefix
     opts['CMAKE_INSTALL_LIBDIR'] = 'lib'
     opts['CMAKE_INSTALL_RPATH'] = prefix
-    if os.getenv("SDL2DLL_RELEASE", 0) == 1:
+    if int(os.getenv("SDL2DLL_RELEASE", 0)) == 1:
         opts['CMAKE_BUILD_TYPE'] = 'Release'
     else:
         opts['CMAKE_BUILD_TYPE'] = 'Debug'
