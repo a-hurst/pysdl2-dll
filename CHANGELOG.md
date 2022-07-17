@@ -1,6 +1,6 @@
 # pysdl2-dll changelog
 
-### Version 2.0.22.post1 (Unreleased)
+### Version 2.0.22.post1
 
 - Bumped the SDL2\_mixer binary version from 2.0.4 to 2.6.0.
 - Bumped the SDL2\_image binary version from 2.0.5 to 2.6.0..
