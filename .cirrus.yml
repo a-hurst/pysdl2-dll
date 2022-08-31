@@ -15,6 +15,12 @@ task:
     - python3 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
     - pytest -v -rP
 
+  deploy_script: |
+    if [ ! -z ${CIRRUS_TAG:-} ]; then
+      python3 -m pip install twine
+      python3 -m twine upload --skip-existing dist/*.tar.gz
+    fi
+
   binaries_artifacts:
     path: "dist/*"
 
