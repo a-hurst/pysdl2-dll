@@ -25,7 +25,7 @@ libversions = {
 url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/SDL2{LIB}-{0}{1}'
 url_fmt_pre = url_fmt.replace('release-', 'prerelease-')
 sdl2_urls = {
-    'SDL2': url_fmt_pre.replace('{LIB}', ''),
+    'SDL2': url_fmt.replace('{LIB}', ''),
     'SDL2_mixer': url_fmt.replace('{LIB}', '_mixer'),
     'SDL2_ttf': url_fmt.replace('{LIB}', '_ttf'),
     'SDL2_image': url_fmt.replace('{LIB}', '_image'),
