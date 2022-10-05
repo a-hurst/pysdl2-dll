@@ -43,10 +43,10 @@ task:
     - python3 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
     - pytest -v -rP
 
-#  deploy_script: |
-#    if [ ! -z ${CIRRUS_TAG:-} ]; then
-#      python3 -m twine upload --skip-existing dist/*.whl
-#    fi
+  deploy_script: |
+    if [ ! -z ${CIRRUS_TAG:-} ]; then
+      python3 -m twine upload --skip-existing dist/*.whl
+    fi
 
   binaries_artifacts:
     path: "dist/*"
