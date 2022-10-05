@@ -66,11 +66,8 @@ task:
   script:
     - linux32 ./manylinux.sh
 
-  deploy_script: |
-    if [ ! -z ${CIRRUS_TAG:-} ]; then
-      python3.7 -m pip install twine
-      python3.7 -m twine upload --skip-existing dist/*.whl
-    fi
+  # NOTE: twine has missing dependencies for 32-bit linux, so need to upload
+  # manually for now
 
   binaries_artifacts:
     path: "dist/*"
