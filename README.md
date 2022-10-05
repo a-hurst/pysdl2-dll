@@ -11,7 +11,7 @@ The latest release includes the following versions of the SDL2 binaries:
 
 SDL2 | SDL2\_ttf | SDL2\_mixer | SDL2\_image | SDL2\_gfx
 --- | --- | --- | --- | ---
-2.24.0 | 2.20.0 | 2.6.0 | 2.6.0 | 1.0.4
+2.24.1 | 2.20.0 | 2.6.0 | 2.6.0 | 1.0.4
 
 
 ## Installation
@@ -27,7 +27,7 @@ pip install pysdl2-dll # install latest release version
 
 At present, the following platforms are supported:
 
-* macOS (10.7+, 64-bit x86)
+* macOS (10.9+, 64-bit x86)
 * macOS (11.0+, 64-bit ARM)
 * Windows (32-bit x86)
 * Windows (64-bit x86)
