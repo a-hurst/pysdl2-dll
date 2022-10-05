@@ -66,8 +66,8 @@ task:
   script:
     - linux32 ./manylinux.sh
 
-  # NOTE: twine has missing dependencies for 32-bit linux, so need to upload
-  # manually for now
+  deploy_script: |
+    python3.7 -m pip install twine==3.4.1
 
   binaries_artifacts:
     path: "dist/*"
