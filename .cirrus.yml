@@ -65,9 +65,7 @@ task:
 
   script:
     - linux32 ./manylinux.sh
-
-  deploy_script: |
-    python3.7 -m pip install twine==3.4.1
+    - python3.7 -m pip install twine==3.4.1
 
   binaries_artifacts:
     path: "dist/*"
