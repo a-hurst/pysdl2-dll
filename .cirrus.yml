@@ -118,8 +118,8 @@ task:
     - ./manylinux.sh
 
   deploy_script: |
-    python3.7 -m pip install twine
     if [ ! -z ${CIRRUS_TAG:-} ]; then
+      python3.7 -m pip install twine
       python3.7 -m twine upload --skip-existing dist/*.whl
     fi
 

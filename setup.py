@@ -36,9 +36,9 @@ try:
 
         def get_tag(self):
             if 'macosx' in platform:
-                system = 'macosx_10_7_universal2'
+                system = 'macosx_10_9_universal2'
                 if os.getenv('MACOS_LEGACY_WHEEL'):
-                    system = 'macosx_10_7_x86_64'
+                    system = 'macosx_10_9_x86_64'
             elif platform in ['win32', 'win-amd64']:
                 system = platform.replace('-', '_')
             elif 'manylinux' in platform:
