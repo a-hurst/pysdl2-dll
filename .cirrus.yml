@@ -29,8 +29,8 @@ task:
 task:
   name: "Build macOS (x86_64 & ARM64) wheels"
   
-  osx_instance:
-    image: monterey-base
+  macos_instance:
+    image: ghcr.io/cirruslabs/macos-ventura-base:latest
 
   install_script:
     - brew install python
