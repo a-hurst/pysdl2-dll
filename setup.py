@@ -36,9 +36,9 @@ try:
 
         def get_tag(self):
             if 'macosx' in platform:
-                system = 'macosx_10_9_universal2'
+                system = 'macosx_10_11_universal2'
                 if os.getenv('MACOS_LEGACY_WHEEL'):
-                    system = 'macosx_10_9_x86_64'
+                    system = 'macosx_10_11_x86_64'
             elif platform in ['win32', 'win-amd64']:
                 system = platform.replace('-', '_')
             elif 'manylinux' in platform:
@@ -61,7 +61,7 @@ with open('README.md', 'r') as f:
 
 setup(
 	name='pysdl2-dll',
-	version='2.26.2',
+	version='2.26.5',
 	author='Austin Hurst',
 	author_email='mynameisaustinhurst@gmail.com',
     license='Mozilla Public License Version 2.0',
