@@ -21,6 +21,9 @@ if command -v yum &> /dev/null; then
     # Install audio libraries and backends (ALSA, PulseAudio, libsamplerate)
     yum install -y alsa-lib-devel pulseaudio-libs-devel libsamplerate-devel
 
+    # Build sndio from source
+    python3.9 build_extras.py sndio
+
     # Install X11 and related libraries
     yum install -y libX11-devel libXext-devel libXrandr-devel libXcursor-devel \
         libXfixes-devel libXi-devel libXinerama-devel libXxf86vm-devel \
