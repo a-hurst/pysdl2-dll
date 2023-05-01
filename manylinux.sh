@@ -4,7 +4,7 @@ set -e -u -x
 
 # Initialize the PATH and initial directory
 
-export PATH=/opt/python/cp37-cp37m/bin:$PATH
+export PATH=/opt/python/cp39-cp39/bin:$PATH
 
 if [ -d "/io" ]; then
     cd /io
@@ -42,7 +42,7 @@ else
     # Install Pipewire from source (done before other audio backends to minimize build time)
     export PIPEWIRE_VERSION=0.3.33
     export PIPEWIRE_URL=https://gitlab.freedesktop.org/pipewire/pipewire/-/archive
-    python3.7 -m pip install meson ninja
+    python3.9 -m pip install meson ninja
     curl $PIPEWIRE_URL/$PIPEWIRE_VERSION/pipewire-$PIPEWIRE_VERSION.tar.gz | tar -xz
     cd pipewire-$PIPEWIRE_VERSION
     ./autogen.sh --prefix=/usr
@@ -87,13 +87,13 @@ fi
 
 # Compile SDL2, addon libraries, and any necessary dependencies
 
-python3.7 -u setup.py bdist_wheel
+python3.9 -u setup.py bdist_wheel
 
 
 # Run unit tests on built pysdl2-dll wheel
 
 export SDL_VIDEODRIVER="dummy"
 export SDL_AUDIODRIVER="dummy"
-python3.7 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
-python3.7 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
+python3.9 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
+python3.9 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
 pytest -v -rP
