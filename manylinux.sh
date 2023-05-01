@@ -15,8 +15,14 @@ fi
 # for as many different audio/video/input backends as possible
 
 if command -v yum &> /dev/null; then
-    # For manylinux2014 and earlier (based on CentOS)
-    yum install -y libtool
+    # For manylinux2014 & manylinux_2_28 (based on CentOS)
+    yum install -y libtool dbus-devel
+
+    if [[ "$AUDITWHEEL_POLICY" == "manylinux_2_28" ]]; then
+        # Install pipewire >= 0.3.20 from source for manylinux_2_28
+        python3.9 -m pip install meson ninja
+        python3.9 build_extras.py pipewire
+    fi
 
     # Install audio libraries and backends (ALSA, PulseAudio, libsamplerate)
     yum install -y alsa-lib-devel pulseaudio-libs-devel libsamplerate-devel
@@ -34,8 +40,20 @@ if command -v yum &> /dev/null; then
         mesa-libgbm-devel libdrm-devel
 
     # Install input libraries
-    yum install -y dbus-devel libudev-devel ibus-devel systemd-devel \
-        libxkbcommon-devel libusb-devel
+    yum install -y libudev-devel ibus-devel systemd-devel libxkbcommon-devel \
+        libusb-devel
+
+    # Install additional libraries for manylinux_2_28
+    if [[ "$AUDITWHEEL_POLICY" == "manylinux_2_28" ]]; then
+
+        # Install Wayland/Vulkan libraries
+        yum install -y wayland-devel wayland-protocols-devel vulkan-devel
+
+        # Install libdecor from source
+        yum install -y pango-devel
+        python3.9 build_extras.py libdecor
+
+    fi
 
 else
     # For manylinux_2_24 (based on Debian)

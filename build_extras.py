@@ -6,9 +6,35 @@ import tarfile
 from urllib.request import urlopen
 
 
+FREEDESKTOP_URL_BASE = "https://gitlab.freedesktop.org/{0}/{0}/-/archive/"
 LIBDIR = "/usr/lib64" if sys.maxsize > 2 ** 32 else "/usr/lib"
 
 extras = {
+    'pipewire': {
+        'version': "0.3.58",
+        'url': FREEDESKTOP_URL_BASE.format("pipewire") + "{0}/pipewire-{0}.tar.gz",
+        'build_cmds': [
+            ['meson', 'setup', 'builddir',
+                '-Dprefix=/usr',
+                '-Dsession-managers=',
+                '-Dpipewire-alsa=disabled',
+                '-Dalsa=disabled',
+                '-Djack-devel=true',
+                '-Dexamples=disabled',
+                '-Dtests=disabled',
+            ],
+            ['meson', 'compile', '-C', 'builddir'],
+            ['meson', 'install', '-C', 'builddir'],
+        ]
+    },
+    'libdecor': {
+        'version': "0.1.1",
+        'url': FREEDESKTOP_URL_BASE.format("libdecor") + "{0}/libdecor-{0}.tar.gz",
+        'build_cmds': [
+            ['meson', 'build', '--buildtype', 'release', '-Dprefix=/usr'],
+            ['meson', 'install', '-C', 'build'],
+        ]
+    },
     'sndio': {
         'version': "1.9.0",
         'url': "https://sndio.org/sndio-{0}.tar.gz",
