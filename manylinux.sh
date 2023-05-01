@@ -35,7 +35,7 @@ if command -v yum &> /dev/null; then
         libxkbcommon-devel libusb-devel
 
 else
-    # For manylinux_2_24 and later (based on Debian)
+    # For manylinux_2_24 (based on Debian)
     apt-get update
     apt-get install -y libtool libdbus-1-dev
 

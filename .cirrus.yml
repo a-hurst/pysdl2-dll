@@ -85,7 +85,7 @@ task:
   env:
     matrix:
       - SDL2DLL_PLATFORM: manylinux2014
-      - SDL2DLL_PLATFORM: manylinux_2_24
+      - SDL2DLL_PLATFORM: manylinux_2_28
   
   container:
     image: quay.io/pypa/$SDL2DLL_PLATFORM_x86_64
@@ -110,7 +110,7 @@ task:
 
   env:
     matrix:
-      - SDL2DLL_PLATFORM: manylinux_2_24
+      - SDL2DLL_PLATFORM: manylinux_2_28
   
   arm_container:
     image: quay.io/pypa/$SDL2DLL_PLATFORM_aarch64
