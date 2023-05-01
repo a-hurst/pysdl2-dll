@@ -18,10 +18,19 @@ if command -v yum &> /dev/null; then
     # For manylinux2014 & manylinux_2_28 (based on CentOS)
     yum install -y libtool dbus-devel
 
+    # Install additional audio backends from source
     if [[ "$AUDITWHEEL_POLICY" == "manylinux_2_28" ]]; then
+
         # Install pipewire >= 0.3.20 from source for manylinux_2_28
         python3.9 -m pip install meson ninja
         python3.9 build_extras.py pipewire
+
+    elif [[ "$AUDITWHEEL_POLICY" == "manylinux2014" ]]; then
+
+        # Install JACK v1 from source for manylinux2014
+        yum install -y libdb-devel
+        python3.9 build_extras.py jack1
+
     fi
 
     # Install audio libraries and backends (ALSA, PulseAudio, libsamplerate)
@@ -52,13 +61,6 @@ if command -v yum &> /dev/null; then
         # Install libdecor from source
         yum install -y pango-devel
         python3.9 build_extras.py libdecor
-
-    # Install additional libraries for manylinux2014
-    elif [[ "$AUDITWHEEL_POLICY" == "manylinux2014" ]]; then
-
-        # Install JACK v1 from source
-        yum install -y libdb-devel
-        python3.9 build_extras.py jack1
 
     fi
 

@@ -52,7 +52,7 @@ extras = {
         'version': "0.126.0",
         'url': GITHUB_URL.format("jackaudio/jack1") + "{0}/jack1-{0}.tar.gz",
         'build_cmds': [
-            ['./configure', '--prefix=/usr'],
+            ['./configure', '--prefix=/usr', f'--libdir={LIBDIR}'],
             ['make'],
             ['make', 'install'],
         ]
