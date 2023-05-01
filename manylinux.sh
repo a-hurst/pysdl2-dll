@@ -57,6 +57,7 @@ if command -v yum &> /dev/null; then
     elif [[ "$AUDITWHEEL_POLICY" == "manylinux2014" ]]; then
 
         # Install JACK v1 from source
+        yum install -y libdb-devel
         python3.9 build_extras.py jack1
 
     fi
