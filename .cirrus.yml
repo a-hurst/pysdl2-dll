@@ -69,9 +69,9 @@ task:
   # NOTE: cryptography 2.6.1 is the last version with a 32-bit wheel
   deploy_script: |
     if [ ! -z ${CIRRUS_TAG:-} ]; then
-      python3.7 -m pip install cryptography==2.6.1
-      python3.7 -m pip install twine
-      python3.7 -m twine upload --skip-existing dist/*.whl
+      python3.9 -m pip install cryptography==2.6.1
+      python3.9 -m pip install twine
+      python3.9 -m twine upload --skip-existing dist/*.whl
     fi
 
   binaries_artifacts:
@@ -85,7 +85,7 @@ task:
   env:
     matrix:
       - SDL2DLL_PLATFORM: manylinux2014
-      - SDL2DLL_PLATFORM: manylinux_2_24
+      - SDL2DLL_PLATFORM: manylinux_2_28
   
   container:
     image: quay.io/pypa/$SDL2DLL_PLATFORM_x86_64
@@ -96,8 +96,8 @@ task:
 
   deploy_script: |
     if [ ! -z ${CIRRUS_TAG:-} ]; then
-      python3.7 -m pip install twine
-      python3.7 -m twine upload --skip-existing dist/*.whl
+      python3.9 -m pip install twine
+      python3.9 -m twine upload --skip-existing dist/*.whl
     fi
 
   binaries_artifacts:
@@ -110,7 +110,7 @@ task:
 
   env:
     matrix:
-      - SDL2DLL_PLATFORM: manylinux_2_24
+      - SDL2DLL_PLATFORM: manylinux_2_28
   
   arm_container:
     image: quay.io/pypa/$SDL2DLL_PLATFORM_aarch64
@@ -121,8 +121,8 @@ task:
 
   deploy_script: |
     if [ ! -z ${CIRRUS_TAG:-} ]; then
-      python3.7 -m pip install twine
-      python3.7 -m twine upload --skip-existing dist/*.whl
+      python3.9 -m pip install twine
+      python3.9 -m twine upload --skip-existing dist/*.whl
     fi
 
   binaries_artifacts:

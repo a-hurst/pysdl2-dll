@@ -48,11 +48,9 @@ Because the wheels are not built against any specfic version of Python, pysdl2-d
 
 ### Linux Requirements
 
-There are currently two versions the Linux wheels: "legacy" wheels based on the `manylinux2014` standard (for 32-bit and 64-bit x86), and "modern" wheels based on the `manylinux_2_24` standard (for 64-bit x86 and 64-bit ARM only). The `manylinux_2_24` SDL2 binaries require a more recent version of Linux, but offer dynamic support for additional features such as Wayland windowing, Pipewire/sndio/JACK audio, and OpenGL ES v1 rendering.
+There are currently two versions the Linux wheels: "legacy" wheels based on the `manylinux2014` standard (for 32-bit and 64-bit x86), and "modern" wheels based on the `manylinux_2_28` standard (for 64-bit x86 and 64-bit ARM only). The `manylinux_2_28` SDL2 binaries require a more recent version of Linux, but offer dynamic support for additional features such as native Wayland windowing, Pipewire audio, and Vulkan rendering.
 
-You must have pip 19.3 or newer to install the `manylinux2014` wheels, and pip 20.3 or newer to install the `manylinux_2_24` wheels. Distributions that use musl C instead of glibc (e.g. Alpine Linux) are not supported.
-
-**Note**: pysdl2-dll is currently not built with libdecor support, meaning that native Wayland (non-XWayland) window decorations will be unavailable when using these binaries (see issue #9 for details). Given that SDL2 defaults to using XWayland this shouldn't be an issue for most users, but suggestions and/or PRs to fix the issue are welcome!
+You must have pip 19.3 or newer to install the `manylinux2014` wheels, and pip 20.3 or newer to install the `manylinux_2_28` wheels. Distributions that use musl C instead of glibc (e.g. Alpine Linux) are not supported.
 
 
 ## Usage

@@ -4,7 +4,7 @@ set -e -u -x
 
 # Initialize the PATH and initial directory
 
-export PATH=/opt/python/cp37-cp37m/bin:$PATH
+export PATH=/opt/python/cp39-cp39/bin:$PATH
 
 if [ -d "/io" ]; then
     cd /io
@@ -15,11 +15,29 @@ fi
 # for as many different audio/video/input backends as possible
 
 if command -v yum &> /dev/null; then
-    # For manylinux2014 and earlier (based on CentOS)
-    yum install -y libtool
+    # For manylinux2014 & manylinux_2_28 (based on CentOS)
+    yum install -y libtool dbus-devel
+
+    # Install additional audio backends from source
+    if [[ "$AUDITWHEEL_POLICY" == "manylinux_2_28" ]]; then
+
+        # Install pipewire >= 0.3.20 from source for manylinux_2_28
+        python3.9 -m pip install meson ninja
+        python3.9 build_extras.py pipewire
+
+    elif [[ "$AUDITWHEEL_POLICY" == "manylinux2014" ]]; then
+
+        # Install JACK v1 from source for manylinux2014
+        yum install -y libdb-devel
+        python3.9 build_extras.py jack1
+
+    fi
 
     # Install audio libraries and backends (ALSA, PulseAudio, libsamplerate)
     yum install -y alsa-lib-devel pulseaudio-libs-devel libsamplerate-devel
+
+    # Build sndio from source
+    python3.9 build_extras.py sndio
 
     # Install X11 and related libraries
     yum install -y libX11-devel libXext-devel libXrandr-devel libXcursor-devel \
@@ -28,21 +46,33 @@ if command -v yum &> /dev/null; then
 
     # Install OpenGL renderers (OpenGL, OpenGL ES v2)
     yum install -y mesa-libGL-devel mesa-libGLES-devel mesa-libEGL-devel \
-        mesa-libgbm-devel
+        mesa-libgbm-devel libdrm-devel
 
     # Install input libraries
-    yum install -y dbus-devel libudev-devel ibus-devel systemd-devel \
-        libxkbcommon-devel libusb-devel
+    yum install -y libudev-devel ibus-devel systemd-devel libxkbcommon-devel \
+        libusb-devel
+
+    # Install additional libraries for manylinux_2_28
+    if [[ "$AUDITWHEEL_POLICY" == "manylinux_2_28" ]]; then
+
+        # Install Wayland/Vulkan libraries
+        yum install -y wayland-devel wayland-protocols-devel vulkan-devel
+
+        # Install libdecor from source
+        yum install -y pango-devel
+        python3.9 build_extras.py libdecor
+
+    fi
 
 else
-    # For manylinux_2_24 and later (based on Debian)
+    # For manylinux_2_24 (based on Debian)
     apt-get update
     apt-get install -y libtool libdbus-1-dev
 
     # Install Pipewire from source (done before other audio backends to minimize build time)
     export PIPEWIRE_VERSION=0.3.33
     export PIPEWIRE_URL=https://gitlab.freedesktop.org/pipewire/pipewire/-/archive
-    python3.7 -m pip install meson ninja
+    python3.9 -m pip install meson ninja
     curl $PIPEWIRE_URL/$PIPEWIRE_VERSION/pipewire-$PIPEWIRE_VERSION.tar.gz | tar -xz
     cd pipewire-$PIPEWIRE_VERSION
     ./autogen.sh --prefix=/usr
@@ -87,13 +117,13 @@ fi
 
 # Compile SDL2, addon libraries, and any necessary dependencies
 
-python3.7 -u setup.py bdist_wheel
+python3.9 -u setup.py bdist_wheel
 
 
 # Run unit tests on built pysdl2-dll wheel
 
 export SDL_VIDEODRIVER="dummy"
 export SDL_AUDIODRIVER="dummy"
-python3.7 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
-python3.7 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
+python3.9 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
+python3.9 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
 pytest -v -rP

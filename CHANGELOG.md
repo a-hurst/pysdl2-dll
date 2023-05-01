@@ -1,5 +1,12 @@
 # pysdl2-dll changelog
 
+### Version 2.26.x (Unreleased)
+
+- Updated the 'modern' Linux wheels from `manylinux_2_24` to `manylinux_2_28`. This pushes some older distros (e.g. Ubuntu < 18.04) back to the 'legacy' `manylinux2014` wheels, but adds libdecor support to the 'modern' wheels for better Wayland support.
+- Removed Network Audio System (`libaudio`) support from the 'modern' Linux wheels (if this is a problem for anyone, please let me know and I'll try to re-add it).
+- Added sndio and JACK audio support to the 'legacy' Linux wheels.
+
+
 ### Version 2.26.2
 
 - Bumped the SDL2 binary version from 2.26.1 to 2.26.2.
