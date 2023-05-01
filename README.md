@@ -13,7 +13,7 @@ SDL2 | SDL2\_ttf | SDL2\_mixer | SDL2\_image | SDL2\_gfx
 --- | --- | --- | --- | ---
 2.26.5 | 2.20.0 | 2.6.0 | 2.6.0 | 1.0.4
 
-Note that the mixer and image libraries are currently being held at their current versions until their next major versions are released due to a regression in the macOS binaries.
+Note that the mixer and image libraries are pinned at their current versions until their next major release due to a regression in the macOS binaries.
 
 
 ## Installation
