@@ -6,17 +6,20 @@ import tarfile
 from urllib.request import urlopen
 
 
-FREEDESKTOP_URL_BASE = "https://gitlab.freedesktop.org/{0}/{0}/-/archive/"
+FREEDESKTOP_URL = "https://gitlab.freedesktop.org/{0}/{0}/-/archive/"
+GITHUB_URL = "https://github.com/{0}/releases/download/"
 LIBDIR = "/usr/lib64" if sys.maxsize > 2 ** 32 else "/usr/lib"
 
 extras = {
     'pipewire': {
         'version': "0.3.58",
-        'url': FREEDESKTOP_URL_BASE.format("pipewire") + "{0}/pipewire-{0}.tar.gz",
+        'url': FREEDESKTOP_URL.format("pipewire") + "{0}/pipewire-{0}.tar.gz",
         'build_cmds': [
             ['meson', 'setup', 'builddir',
                 '-Dprefix=/usr',
                 '-Dsession-managers=',
+                '-Dspa-plugins=disabled',
+                '-Dgstreamer=disabled',
                 '-Dpipewire-alsa=disabled',
                 '-Dalsa=disabled',
                 '-Djack-devel=true',
@@ -29,7 +32,7 @@ extras = {
     },
     'libdecor': {
         'version': "0.1.1",
-        'url': FREEDESKTOP_URL_BASE.format("libdecor") + "{0}/libdecor-{0}.tar.gz",
+        'url': FREEDESKTOP_URL.format("libdecor") + "{0}/libdecor-{0}.tar.gz",
         'build_cmds': [
             ['meson', 'build', '--buildtype', 'release', '-Dprefix=/usr'],
             ['meson', 'install', '-C', 'build'],
@@ -43,6 +46,15 @@ extras = {
             ['make'],
             ['make', 'install'],
             ['ldconfig'],
+        ]
+    },
+    'jack1': {
+        'version': "0.126.0",
+        'url': GITHUB_URL.format("jackaudio/jack1") + "{0}/jack1-{0}.tar.gz",
+        'build_cmds': [
+            ['./configure', '--prefix=/usr'],
+            ['make'],
+            ['make', 'install'],
         ]
     }
 }

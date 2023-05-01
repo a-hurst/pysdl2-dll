@@ -53,6 +53,12 @@ if command -v yum &> /dev/null; then
         yum install -y pango-devel
         python3.9 build_extras.py libdecor
 
+    # Install additional libraries for manylinux2014
+    elif [[ "$AUDITWHEEL_POLICY" == "manylinux2014" ]]; then
+
+        # Install JACK v1 from source
+        python3.9 build_extras.py jack1
+
     fi
 
 else
