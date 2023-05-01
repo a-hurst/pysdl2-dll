@@ -28,7 +28,7 @@ if command -v yum &> /dev/null; then
 
     # Install OpenGL renderers (OpenGL, OpenGL ES v2)
     yum install -y mesa-libGL-devel mesa-libGLES-devel mesa-libEGL-devel \
-        mesa-libgbm-devel
+        mesa-libgbm-devel libdrm-devel
 
     # Install input libraries
     yum install -y dbus-devel libudev-devel ibus-devel systemd-devel \
