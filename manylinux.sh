@@ -22,14 +22,14 @@ if command -v yum &> /dev/null; then
     if [[ "$AUDITWHEEL_POLICY" == "manylinux_2_28" ]]; then
 
         # Install pipewire >= 0.3.20 from source for manylinux_2_28
-        python3.9 -m pip install meson ninja
-        python3.9 build_extras.py pipewire
+        python3.10 -m pip install meson ninja
+        python3.10 build_extras.py pipewire
 
     elif [[ "$AUDITWHEEL_POLICY" == "manylinux2014" ]]; then
 
         # Install JACK v1 from source for manylinux2014
         yum install -y libdb-devel
-        python3.9 build_extras.py jack1
+        python3.10 build_extras.py jack1
 
     fi
 
@@ -37,7 +37,7 @@ if command -v yum &> /dev/null; then
     yum install -y alsa-lib-devel pulseaudio-libs-devel libsamplerate-devel
 
     # Build sndio from source
-    python3.9 build_extras.py sndio
+    python3.10 build_extras.py sndio
 
     # Install X11 and related libraries
     yum install -y libX11-devel libXext-devel libXrandr-devel libXcursor-devel \
@@ -60,7 +60,7 @@ if command -v yum &> /dev/null; then
 
         # Install libdecor from source
         yum install -y pango-devel
-        python3.9 build_extras.py libdecor
+        python3.10 build_extras.py libdecor
 
     fi
 
@@ -72,7 +72,7 @@ else
     # Install Pipewire from source (done before other audio backends to minimize build time)
     export PIPEWIRE_VERSION=0.3.33
     export PIPEWIRE_URL=https://gitlab.freedesktop.org/pipewire/pipewire/-/archive
-    python3.9 -m pip install meson ninja
+    python3.10 -m pip install meson ninja
     curl $PIPEWIRE_URL/$PIPEWIRE_VERSION/pipewire-$PIPEWIRE_VERSION.tar.gz | tar -xz
     cd pipewire-$PIPEWIRE_VERSION
     ./autogen.sh --prefix=/usr
