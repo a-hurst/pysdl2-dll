@@ -157,6 +157,7 @@ def getDLLs(platform_name):
         os.mkdir(libdir)
 
         # Download and use license files from official Windows binaries
+        tst = urlopen("https://github.com/py-sdl/py-sdl2/releases/download/0.9.15/PySDL2-0.9.15.tar.gz")
         for lib in libraries:
             # Download zip archive containing library
             libversion = libversions[lib]
