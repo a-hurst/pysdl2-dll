@@ -39,7 +39,7 @@ At present, the following platforms are supported:
 
 The pysdl2-dll package can be *installed* on platforms other than the ones listed above, but it won't have any effect.
 
-pysdl2-dll requires PySDL2 0.9.7 or later in order to work correctly on macOS, and for PySDL2 to load the binaries automatically when available. To update to the latest PySDL2, you can run:
+pysdl2-dll requires PySDL2 0.9.7 or later in order to work correctly. To update to the latest PySDL2, you can run:
 
 ```bash
 pip install -U pysdl2
@@ -57,6 +57,6 @@ You must have pip 19.3 or newer to install the `manylinux2014` wheels, and pip 2
 
 ## Usage
 
-If you are using PySDL2 0.9.7 or later, you don't need to do anything special to use the pysdl2-dll binaries in your project: PySDL2 will load them automatically (and print a message indicating such) if they are available. For older versions of PySDL2, you will need to import this module manually in your scripts (`import sdl2dll`) before PySDL2 is imported.
+If you are using PySDL2 0.9.7 or later, you don't need to do anything special to use the pysdl2-dll binaries in your project: PySDL2 will load them automatically (and print a message indicating such) if they are available.
 
 To override pysdl2-dll and use a different set of binaries, you can set the `PYSDL2_DLL_PATH` environment variable to the path of the folder containing the binaries you want to use instead, or alternatively set it to "system" to force PySDL2 to use the system install of SDL2 if available (e.g. SDL2 installed with `brew` on macOS).
