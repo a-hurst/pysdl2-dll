@@ -12,6 +12,13 @@ try:
 except ImportError:
     from urllib2 import urlopen # Python 2
 
+HAVE_REQUESTS = False
+try:
+    import requests
+    HAVE_REQUESTS = True
+except ImportError:
+    pass
+
 
 libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
 
@@ -327,9 +334,14 @@ def fetch_source(libfolder, liburl, outdir):
 
 
 def download(url, outpath):
-    data = urlopen(url)
-    with open(outpath, 'wb') as out:
-        out.write(data.read())
+    if HAVE_REQUESTS:
+        data = requests.get(url, allow_redirects=True)
+        with open(outpath, 'wb') as out:
+            out.write(data.content)
+    else:
+        data = urlopen(url)
+        with open(outpath, 'wb') as out:
+            out.write(data.read())
 
 
 def download_external(ext_path):
