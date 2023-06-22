@@ -1,5 +1,10 @@
 # pysdl2-dll changelog
 
+### Version 2.28.0
+
+- Bumped the SDL2 binary version from 2.26.5 to 2.28.0.
+
+
 ### Version 2.26.5
 
 - Bumped the SDL2 binary version from 2.26.2 to 2.26.5.

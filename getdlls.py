@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import shutil
 import tarfile
 import subprocess as sub
@@ -7,6 +8,7 @@ from zipfile import ZipFile
 from distutils.util import get_platform
 
 try:
+    import urllib.request
     from urllib.request import urlopen # Python 3.x
 except ImportError:
     from urllib2 import urlopen # Python 2
@@ -15,7 +17,7 @@ except ImportError:
 libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
 
 libversions = {
-    'SDL2': '2.26.5',
+    'SDL2': '2.28.0',
     'SDL2_mixer': '2.6.0',
     'SDL2_ttf': '2.20.0',
     'SDL2_image': '2.6.0',
@@ -81,15 +83,13 @@ def getDLLs(platform_name):
             extraframeworkpath = os.path.join(dlloutpath, 'Versions', 'A', 'Frameworks')
             
             # Download disk image containing library
+            outpath = os.path.join('temp', lib + '.dmg')
             if lib in ['SDL2_image', 'SDL2_mixer']:
                 # NOTE: Temporary workaround for optional frameworks until 2.8.0
-                dmg = urlopen('https://www.libsdl.org/tmp/{0}-2.7.0.dmg'.format(lib))
+                download('https://www.libsdl.org/tmp/{0}-2.7.0.dmg'.format(lib), outpath)
             else:
                 libversion = libversions[lib]
-                dmg = urlopen(sdl2_urls[lib].format(libversion, '.dmg'))
-            outpath = os.path.join('temp', lib + '.dmg')
-            with open(outpath, 'wb') as out:
-                out.write(dmg.read())
+                download(sdl2_urls[lib].format(libversion, '.dmg'), outpath)
             
             # Mount image, extract framework (and any optional frameworks), then unmount
             sub.check_call(['hdiutil', 'attach', outpath, '-mountpoint', mountpoint])
@@ -127,10 +127,8 @@ def getDLLs(platform_name):
             
             # Download zip archive containing library
             libversion = libversions[lib]
-            dllzip = urlopen(sdl2_urls[lib].format(libversion, suffix))
             outpath = os.path.join('temp', lib + '.zip')
-            with open(outpath, 'wb') as out:
-                out.write(dllzip.read())
+            download(sdl2_urls[lib].format(libversion, suffix), outpath)
             
             # Extract dlls and license files from archive
             with ZipFile(outpath, 'r') as z:
@@ -160,10 +158,8 @@ def getDLLs(platform_name):
         for lib in libraries:
             # Download zip archive containing library
             libversion = libversions[lib]
-            dllzip = urlopen(sdl2_urls[lib].format(libversion, '-win32-x64.zip'))
             outpath = os.path.join('temp', lib + '.zip')
-            with open(outpath, 'wb') as out:
-                out.write(dllzip.read())
+            download(sdl2_urls[lib].format(libversion, '-win32-x64.zip'), outpath)
 
             # Extract license files from archive
             with ZipFile(outpath, 'r') as z:
@@ -321,16 +317,30 @@ def fetch_source(libfolder, liburl, outdir):
     """Downloads and decompresses the source code for a given library.
     """
     # Download tarfile to temporary folder
-    srctar = urlopen(liburl)
     outpath = os.path.join(outdir, libfolder + '.tar.gz')
-    with open(outpath, 'wb') as out:
-        out.write(srctar.read())
+    download(liburl, outpath)
 
     # Extract source from archive
     with tarfile.open(outpath, 'r:gz') as z:
         z.extractall(path=outdir)
 
     return os.path.join(outdir, libfolder)
+
+
+def download(url, outpath):
+    """Downloads a file from a URL to a given path.
+    """
+    attempts = 0
+    while attempts < 3:
+        try:
+            data = urlopen(url)
+            break
+        except OSError:
+            time.sleep(0.2)
+            attempts += 1
+
+    with open(outpath, 'wb') as out:
+        out.write(data.read())
 
 
 def download_external(ext_path):
