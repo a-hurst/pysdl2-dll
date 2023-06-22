@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import shutil
 import tarfile
 import subprocess as sub
@@ -334,14 +335,16 @@ def fetch_source(libfolder, liburl, outdir):
 
 
 def download(url, outpath):
-    if HAVE_REQUESTS:
-        data = requests.get(url, allow_redirects=True)
-        with open(outpath, 'wb') as out:
-            out.write(data.content)
-    else:
-        data = urlopen(url)
-        with open(outpath, 'wb') as out:
-            out.write(data.read())
+    attempts = 0
+    while attempts < 3:
+        try:
+            data = urlopen(url)
+            with open(outpath, 'wb') as out:
+                out.write(data.read())
+            break
+        except ConnectionError:
+            time.sleep(0.2)
+            attempts += 1
 
 
 def download_external(ext_path):
