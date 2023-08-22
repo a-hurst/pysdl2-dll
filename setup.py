@@ -60,8 +60,8 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 setup(
-	name='pysdl2-dll',
-	version='2.28.2',
+	name='pysdl3-dll',
+	version='3.0.0a1',
 	author='Austin Hurst',
 	author_email='mynameisaustinhurst@gmail.com',
     license='Mozilla Public License Version 2.0',

@@ -14,31 +14,30 @@ except ImportError:
     from urllib2 import urlopen # Python 2
 
 
-libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
+libraries = ['SDL3']#, 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image']
 
 libversions = {
-    'SDL2': '2.28.2',
+    'SDL3': '3.0.0',
     'SDL2_mixer': '2.6.0',
     'SDL2_ttf': '2.20.0',
     'SDL2_image': '2.6.0',
-    'SDL2_gfx': '1.0.4'
 }
 
 url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/SDL2{LIB}-{0}{1}'
 url_fmt_pre = url_fmt.replace('release-', 'prerelease-')
+url_fmt_git = 'https://github.com/libsdl-org/SDL{LIB}/archive/refs/heads/main.zip'
 sdl2_urls = {
-    'SDL2': url_fmt.replace('{LIB}', ''),
-    'SDL2_mixer': url_fmt.replace('{LIB}', '_mixer'),
-    'SDL2_ttf': url_fmt.replace('{LIB}', '_ttf'),
-    'SDL2_image': url_fmt.replace('{LIB}', '_image'),
-    'SDL2_gfx': 'https://github.com/a-hurst/sdl2gfx-builds/releases/download/{0}/SDL2_gfx-{0}{1}'
+    'SDL3': url_fmt_git.replace('{LIB}', ''),
+    'SDL2_mixer': url_fmt_git.replace('{LIB}', '_mixer'),
+    'SDL2_ttf': url_fmt_git.replace('{LIB}', '_ttf'),
+    'SDL2_image': url_fmt_git.replace('{LIB}', '_image'),
 }
 
 cmake_opts = {
-    #'SDL2': {
-    #    'SDL_SSE2': 'ON',
-    #    'SDL_ARMNEON': 'ON',
-    #},
+    'SDL3': {
+        'SDL_SSE2': 'ON',
+        'SDL_ARMNEON': 'ON',
+    },
     'SDL2_mixer': {
         'SDL2MIXER_VENDORED': 'ON',
         'SDL2MIXER_FLAC_LIBFLAC': 'OFF', # Match macOS and Windows binaries, which use dr_flac
@@ -155,23 +154,23 @@ def getDLLs(platform_name):
         os.mkdir(libdir)
 
         # Download and use license files from official Windows binaries
-        for lib in libraries:
-            # Download zip archive containing library
-            libversion = libversions[lib]
-            outpath = os.path.join('temp', lib + '.zip')
-            download(sdl2_urls[lib].format(libversion, '-win32-x64.zip'), outpath)
+        #for lib in libraries:
+        #    # Download zip archive containing library
+        #    libversion = libversions[lib]
+        #    outpath = os.path.join('temp', lib + '.zip')
+        #    download(sdl2_urls[lib].format(libversion, '-win32-x64.zip'), outpath)
 
             # Extract license files from archive
-            with ZipFile(outpath, 'r') as z:
-                for name in z.namelist():
-                    if 'LICENSE' in name:
-                        z.extract(name, licensedir)
+            #with ZipFile(outpath, 'r') as z:
+            #    for name in z.namelist():
+            #        if 'LICENSE' in name:
+            #            z.extract(name, licensedir)
 
             # Move any optional licenses into the root license folder
-            optdir = os.path.join(licensedir, 'optional')
-            if os.path.isdir(optdir):
-                for f in os.listdir(optdir):
-                    shutil.move(os.path.join(optdir, f), os.path.join(licensedir, f))
+            #optdir = os.path.join(licensedir, 'optional')
+            #if os.path.isdir(optdir):
+            #    for f in os.listdir(optdir):
+            #        shutil.move(os.path.join(optdir, f), os.path.join(licensedir, f))
 
         # Build and install everything into the custom prefix
         sdl2_urls['SDL2_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
@@ -245,9 +244,9 @@ def buildDLLs(libraries, basedir, libdir):
             print('\n======= Downloading {0} {1} =======\n'.format(lib, libversion))
 
             # Download and extract tar archive containing source
-            liburl = sdl2_urls[lib].format(libversion, suffix)
+            liburl = sdl2_urls[lib]#.format(libversion, suffix)
             libfolder = lib + '-' + libversion
-            sourcepath = fetch_source(libfolder, liburl, outdir='temp')
+            sourcepath = fetch_source(libfolder, liburl, outdir='temp', tar=False)
 
             # Check for and download any external dependencies
             ext_dir = os.path.join(sourcepath, 'external')
@@ -280,10 +279,10 @@ def buildDLLs(libraries, basedir, libdir):
             else:
                 # Build using autotools
                 xtra_args = None
-                if lib == 'SDL2':
-                    xtra_args = ['--enable-libudev=no']
-                elif lib == 'SDL2_gfx' and not arch in ['i686', 'x86_64']:
-                    xtra_args = ['--disable-mmx']
+                #if lib == 'SDL2':
+                #    xtra_args = ['--enable-libudev=no']
+                #elif lib == 'SDL2_gfx' and not arch in ['i686', 'x86_64']:
+                #    xtra_args = ['--disable-mmx']
                 success = make_install_lib(sourcepath, libdir, buildenv, xtra_args, cfgfiles)
 
             if not success:
@@ -313,16 +312,21 @@ def find_symlinks(path, names):
     return links
 
 
-def fetch_source(libfolder, liburl, outdir):
+def fetch_source(libfolder, liburl, outdir, tar=True):
     """Downloads and decompresses the source code for a given library.
     """
     # Download tarfile to temporary folder
-    outpath = os.path.join(outdir, libfolder + '.tar.gz')
+    suffix = '.tar.gz' if tar else '.zip'
+    outpath = os.path.join(outdir, libfolder + suffix)
     download(liburl, outpath)
 
     # Extract source from archive
-    with tarfile.open(outpath, 'r:gz') as z:
-        z.extractall(path=outdir)
+    if tar:
+        with tarfile.open(outpath, 'r:gz') as z:
+            z.extractall(path=outdir)
+    else:
+        with ZipFile(outpath, 'r') as z:
+            z.extractall(path=outdir)
 
     return os.path.join(outdir, libfolder)
 

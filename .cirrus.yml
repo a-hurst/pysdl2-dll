@@ -11,9 +11,8 @@ task:
     - python setup.py sdist
 
   script:
-    - python3 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
-    - python3 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
-    - pytest -v -rP
+    - python3 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl3-dll
+    #- pytest -v -rP
 
   deploy_script: |
     if [ ! -z ${CIRRUS_TAG:-} ]; then
@@ -26,56 +25,56 @@ task:
 
 
 # Build macOS wheel
-task:
-  name: "Build macOS (x86_64 & ARM64) wheels"
-  
-  macos_instance:
-    image: ghcr.io/cirruslabs/macos-ventura-base:latest
-
-  install_script:
-    - brew install python
-    - python3 -m pip install -U wheel twine
-    - python3 setup.py bdist_wheel
-    - MACOS_LEGACY_WHEEL=1 python3 setup.py bdist_wheel
-
-  script:
-    - python3 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
-    - python3 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
-    - pytest -v -rP
-
-  deploy_script: |
-    if [ ! -z ${CIRRUS_TAG:-} ]; then
-      python3 -m twine upload --skip-existing dist/*.whl
-    fi
-
-  binaries_artifacts:
-    path: "dist/*"
+#task:
+#  name: "Build macOS (x86_64 & ARM64) wheels"
+#  
+#  macos_instance:
+#    image: ghcr.io/cirruslabs/macos-ventura-base:latest
+#
+#  install_script:
+#    - brew install python
+#    - python3 -m pip install -U wheel twine
+#    - python3 setup.py bdist_wheel
+#    - MACOS_LEGACY_WHEEL=1 python3 setup.py bdist_wheel
+#
+#  script:
+#    - python3 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
+#    - python3 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
+#    - pytest -v -rP
+#
+#  deploy_script: |
+#    if [ ! -z ${CIRRUS_TAG:-} ]; then
+#      python3 -m twine upload --skip-existing dist/*.whl
+#    fi
+#
+#  binaries_artifacts:
+#    path: "dist/*"
 
 
 # Build 32-bit x86 manylinux wheel
-task:
-  name: "Build $SDL2DLL_PLATFORM (i686) wheel"
-
-  env:
-    SDL2DLL_PLATFORM: manylinux2014
-
-  container:
-    image: quay.io/pypa/$SDL2DLL_PLATFORM_i686
-    memory: 1G
-
-  script:
-    - linux32 ./manylinux.sh
-
-  # NOTE: cryptography 2.6.1 is the last version with a 32-bit wheel
-  deploy_script: |
-    if [ ! -z ${CIRRUS_TAG:-} ]; then
-      python3.9 -m pip install cryptography==2.6.1
-      python3.9 -m pip install twine
-      python3.9 -m twine upload --skip-existing dist/*.whl
-    fi
-
-  binaries_artifacts:
-    path: "dist/*"
+#task:
+#  name: "Build $SDL2DLL_PLATFORM (i686) wheel"
+#
+#  env:
+#    SDL2DLL_PLATFORM: manylinux2014
+#
+#  container:
+#    image: quay.io/pypa/$SDL2DLL_PLATFORM_i686
+#    memory: 1G
+#
+#  script:
+#    - linux32 ./manylinux.sh
+#
+#  # NOTE: cryptography 2.6.1 is the last version with a 32-bit wheel
+#  deploy_script: |
+#    if [ ! -z ${CIRRUS_TAG:-} ]; then
+#      python3.9 -m pip install cryptography==2.6.1
+#      python3.9 -m pip install twine
+#      python3.9 -m twine upload --skip-existing dist/*.whl
+#    fi
+#
+#  binaries_artifacts:
+#    path: "dist/*"
 
 
 # Build 64-bit x86 manylinux wheels
@@ -105,25 +104,25 @@ task:
 
 
 # Build 64-bit ARM manylinux wheel
-task:
-  name: "Build $SDL2DLL_PLATFORM (ARM64) wheel"
-
-  env:
-    matrix:
-      - SDL2DLL_PLATFORM: manylinux_2_28
-  
-  arm_container:
-    image: quay.io/pypa/$SDL2DLL_PLATFORM_aarch64
-    memory: 2G
-
-  script:
-    - ./manylinux.sh
-
-  deploy_script: |
-    if [ ! -z ${CIRRUS_TAG:-} ]; then
-      python3.9 -m pip install twine
-      python3.9 -m twine upload --skip-existing dist/*.whl
-    fi
-
-  binaries_artifacts:
-    path: "dist/*"
+#task:
+#  name: "Build $SDL2DLL_PLATFORM (ARM64) wheel"
+#
+#  env:
+#    matrix:
+#      - SDL2DLL_PLATFORM: manylinux_2_28
+#  
+#  arm_container:
+#    image: quay.io/pypa/$SDL2DLL_PLATFORM_aarch64
+#    memory: 2G
+#
+#  script:
+#    - ./manylinux.sh
+#
+#  deploy_script: |
+#    if [ ! -z ${CIRRUS_TAG:-} ]; then
+#      python3.9 -m pip install twine
+#      python3.9 -m twine upload --skip-existing dist/*.whl
+#    fi
+#
+#  binaries_artifacts:
+#    path: "dist/*"
