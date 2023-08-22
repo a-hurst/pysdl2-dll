@@ -14,10 +14,10 @@ except ImportError:
     from urllib2 import urlopen # Python 2
 
 
-libraries = ['SDL3']#, 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image']
+libraries = ['SDL']#, 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image']
 
 libversions = {
-    'SDL3': 'main',
+    'SDL': 'main',
     'SDL2_mixer': '2.6.0',
     'SDL2_ttf': '2.20.0',
     'SDL2_image': '2.6.0',
@@ -27,14 +27,14 @@ url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/
 url_fmt_pre = url_fmt.replace('release-', 'prerelease-')
 url_fmt_git = 'https://github.com/libsdl-org/SDL{LIB}/archive/refs/heads/main.zip'
 sdl2_urls = {
-    'SDL3': url_fmt_git.replace('{LIB}', ''),
+    'SDL': url_fmt_git.replace('{LIB}', ''),
     'SDL2_mixer': url_fmt_git.replace('{LIB}', '_mixer'),
     'SDL2_ttf': url_fmt_git.replace('{LIB}', '_ttf'),
     'SDL2_image': url_fmt_git.replace('{LIB}', '_image'),
 }
 
 cmake_opts = {
-    'SDL3': {
+    'SDL': {
         'SDL_SSE2': 'ON',
         'SDL_ARMNEON': 'ON',
     },
