@@ -14,13 +14,13 @@ except ImportError:
     from urllib2 import urlopen # Python 2
 
 
-libraries = ['SDL']#, 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image']
+libraries = ['SDL', 'SDL_mixer', 'SDL_ttf', 'SDL_image']
 
 libversions = {
     'SDL': 'main',
-    'SDL2_mixer': '2.6.0',
-    'SDL2_ttf': '2.20.0',
-    'SDL2_image': '2.6.0',
+    'SDL_mixer': 'main',
+    'SDL_ttf': 'main',
+    'SDL_image': 'main',
 }
 
 url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/SDL2{LIB}-{0}{1}'
@@ -28,9 +28,9 @@ url_fmt_pre = url_fmt.replace('release-', 'prerelease-')
 url_fmt_git = 'https://github.com/libsdl-org/SDL{LIB}/archive/refs/heads/main.zip'
 sdl2_urls = {
     'SDL': url_fmt_git.replace('{LIB}', ''),
-    'SDL2_mixer': url_fmt_git.replace('{LIB}', '_mixer'),
-    'SDL2_ttf': url_fmt_git.replace('{LIB}', '_ttf'),
-    'SDL2_image': url_fmt_git.replace('{LIB}', '_image'),
+    'SDL_mixer': url_fmt_git.replace('{LIB}', '_mixer'),
+    'SDL_ttf': url_fmt_git.replace('{LIB}', '_ttf'),
+    'SDL_image': url_fmt_git.replace('{LIB}', '_image'),
 }
 
 cmake_opts = {
@@ -38,18 +38,18 @@ cmake_opts = {
         'SDL_SSE2': 'ON',
         'SDL_ARMNEON': 'ON',
     },
-    'SDL2_mixer': {
-        'SDL2MIXER_VENDORED': 'ON',
-        'SDL2MIXER_FLAC_LIBFLAC': 'OFF', # Match macOS and Windows binaries, which use dr_flac
+    'SDL_mixer': {
+        'SDL3MIXER_VENDORED': 'ON',
+        'SDL3MIXER_FLAC_LIBFLAC': 'OFF', # Match macOS and Windows binaries, which use dr_flac
     },
-    'SDL2_ttf': {
-        'SDL2TTF_VENDORED': 'ON',
-        'SDL2TTF_HARFBUZZ': 'ON',
+    'SDL_ttf': {
+        'SDL3TTF_VENDORED': 'ON',
+        'SDL3TTF_HARFBUZZ': 'ON',
     },
-    'SDL2_image': {
-        'SDL2IMAGE_VENDORED': 'ON',
-        'SDL2IMAGE_TIF': 'ON',
-        'SDL2IMAGE_WEBP': 'ON',
+    'SDL_image': {
+        'SDL3IMAGE_VENDORED': 'ON',
+        'SDL3IMAGE_TIF': 'ON',
+        'SDL3IMAGE_WEBP': 'ON',
     }
 }
 
@@ -83,7 +83,7 @@ def getDLLs(platform_name):
             
             # Download disk image containing library
             outpath = os.path.join('temp', lib + '.dmg')
-            if lib in ['SDL2_image', 'SDL2_mixer']:
+            if lib in ['SDL_image', 'SDL_mixer']:
                 # NOTE: Temporary workaround for optional frameworks until 2.8.0
                 download('https://www.libsdl.org/tmp/{0}-2.7.0.dmg'.format(lib), outpath)
             else:
@@ -173,7 +173,7 @@ def getDLLs(platform_name):
             #        shutil.move(os.path.join(optdir, f), os.path.join(licensedir, f))
 
         # Build and install everything into the custom prefix
-        sdl2_urls['SDL2_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
+        sdl2_urls['SDL_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
         buildDLLs(libraries, basedir, libdir)
 
         # Copy all compiled binaries to dll folder for bundling in wheel
@@ -257,13 +257,13 @@ def buildDLLs(libraries, basedir, libdir):
                 print('')
 
             # Apply any patches to the source if necessary
-            if lib == 'SDL2_mixer':
-                # Work around bug in 2.6.0 CMakeLists.txt
-                cmake_txt = os.path.join(sourcepath, 'CMakeLists.txt')
-                old = 'SDL2MIXER_FLAC_LIBFLAC_SHARED OR NOT'
-                new = 'SDL2MIXER_MOD_MODPLUG_SHARED OR NOT'
-                patch_file(cmake_txt, old, new)
-            if lib == 'SDL2_image':
+            #if lib == 'SDL_mixer':
+            #    # Work around bug in 2.6.0 CMakeLists.txt
+            #    cmake_txt = os.path.join(sourcepath, 'CMakeLists.txt')
+            #    old = 'SDL3MIXER_FLAC_LIBFLAC_SHARED OR NOT'
+            #    new = 'SDL3MIXER_MOD_MODPLUG_SHARED OR NOT'
+            #    patch_file(cmake_txt, old, new)
+            if lib == 'SDL_image':
                 # Ensure libwebp isn't compiled with mandatory SSE4.1 support
                 cpu_cmake = os.path.join(ext_dir, 'libwebp', 'cmake', 'cpu.cmake')
                 old = 'NOT ENABLE_SIMD'
@@ -279,9 +279,9 @@ def buildDLLs(libraries, basedir, libdir):
             else:
                 # Build using autotools
                 xtra_args = None
-                #if lib == 'SDL2':
+                #if lib == 'SDL':
                 #    xtra_args = ['--enable-libudev=no']
-                #elif lib == 'SDL2_gfx' and not arch in ['i686', 'x86_64']:
+                #elif lib == 'SDL_gfx' and not arch in ['i686', 'x86_64']:
                 #    xtra_args = ['--disable-mmx']
                 success = make_install_lib(sourcepath, libdir, buildenv, xtra_args, cfgfiles)
 
