@@ -17,7 +17,7 @@ except ImportError:
 libraries = ['SDL3']#, 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image']
 
 libversions = {
-    'SDL3': '3.0.0',
+    'SDL3': 'main',
     'SDL2_mixer': '2.6.0',
     'SDL2_ttf': '2.20.0',
     'SDL2_image': '2.6.0',
