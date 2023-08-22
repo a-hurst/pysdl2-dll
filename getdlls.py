@@ -56,7 +56,7 @@ cmake_opts = {
 
 def getDLLs(platform_name):
     
-    dlldir = os.path.join('sdl2dll', 'dll')
+    dlldir = os.path.join('sdl3dll', 'dll')
     licensedir = os.path.join('sdl_licenses')
     for d in ['temp', 'build', dlldir, licensedir]:
         if os.path.isdir(d):
@@ -353,6 +353,7 @@ def download_external(ext_path):
     orig_path = os.getcwd()
     os.chdir(ext_path)
     
+    sub.check_call(['chmod', '+x', './download.sh'])
     p = sub.Popen("./download.sh", stdout=sys.stdout, stderr=sys.stderr)
     p.communicate()
     if p.returncode != 0:

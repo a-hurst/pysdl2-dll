@@ -11,8 +11,8 @@ pytestmark = pytest.mark.skipif(not nodlls, reason="Using binary wheel, not sdis
 
 def test_import():
     # Test basic sdist warning
-    orig_path = os.getenv('PYSDL2_DLL_PATH')
+    orig_path = os.getenv('PYSDL3_DLL_PATH')
     with pytest.warns(UserWarning):
-        import sdl2dll
+        import sdl3dll
     # Ensure that sdist doesn't change DLL path
-    assert orig_path == os.getenv('PYSDL2_DLL_PATH')
+    assert orig_path == os.getenv('PYSDL3_DLL_PATH')
