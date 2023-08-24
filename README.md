@@ -1,4 +1,4 @@
-# pysdl2-dll
+# pysdl3-dll
 
 [![Build Status](https://api.cirrus-ci.com/github/a-hurst/pysdl2-dll.svg)](https://cirrus-ci.com/github/a-hurst/pysdl2-dll)
 [![Build Status](https://ci.appveyor.com/api/projects/status/lnwpe9v50bne3afu?svg=true)](https://ci.appveyor.com/project/a-hurst/pysdl2-dll)
