@@ -19,25 +19,25 @@ if command -v yum &> /dev/null; then
     yum install -y libtool dbus-devel
 
     # Install additional audio backends from source
-#    if [[ "$AUDITWHEEL_POLICY" == "manylinux_2_28" ]]; then
-#
-#        # Install pipewire >= 0.3.20 from source for manylinux_2_28
-#        python3.10 -m pip install meson ninja
-#        python3.10 build_extras.py pipewire
-#
-#    elif [[ "$AUDITWHEEL_POLICY" == "manylinux2014" ]]; then
-#
-#        # Install JACK v1 from source for manylinux2014
-#        yum install -y libdb-devel
-#        python3.10 build_extras.py jack1
-#
-#    fi
+    if [[ "$AUDITWHEEL_POLICY" == "manylinux_2_28" ]]; then
+
+        # Install pipewire >= 0.3.20 from source for manylinux_2_28
+        python3.10 -m pip install meson ninja
+        python3.10 build_extras.py pipewire
+
+    elif [[ "$AUDITWHEEL_POLICY" == "manylinux2014" ]]; then
+
+        # Install JACK v1 from source for manylinux2014
+        yum install -y libdb-devel
+        python3.10 build_extras.py jack1
+
+    fi
 
     # Install audio libraries and backends (ALSA, PulseAudio, libsamplerate)
     yum install -y alsa-lib-devel pulseaudio-libs-devel libsamplerate-devel
 
     # Build sndio from source
-    #python3.10 build_extras.py sndio
+    python3.10 build_extras.py sndio
 
     # Install X11 and related libraries
     yum install -y libX11-devel libXext-devel libXrandr-devel libXcursor-devel \
@@ -53,16 +53,16 @@ if command -v yum &> /dev/null; then
         libusb-devel
 
     # Install additional libraries for manylinux_2_28
-#    if [[ "$AUDITWHEEL_POLICY" == "manylinux_2_28" ]]; then
-#
-#        # Install Wayland/Vulkan libraries
-#        yum install -y wayland-devel wayland-protocols-devel vulkan-devel
-#
-#        # Install libdecor from source
-#        yum install -y pango-devel
-#        python3.10 build_extras.py libdecor
-#
-#    fi
+    if [[ "$AUDITWHEEL_POLICY" == "manylinux_2_28" ]]; then
+
+        # Install Wayland/Vulkan libraries
+        yum install -y wayland-devel wayland-protocols-devel vulkan-devel
+
+        # Install libdecor from source
+        yum install -y pango-devel
+        python3.10 build_extras.py libdecor
+
+    fi
 
 else
     # For manylinux_2_24 (based on Debian)
