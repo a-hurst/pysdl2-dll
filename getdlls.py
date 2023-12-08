@@ -84,7 +84,7 @@ def getDLLs(platform_name):
             
             # Download disk image containing library
             outpath = os.path.join('temp', lib + '.dmg')
-            if lib in ['SDL2_image', 'SDL2_mixer']:
+            if lib in ['SDL2_mixer']:
                 # NOTE: Temporary workaround for optional frameworks until 2.8.0
                 download('https://www.libsdl.org/tmp/{0}-2.7.0.dmg'.format(lib), outpath)
             else:
