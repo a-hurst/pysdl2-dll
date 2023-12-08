@@ -1,6 +1,6 @@
 """Adds the SDL2 DLLs in the package to the PySDL2 DLL search path"""
 
-__version__ = "2.28.4"
+__version__ = "2.28.5"
 
 import os
 from .initcheck import is_sdist, init_check
