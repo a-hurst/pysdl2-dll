@@ -458,6 +458,11 @@ def set_relative_runpaths(libdir):
         if p.returncode != 0:
             success = False
             break
+        # Print shared library dependencies
+        print("{0} dependencies:".format(lib))
+        cmd2 = ['readelf', '-d', lib, '|', 'grep', 'NEEDED']
+        p = sub.Popen(cmd + [lib], stdout=sys.stdout, stderr=sys.stderr)
+        p.communicate()
 
     os.chdir(orig_path)
     return success
