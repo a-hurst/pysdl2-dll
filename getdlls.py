@@ -188,8 +188,9 @@ def getDLLs(platform_name):
                     # libopusfile expects truncated .so names
                     libname = '.'.join(libname.split('.')[:3])
                 elif libname.split('.')[0] == 'libwebpdemux':
-                    # Work around linking issue with removing symlinks for wheel
+                    # Work around linking issues with libwebpdemux
                     libname = 'libwebpdemux.so.2.6.0'
+                    rename_dependency(fpath, 'libwebp.so.7.5.0', 'libwebp.so.1.0.3')
                 lib_outpath = os.path.join(dlldir, libname)
                 shutil.copy(fpath, lib_outpath)
 
@@ -466,6 +467,15 @@ def set_relative_runpaths(libdir):
     return success
 
 
+def rename_dependency(libpath, depname, newname):
+    """Renames a dependency in a given dynamic library.
+    """
+    cmd = ['patchelf', '--replace-needed', depname, newname, libpath]
+    p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr)
+    p.communicate()
+    return p.returncode == 0
+
+
 def rename_library(libdir, name, newname, fix_links):
     """Renames a library to avoid name collisions, patching other libraries
     that depend on it accordingly.
@@ -481,13 +491,10 @@ def rename_library(libdir, name, newname, fix_links):
     os.rename(libname, libname_new)
 
     # Update names in any libraries that link to the renamed one
-    cmd = ['patchelf', '--replace-needed', libname, libname_new]
     to_patch = [f for f in libs if f.split('.')[0] in fix_links]
     for lib in to_patch:
-        p = sub.Popen(cmd + [lib], stdout=sys.stdout, stderr=sys.stderr)
-        p.communicate()
-        if p.returncode != 0:
-            success = False
+        success = rename_dependency(lib, libname, libname_new)
+        if not success:
             break
 
     os.chdir(orig_path)
