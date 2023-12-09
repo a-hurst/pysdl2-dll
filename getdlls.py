@@ -194,7 +194,7 @@ def getDLLs(platform_name):
                     rename_dependency(fpath, 'libwebp.so.7.5.0', 'libwebp.so.1.0.3')
                 elif libname_base == 'libtiff':
                     # Work around linking issues with libtiff
-                    libname = 'libtiffs.so.5'
+                    libname = 'libtiff.so.5'
                 lib_outpath = os.path.join(dlldir, libname)
                 shutil.copy(fpath, lib_outpath)
 
