@@ -184,13 +184,17 @@ def getDLLs(platform_name):
                 if os.path.islink(fpath):
                     fpath = os.path.realpath(fpath)
                 libname = os.path.basename(fpath)
-                if libname.split('.')[0] in ['libogg', 'libopus']:
+                libname_base = libname.split('.')[0]
+                if libname_base in ['libogg', 'libopus']:
                     # libopusfile expects truncated .so names
                     libname = '.'.join(libname.split('.')[:3])
-                elif libname.split('.')[0] == 'libwebpdemux':
+                elif libname_base == 'libwebpdemux':
                     # Work around linking issues with libwebpdemux
                     libname = 'libwebpdemux.so.2.6.0'
                     rename_dependency(fpath, 'libwebp.so.7.5.0', 'libwebp.so.1.0.3')
+                elif libname_base == 'libtiff':
+                    # Work around linking issues with libtiff
+                    libname = 'libtiffs.so.5'
                 lib_outpath = os.path.join(dlldir, libname)
                 shutil.copy(fpath, lib_outpath)
 
