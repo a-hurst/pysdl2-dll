@@ -187,6 +187,9 @@ def getDLLs(platform_name):
                 if libname.split('.')[0] in ['libogg', 'libopus']:
                     # libopusfile expects truncated .so names
                     libname = '.'.join(libname.split('.')[:3])
+                elif libname.split('.')[0] == 'libwebpdemux':
+                    # Work around linking issue with removing symlinks for wheel
+                    libname = 'libwebpdemux.so.2.6.0'
                 lib_outpath = os.path.join(dlldir, libname)
                 shutil.copy(fpath, lib_outpath)
 
@@ -458,11 +461,6 @@ def set_relative_runpaths(libdir):
         if p.returncode != 0:
             success = False
             break
-        # Print shared library dependencies
-        print("{0} dependencies:".format(lib))
-        cmd2 = ['readelf', '-d', lib, '|', 'grep', 'NEEDED']
-        p = sub.Popen(cmd + [lib], stdout=sys.stdout, stderr=sys.stderr)
-        p.communicate()
 
     os.chdir(orig_path)
     return success
