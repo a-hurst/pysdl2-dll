@@ -11,7 +11,7 @@ The latest release includes the following versions of the SDL2 binaries:
 
 SDL2 | SDL2\_ttf | SDL2\_mixer | SDL2\_image | SDL2\_gfx
 --- | --- | --- | --- | ---
-2.28.5 | 2.20.0 | 2.6.0 | 2.8.0 | 1.0.4
+2.28.5 | 2.20.0 | 2.6.0 | 2.8.1 | 1.0.4
 
 Note that the mixer library is pinned at its current version until its next major release due to a regression in the macOS binaries.
 

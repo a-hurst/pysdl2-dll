@@ -20,7 +20,7 @@ libversions = {
     'SDL2': '2.28.5',
     'SDL2_mixer': '2.6.0',
     'SDL2_ttf': '2.20.0',
-    'SDL2_image': '2.8.0',
+    'SDL2_image': '2.8.1',
     'SDL2_gfx': '1.0.4'
 }
 
