@@ -17,10 +17,10 @@ except ImportError:
 libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
 
 libversions = {
-    'SDL2': '2.28.4',
+    'SDL2': '2.28.5',
     'SDL2_mixer': '2.6.0',
     'SDL2_ttf': '2.20.0',
-    'SDL2_image': '2.6.0',
+    'SDL2_image': '2.8.1',
     'SDL2_gfx': '1.0.4'
 }
 
@@ -84,7 +84,7 @@ def getDLLs(platform_name):
             
             # Download disk image containing library
             outpath = os.path.join('temp', lib + '.dmg')
-            if lib in ['SDL2_image', 'SDL2_mixer']:
+            if lib in ['SDL2_mixer']:
                 # NOTE: Temporary workaround for optional frameworks until 2.8.0
                 download('https://www.libsdl.org/tmp/{0}-2.7.0.dmg'.format(lib), outpath)
             else:
@@ -184,9 +184,17 @@ def getDLLs(platform_name):
                 if os.path.islink(fpath):
                     fpath = os.path.realpath(fpath)
                 libname = os.path.basename(fpath)
-                if libname.split('.')[0] in ['libogg', 'libopus']:
+                libname_base = libname.split('.')[0]
+                if libname_base in ['libogg', 'libopus']:
                     # libopusfile expects truncated .so names
                     libname = '.'.join(libname.split('.')[:3])
+                elif libname_base == 'libwebpdemux':
+                    # Work around linking issues with libwebpdemux
+                    libname = 'libwebpdemux.so.2.6.0'
+                    rename_dependency(fpath, 'libwebp.so.7.5.0', 'libwebp.so.1.0.3')
+                elif libname_base == 'libtiff':
+                    # Work around linking issues with libtiff
+                    libname = 'libtiff.so.5'
                 lib_outpath = os.path.join(dlldir, libname)
                 shutil.copy(fpath, lib_outpath)
 
@@ -463,6 +471,15 @@ def set_relative_runpaths(libdir):
     return success
 
 
+def rename_dependency(libpath, depname, newname):
+    """Renames a dependency in a given dynamic library.
+    """
+    cmd = ['patchelf', '--replace-needed', depname, newname, libpath]
+    p = sub.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr)
+    p.communicate()
+    return p.returncode == 0
+
+
 def rename_library(libdir, name, newname, fix_links):
     """Renames a library to avoid name collisions, patching other libraries
     that depend on it accordingly.
@@ -478,13 +495,10 @@ def rename_library(libdir, name, newname, fix_links):
     os.rename(libname, libname_new)
 
     # Update names in any libraries that link to the renamed one
-    cmd = ['patchelf', '--replace-needed', libname, libname_new]
     to_patch = [f for f in libs if f.split('.')[0] in fix_links]
     for lib in to_patch:
-        p = sub.Popen(cmd + [lib], stdout=sys.stdout, stderr=sys.stderr)
-        p.communicate()
-        if p.returncode != 0:
-            success = False
+        success = rename_dependency(lib, libname, libname_new)
+        if not success:
             break
 
     os.chdir(orig_path)
