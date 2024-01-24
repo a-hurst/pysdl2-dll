@@ -17,17 +17,17 @@ except ImportError:
 libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
 
 libversions = {
-    'SDL2': '2.28.5',
-    'SDL2_mixer': '2.6.0',
-    'SDL2_ttf': '2.20.0',
-    'SDL2_image': '2.8.1',
+    'SDL2': '2.29.2',
+    'SDL2_mixer': '2.8.0',
+    'SDL2_ttf': '2.22.0',
+    'SDL2_image': '2.8.2',
     'SDL2_gfx': '1.0.4'
 }
 
 url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/SDL2{LIB}-{0}{1}'
 url_fmt_pre = url_fmt.replace('release-', 'prerelease-')
 sdl2_urls = {
-    'SDL2': url_fmt.replace('{LIB}', ''),
+    'SDL2': url_fmt_pre.replace('{LIB}', ''),
     'SDL2_mixer': url_fmt.replace('{LIB}', '_mixer'),
     'SDL2_ttf': url_fmt.replace('{LIB}', '_ttf'),
     'SDL2_image': url_fmt.replace('{LIB}', '_image'),
@@ -84,7 +84,7 @@ def getDLLs(platform_name):
             
             # Download disk image containing library
             outpath = os.path.join('temp', lib + '.dmg')
-            if lib in ['SDL2_mixer']:
+            if lib in ['nope']:
                 # NOTE: Temporary workaround for optional frameworks until 2.8.0
                 download('https://www.libsdl.org/tmp/{0}-2.7.0.dmg'.format(lib), outpath)
             else:
