@@ -17,7 +17,7 @@ except ImportError:
 libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
 
 libversions = {
-    'SDL2': '2.29.2',
+    'SDL2': '2.29.3',
     'SDL2_mixer': '2.8.0',
     'SDL2_ttf': '2.22.0',
     'SDL2_image': '2.8.2',
@@ -260,7 +260,8 @@ def buildDLLs(libraries, basedir, libdir):
             # Check for and download any external dependencies
             ext_dir = os.path.join(sourcepath, 'external')
             download_sh = os.path.join(ext_dir, 'download.sh')
-            if os.path.exists(download_sh):
+            if os.path.exists(download_sh) and not lib == "SDL2_ttf":
+                # NOTE: As of 2.22.0, ttf includes external sources in .tar.gz
                 print('======= Downloading optional libraries for {0} =======\n'.format(lib))
                 download_external(ext_dir)
                 print('')
