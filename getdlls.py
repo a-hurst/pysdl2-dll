@@ -41,6 +41,7 @@ cmake_opts = {
     #},
     'SDL2_mixer': {
         'SDL2MIXER_VENDORED': 'ON',
+        'SDL2MIXER_GME': 'ON',
         'SDL2MIXER_FLAC_LIBFLAC': 'OFF', # Match macOS and Windows binaries, which use dr_flac
     },
     'SDL2_ttf': {
@@ -51,6 +52,7 @@ cmake_opts = {
         'SDL2IMAGE_VENDORED': 'ON',
         'SDL2IMAGE_TIF': 'ON',
         'SDL2IMAGE_WEBP': 'ON',
+        'SDL2IMAGE_AVIF': 'ON',
     }
 }
 
@@ -185,7 +187,7 @@ def getDLLs(platform_name):
                     fpath = os.path.realpath(fpath)
                 libname = os.path.basename(fpath)
                 libname_base = libname.split('.')[0]
-                if libname_base in ['libogg', 'libopus']:
+                if libname_base in ['libogg', 'libopus', 'libopusfile', 'libxmp', 'libwavpack']:
                     # libopusfile expects truncated .so names
                     libname = '.'.join(libname.split('.')[:3])
                 elif libname_base == 'libwebpdemux':

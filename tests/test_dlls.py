@@ -128,7 +128,8 @@ def test_sdl2image_formats():
         'JPEG': sdlimage.IMG_INIT_JPG,
         'PNG': sdlimage.IMG_INIT_PNG,
         'TIFF': sdlimage.IMG_INIT_TIF,
-        'WEBP': sdlimage.IMG_INIT_WEBP
+        'WEBP': sdlimage.IMG_INIT_WEBP,
+        'AVIF': sdlimage.IMG_INIT_AVIF,
     }
     for lib in libs.keys():
         flags = libs[lib]
