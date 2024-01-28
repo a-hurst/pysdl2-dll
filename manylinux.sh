@@ -16,7 +16,7 @@ fi
 
 if command -v yum &> /dev/null; then
     # For manylinux2014 & manylinux_2_28 (based on CentOS)
-    yum install -y libtool dbus-devel
+    yum install -y libtool dbus-devel nasm
 
     # Install additional audio backends from source
     if [[ "$AUDITWHEEL_POLICY" == "manylinux_2_28" ]]; then
