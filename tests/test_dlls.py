@@ -115,7 +115,7 @@ def test_sdl2mixer_formats():
     print(supported)
 
     # Ensure all available formats supported by binaries
-    #assert len(supported) == len(libs.keys())
+    assert len(supported) == len(libs.keys())
 
 
 def test_sdl2image_formats():

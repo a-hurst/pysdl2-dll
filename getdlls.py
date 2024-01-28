@@ -53,7 +53,7 @@ cmake_opts = {
         'SDL2IMAGE_TIF': 'ON',
         'SDL2IMAGE_WEBP': 'ON',
         'SDL2IMAGE_AVIF': 'ON',
-        'DAV1D_ASM': 'OFF',
+        'DAV1D_WITH_AVX': 'OFF',
     }
 }
 
@@ -195,6 +195,8 @@ def getDLLs(platform_name):
                 elif libname_base == 'libtiff':
                     # Work around linking issues with libtiff
                     libname = 'libtiff.so.5'
+                elif libname_base in ['libwebp']:
+                    libname = libname
                 else:
                     # SDL dynamic linking code expects truncated .so names
                     libname = '.'.join(libname.split('.')[:3])
@@ -250,7 +252,9 @@ def buildDLLs(libraries, basedir, libdir):
         for name in cfgnames:
             cfgfiles[name] = urlopen(cfgurl.format(name)).read()
 
-        print("\nCurrent auditwheel policy: {0}\n".format(os.getenv("AUDITWHEEL_POLICY", "none")))
+        # Disable dav1d ASM on manylinux2014 since nasm version is too old
+        if os.getenv("AUDITWHEEL_POLICY", "") == "manylinux2014":
+            cmake_opts["SDL2_image"]["DAV1D_ASM"] = "OFF"
 
         for lib in libraries:
 
@@ -272,12 +276,12 @@ def buildDLLs(libraries, basedir, libdir):
                 print('')
 
             # Apply any patches to the source if necessary
-            if lib == 'SDL2_mixer':
-                # Work around bug in 2.6.0 CMakeLists.txt
-                cmake_txt = os.path.join(sourcepath, 'CMakeLists.txt')
-                old = 'SDL2MIXER_FLAC_LIBFLAC_SHARED OR NOT'
-                new = 'SDL2MIXER_MOD_MODPLUG_SHARED OR NOT'
-                patch_file(cmake_txt, old, new)
+            #if lib == 'SDL2_mixer':
+            #    # Work around bug in 2.6.0 CMakeLists.txt
+            #    cmake_txt = os.path.join(sourcepath, 'CMakeLists.txt')
+            #    old = 'SDL2MIXER_FLAC_LIBFLAC_SHARED OR NOT'
+            #    new = 'SDL2MIXER_MOD_MODPLUG_SHARED OR NOT'
+            #    patch_file(cmake_txt, old, new)
             if lib == 'SDL2_image':
                 # Ensure libwebp isn't compiled with mandatory SSE4.1 support
                 cpu_cmake = os.path.join(ext_dir, 'libwebp', 'cmake', 'cpu.cmake')
