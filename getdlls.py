@@ -53,6 +53,7 @@ cmake_opts = {
         'SDL2IMAGE_TIF': 'ON',
         'SDL2IMAGE_WEBP': 'ON',
         'SDL2IMAGE_AVIF': 'ON',
+        'DAV1D_ASM': 'OFF',
     }
 }
 
@@ -187,16 +188,16 @@ def getDLLs(platform_name):
                     fpath = os.path.realpath(fpath)
                 libname = os.path.basename(fpath)
                 libname_base = libname.split('.')[0]
-                if libname_base in ['libogg', 'libopus', 'libopusfile', 'libxmp', 'libwavpack', 'libgme', 'libavif']:
-                    # Mixer uses truncated .so names?
-                    libname = '.'.join(libname.split('.')[:3])
-                elif libname_base == 'libwebpdemux':
+                if libname_base == 'libwebpdemux':
                     # Work around linking issues with libwebpdemux
                     libname = 'libwebpdemux.so.2.6.0'
                     rename_dependency(fpath, 'libwebp.so.7.5.0', 'libwebp.so.1.0.3')
                 elif libname_base == 'libtiff':
                     # Work around linking issues with libtiff
                     libname = 'libtiff.so.5'
+                else:
+                    # SDL dynamic linking code expects truncated .so names
+                    libname = '.'.join(libname.split('.')[:3])
                 lib_outpath = os.path.join(dlldir, libname)
                 shutil.copy(fpath, lib_outpath)
 
@@ -248,6 +249,8 @@ def buildDLLs(libraries, basedir, libdir):
         cfgurl = 'https://git.savannah.gnu.org/cgit/config.git/plain/{0}'
         for name in cfgnames:
             cfgfiles[name] = urlopen(cfgurl.format(name)).read()
+
+        print("\nCurrent auditwheel policy: {0}\n".format(os.getenv("AUDITWHEEL_POLICY", "none")))
 
         for lib in libraries:
 
