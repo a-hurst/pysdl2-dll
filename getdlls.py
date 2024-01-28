@@ -187,8 +187,7 @@ def getDLLs(platform_name):
                     fpath = os.path.realpath(fpath)
                 libname = os.path.basename(fpath)
                 libname_base = libname.split('.')[0]
-                #if libname_base in ['libogg', 'libopus', 'libopusfile', 'libxmp', 'libwavpack']:
-                if lib == "SDL2_mixer":
+                if libname_base in ['libogg', 'libopus', 'libopusfile', 'libxmp', 'libwavpack', 'libgme', 'libavif']:
                     # Mixer uses truncated .so names?
                     libname = '.'.join(libname.split('.')[:3])
                 elif libname_base == 'libwebpdemux':
