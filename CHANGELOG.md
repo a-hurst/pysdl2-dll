@@ -1,5 +1,14 @@
 # pysdl2-dll changelog
 
+### Version 2.30.0
+
+- Bumped the SDL2 binary version from 2.28.5 to 2.30.0.
+- Bumped the SDL2\_image binary version from 2.8.1 to 2.8.2.
+- Bumped the SDL2\_mixer binary version from 2.6.0 to 2.8.0.
+- Bumped the SDL2\_ttf binary version from 2.20.0 to 2.22.0.
+- Added AVIF image support to the manylinux SDL2\_image wheels to match the official macOS and Windows binaries.
+
+
 ### Version 2.28.5
 
 - Bumped the SDL2 binary version from 2.28.4 to 2.28.5.
