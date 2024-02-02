@@ -87,12 +87,8 @@ def getDLLs(platform_name):
             
             # Download disk image containing library
             outpath = os.path.join('temp', lib + '.dmg')
-            if lib in ['nope']:
-                # NOTE: Temporary workaround for optional frameworks until 2.8.0
-                download('https://www.libsdl.org/tmp/{0}-2.7.0.dmg'.format(lib), outpath)
-            else:
-                libversion = libversions[lib]
-                download(sdl2_urls[lib].format(libversion, '.dmg'), outpath)
+            libversion = libversions[lib]
+            download(sdl2_urls[lib].format(libversion, '.dmg'), outpath)
             
             # Mount image, extract framework (and any optional frameworks), then unmount
             sub.check_call(['hdiutil', 'attach', outpath, '-mountpoint', mountpoint])
@@ -196,9 +192,10 @@ def getDLLs(platform_name):
                     # Work around linking issues with libtiff
                     libname = 'libtiff.so.5'
                 elif libname_base in ['libwebp']:
+                    # No clue why this is an exception to the below rule
                     libname = libname
                 else:
-                    # SDL dynamic linking code expects truncated .so names
+                    # SDL dynamic linking code usually expects truncated .so names
                     libname = '.'.join(libname.split('.')[:3])
                 lib_outpath = os.path.join(dlldir, libname)
                 shutil.copy(fpath, lib_outpath)
@@ -276,12 +273,6 @@ def buildDLLs(libraries, basedir, libdir):
                 print('')
 
             # Apply any patches to the source if necessary
-            #if lib == 'SDL2_mixer':
-            #    # Work around bug in 2.6.0 CMakeLists.txt
-            #    cmake_txt = os.path.join(sourcepath, 'CMakeLists.txt')
-            #    old = 'SDL2MIXER_FLAC_LIBFLAC_SHARED OR NOT'
-            #    new = 'SDL2MIXER_MOD_MODPLUG_SHARED OR NOT'
-            #    patch_file(cmake_txt, old, new)
             if lib == 'SDL2_image':
                 # Ensure libwebp isn't compiled with mandatory SSE4.1 support
                 cpu_cmake = os.path.join(ext_dir, 'libwebp', 'cmake', 'cpu.cmake')
