@@ -17,10 +17,10 @@ except ImportError:
 libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
 
 libversions = {
-    'SDL2': '2.28.5',
-    'SDL2_mixer': '2.6.0',
-    'SDL2_ttf': '2.20.0',
-    'SDL2_image': '2.8.1',
+    'SDL2': '2.30.0',
+    'SDL2_mixer': '2.8.0',
+    'SDL2_ttf': '2.22.0',
+    'SDL2_image': '2.8.2',
     'SDL2_gfx': '1.0.4'
 }
 
@@ -41,6 +41,7 @@ cmake_opts = {
     #},
     'SDL2_mixer': {
         'SDL2MIXER_VENDORED': 'ON',
+        'SDL2MIXER_GME': 'ON',
         'SDL2MIXER_FLAC_LIBFLAC': 'OFF', # Match macOS and Windows binaries, which use dr_flac
     },
     'SDL2_ttf': {
@@ -51,6 +52,8 @@ cmake_opts = {
         'SDL2IMAGE_VENDORED': 'ON',
         'SDL2IMAGE_TIF': 'ON',
         'SDL2IMAGE_WEBP': 'ON',
+        'SDL2IMAGE_AVIF': 'ON',
+        'DAV1D_WITH_AVX': 'OFF',
     }
 }
 
@@ -84,12 +87,8 @@ def getDLLs(platform_name):
             
             # Download disk image containing library
             outpath = os.path.join('temp', lib + '.dmg')
-            if lib in ['SDL2_mixer']:
-                # NOTE: Temporary workaround for optional frameworks until 2.8.0
-                download('https://www.libsdl.org/tmp/{0}-2.7.0.dmg'.format(lib), outpath)
-            else:
-                libversion = libversions[lib]
-                download(sdl2_urls[lib].format(libversion, '.dmg'), outpath)
+            libversion = libversions[lib]
+            download(sdl2_urls[lib].format(libversion, '.dmg'), outpath)
             
             # Mount image, extract framework (and any optional frameworks), then unmount
             sub.check_call(['hdiutil', 'attach', outpath, '-mountpoint', mountpoint])
@@ -185,16 +184,19 @@ def getDLLs(platform_name):
                     fpath = os.path.realpath(fpath)
                 libname = os.path.basename(fpath)
                 libname_base = libname.split('.')[0]
-                if libname_base in ['libogg', 'libopus']:
-                    # libopusfile expects truncated .so names
-                    libname = '.'.join(libname.split('.')[:3])
-                elif libname_base == 'libwebpdemux':
+                if libname_base == 'libwebpdemux':
                     # Work around linking issues with libwebpdemux
                     libname = 'libwebpdemux.so.2.6.0'
                     rename_dependency(fpath, 'libwebp.so.7.5.0', 'libwebp.so.1.0.3')
                 elif libname_base == 'libtiff':
                     # Work around linking issues with libtiff
                     libname = 'libtiff.so.5'
+                elif libname_base in ['libwebp']:
+                    # No clue why this is an exception to the below rule
+                    libname = libname
+                else:
+                    # SDL dynamic linking code usually expects truncated .so names
+                    libname = '.'.join(libname.split('.')[:3])
                 lib_outpath = os.path.join(dlldir, libname)
                 shutil.copy(fpath, lib_outpath)
 
@@ -247,6 +249,10 @@ def buildDLLs(libraries, basedir, libdir):
         for name in cfgnames:
             cfgfiles[name] = urlopen(cfgurl.format(name)).read()
 
+        # Disable dav1d ASM on manylinux2014 since nasm version is too old
+        if os.getenv("AUDITWHEEL_POLICY", "") == "manylinux2014":
+            cmake_opts["SDL2_image"]["DAV1D_ASM"] = "OFF"
+
         for lib in libraries:
 
             libversion = libversions[lib]
@@ -260,18 +266,13 @@ def buildDLLs(libraries, basedir, libdir):
             # Check for and download any external dependencies
             ext_dir = os.path.join(sourcepath, 'external')
             download_sh = os.path.join(ext_dir, 'download.sh')
-            if os.path.exists(download_sh):
+            if os.path.exists(download_sh) and not lib == "SDL2_ttf":
+                # NOTE: As of 2.22.0, ttf includes external sources in .tar.gz
                 print('======= Downloading optional libraries for {0} =======\n'.format(lib))
                 download_external(ext_dir)
                 print('')
 
             # Apply any patches to the source if necessary
-            if lib == 'SDL2_mixer':
-                # Work around bug in 2.6.0 CMakeLists.txt
-                cmake_txt = os.path.join(sourcepath, 'CMakeLists.txt')
-                old = 'SDL2MIXER_FLAC_LIBFLAC_SHARED OR NOT'
-                new = 'SDL2MIXER_MOD_MODPLUG_SHARED OR NOT'
-                patch_file(cmake_txt, old, new)
             if lib == 'SDL2_image':
                 # Ensure libwebp isn't compiled with mandatory SSE4.1 support
                 cpu_cmake = os.path.join(ext_dir, 'libwebp', 'cmake', 'cpu.cmake')

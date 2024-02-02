@@ -16,7 +16,7 @@ fi
 
 if command -v yum &> /dev/null; then
     # For manylinux2014 & manylinux_2_28 (based on CentOS)
-    yum install -y libtool dbus-devel
+    yum install -y libtool dbus-devel nasm
 
     # Install additional audio backends from source
     if [[ "$AUDITWHEEL_POLICY" == "manylinux_2_28" ]]; then
@@ -125,6 +125,7 @@ python3.10 -u setup.py bdist_wheel
 
 export SDL_VIDEODRIVER="dummy"
 export SDL_AUDIODRIVER="dummy"
+export SDL_MIXER_DEBUG_MUSIC_INTERFACES=1
 python3.10 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
 python3.10 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
 pytest -v -rP
