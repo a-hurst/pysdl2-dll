@@ -17,17 +17,17 @@ except ImportError:
 libraries = ['SDL', 'SDL_mixer', 'SDL_ttf', 'SDL_image']
 
 libversions = {
-    'SDL': 'main',
+    'SDL': '3.1.0',
     'SDL_mixer': 'main',
     'SDL_ttf': 'main',
     'SDL_image': 'main',
 }
 
-url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/SDL2{LIB}-{0}{1}'
+url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/SDL3{LIB}-{0}{1}'
 url_fmt_pre = url_fmt.replace('release-', 'prerelease-')
 url_fmt_git = 'https://github.com/libsdl-org/SDL{LIB}/archive/refs/heads/main.zip'
 sdl2_urls = {
-    'SDL': url_fmt_git.replace('{LIB}', ''),
+    'SDL': url_fmt_pre.replace('{LIB}', ''),
     'SDL_mixer': url_fmt_git.replace('{LIB}', '_mixer'),
     'SDL_ttf': url_fmt_git.replace('{LIB}', '_ttf'),
     'SDL_image': url_fmt_git.replace('{LIB}', '_image'),
