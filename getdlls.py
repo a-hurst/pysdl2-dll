@@ -339,9 +339,12 @@ def download(url, outpath):
         try:
             data = urlopen(url)
             break
-        except OSError:
-            time.sleep(0.2)
+        except OSError as e:
             attempts += 1
+            if attempts == 3:
+                print("Unable to download file from url '{0}'".format(url))
+                raise e
+            time.sleep(0.2)
 
     with open(outpath, 'wb') as out:
         out.write(data.read())
