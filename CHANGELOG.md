@@ -2,6 +2,11 @@
 
 ### Version 2.30.0
 
+- Bumped the SDL2 binary version from 2.30.0 to 2.30.1.
+
+
+### Version 2.30.0
+
 - Bumped the SDL2 binary version from 2.28.5 to 2.30.0.
 - Bumped the SDL2\_image binary version from 2.8.1 to 2.8.2.
 - Bumped the SDL2\_mixer binary version from 2.6.0 to 2.8.0.
