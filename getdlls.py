@@ -63,11 +63,11 @@ def getDLLs(platform_name):
             shutil.rmtree(d)
         os.mkdir(d)
 
-    # Generate license disclaimer for SDL2 libraries (all under zlib)
-    sdl_licensepath = os.path.join(licensedir, 'LICENSE.SDL2.txt')
+    # Generate license disclaimer for SDL3 libraries (all under zlib)
+    sdl_licensepath = os.path.join(licensedir, 'LICENSE.SDL.txt')
     with open(sdl_licensepath, 'w') as l:
-        l.write("SDL2 License Info\n---\n\n")
-        l.write("SDL2, SDL2_mixer, SDL2_ttf, SDL2_image, and SDL2_gfx are all distributed\n")
+        l.write("SDL License Info\n---\n\n")
+        l.write("SDL3, SDL3_mixer, SDL3_ttf, and SDL3_image are all distributed\n")
         l.write("under the terms of the zlib license: http://www.zlib.net/zlib_license.html\n")
     
     if 'macosx' in platform_name:
