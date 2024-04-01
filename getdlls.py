@@ -323,9 +323,11 @@ def fetch_source(libfolder, liburl, outdir, tar=True):
     # Extract source from archive
     if tar:
         with tarfile.open(outpath, 'r:gz') as z:
+            libfolder = z.getnames()[0].split("/")[0]
             z.extractall(path=outdir)
     else:
         with ZipFile(outpath, 'r') as z:
+            libfolder = z.namelist()[0].split("/")[0]
             z.extractall(path=outdir)
 
     return os.path.join(outdir, libfolder)
