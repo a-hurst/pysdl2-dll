@@ -35,7 +35,7 @@ task:
   install_script:
     - brew install python
     - python3 -m pip config set global.break-system-packages true
-    - python3 -m pip install -U wheel twine
+    - python3 -m pip install -U setuptools wheel twine
     - python3 setup.py bdist_wheel
     - MACOS_LEGACY_WHEEL=1 python3 setup.py bdist_wheel
 
