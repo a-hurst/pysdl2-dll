@@ -33,8 +33,8 @@ task:
     image: ghcr.io/cirruslabs/macos-ventura-base:latest
 
   install_script:
-    - brew install python@3.11
-    - brew link python@3.11
+    - brew install python
+    - python3 -m pip config set global.break-system-packages true
     - python3 -m pip install -U wheel twine
     - python3 setup.py bdist_wheel
     - MACOS_LEGACY_WHEEL=1 python3 setup.py bdist_wheel
