@@ -25,7 +25,7 @@ libversions = {
 
 url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/SDL3{LIB}-{0}{1}'
 url_fmt_pre = url_fmt.replace('release-', 'prerelease-')
-url_fmt_git = 'https://github.com/libsdl-org/SDL{LIB}/archive/refs/heads/main.zip'
+url_fmt_git = 'https://github.com/libsdl-org/SDL{LIB}/archive/refs/heads/{0}{1}'
 sdl2_urls = {
     'SDL': url_fmt_pre.replace('{LIB}', ''),
     'SDL_mixer': url_fmt_git.replace('{LIB}', '_mixer'),
@@ -218,7 +218,7 @@ def getDLLs(platform_name):
 
 def buildDLLs(libraries, basedir, libdir):
 
-        suffix = '.tar.gz' # source code
+        suffix = '.zip' # source code
         arch = os.uname()[-1]
 
         # Set required environment variables for custom prefix
@@ -244,7 +244,7 @@ def buildDLLs(libraries, basedir, libdir):
             print('\n======= Downloading {0} {1} =======\n'.format(lib, libversion))
 
             # Download and extract tar archive containing source
-            liburl = sdl2_urls[lib]#.format(libversion, suffix)
+            liburl = sdl2_urls[lib].format(libversion, suffix)
             libfolder = lib + '-' + libversion
             sourcepath = fetch_source(libfolder, liburl, outdir='temp', tar=False)
 
