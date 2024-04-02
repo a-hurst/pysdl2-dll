@@ -61,7 +61,7 @@ with open('README.md', 'r') as f:
 
 setup(
 	name='pysdl3-dll',
-	version='3.0.0a1',
+	version='3.1.1a1',
 	author='Austin Hurst',
 	author_email='mynameisaustinhurst@gmail.com',
     license='Mozilla Public License Version 2.0',
