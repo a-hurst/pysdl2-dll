@@ -56,7 +56,16 @@ extras = {
             ['make'],
             ['make', 'install'],
         ]
-    }
+    },
+    'nasm': {
+        'version': "2.16.01",
+        'url': "https://www.nasm.us/pub/nasm/releasebuilds/{0}/nasm-{0}.tar.gz",
+        'build_cmds': [
+            ['./configure'],
+            ['make'],
+            ['make', 'install'],
+        ]
+    },
 }
 
 
