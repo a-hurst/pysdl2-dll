@@ -56,7 +56,7 @@ cmake_opts = {
 
 def getDLLs(platform_name):
     
-    dlldir = os.path.join('sdl2dll', 'dll')
+    dlldir = os.path.join('sdl3dll', 'dll')
     licensedir = os.path.join('sdl_licenses')
     for d in ['temp', 'build', dlldir, licensedir]:
         if os.path.isdir(d):
@@ -196,7 +196,7 @@ def getDLLs(platform_name):
                 lib_outpath = os.path.join(dlldir, libname)
                 shutil.copy(fpath, lib_outpath)
 
-        # Update library runpaths to allow loading from within sdl2dll folder
+        # Update library runpaths to allow loading from within sdl3dll folder
         set_relative_runpaths(dlldir)
 
         # If release, strip debug symbols from the binaries to reduce file size

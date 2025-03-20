@@ -7,20 +7,20 @@ from distutils.util import get_platform
 from getdlls import getDLLs
 
 
-# Get the necessary SDL2 DLLs for the platform
+# Get the necessary SDL3 DLLs for the platform
 
-override = os.getenv('SDL2DLL_PLATFORM')
+override = os.getenv('SDL3DLL_PLATFORM')
 platform = get_platform() if not override else override
 getDLLs(platform)
 
 
 # Gather list of all dll files so that they can be included in wheels, but not sdist
 
-dllpath = os.path.join('sdl2dll', 'dll')
+dllpath = os.path.join('sdl3dll', 'dll')
 dllfiles = []
 for path, _, files in os.walk(dllpath):
     for f in files:
-        parentdir = 'sdl2dll' + os.sep
+        parentdir = 'sdl3dll' + os.sep
         filepath = os.path.join(path, f).replace(parentdir, '')
         dllfiles.append(filepath)
 
@@ -60,18 +60,18 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 setup(
-	name='pysdl2-dll',
-	version='2.32.0',
+	name='pysdl3-dll',
+	version='3.2.8',
 	author='Austin Hurst',
 	author_email='mynameisaustinhurst@gmail.com',
     license='Mozilla Public License Version 2.0',
-    description='Pre-built SDL2 binaries for PySDL2',
+    description='Pre-built SDL3 binaries for PySDL3',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/a-hurst/pysdl2-dll',
-	packages=['sdl2dll'],
+	packages=['sdl3dll'],
 	cmdclass=cmdclass,
-    package_data={'sdl2dll': dllfiles},
+    package_data={'sdl3dll': dllfiles},
 	include_package_data=True,
 	install_requires=[],
     classifiers=[
