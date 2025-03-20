@@ -354,6 +354,7 @@ def download_external(ext_path):
     orig_path = os.getcwd()
     os.chdir(ext_path)
     
+    sub.check_call(['chmod', '+x', './download.sh'])
     p = sub.Popen("./download.sh", stdout=sys.stdout, stderr=sys.stderr)
     p.communicate()
     if p.returncode != 0:
