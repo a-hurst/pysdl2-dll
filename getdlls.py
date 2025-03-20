@@ -75,8 +75,9 @@ def getDLLs(platform_name):
         for lib in libraries:
             
             mountpoint = '/tmp/' + lib
+            dllpath_tmp = "{0}.xcframework/macos-arm64_x86_64/{0}.framework"
             dllname = lib + '.framework'
-            dllpath = os.path.join(mountpoint, dllname)
+            dllpath = os.path.join(mountpoint, dllpath_tmp.format(lib))
             dlloutpath = os.path.join(dlldir, dllname)
             optpath = os.path.join(mountpoint, 'optional')
             extraframeworkpath = os.path.join(dlloutpath, 'Versions', 'A', 'Frameworks')
@@ -90,9 +91,17 @@ def getDLLs(platform_name):
             sub.check_call(['hdiutil', 'attach', outpath, '-mountpoint', mountpoint])
             shutil.copytree(dllpath, dlloutpath, symlinks=True, ignore=find_symlinks)
             if os.path.isdir(optpath):
-                shutil.copytree(
-                    optpath, extraframeworkpath, symlinks=True, ignore=find_symlinks
-                )
+                if not os.path.isdir(extraframeworkpath):
+                    os.makedirs(extraframeworkpath)
+                for d in os.listdir(optpath):
+                    if not ".xcframework" in d:
+                        continue
+                    extlib = d.split(".")[0]
+                    extlibpath = os.path.join(optpath, dllpath_tmp.format(extlib))
+                    extliboutpath = os.path.join(extraframeworkpath, extlib + '.framework')
+                    shutil.copytree(
+                        extlibpath, extliboutpath, symlinks=True, ignore=find_symlinks
+                    )
             sub.call(['hdiutil', 'unmount', mountpoint])
 
             # Extract license info from frameworks bundled within main framework
