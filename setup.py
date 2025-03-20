@@ -10,7 +10,7 @@ from setuptools.command.build import build
 sys.path.append(".")
 from getdlls import getDLLs
 
-override = os.getenv('SDL2DLL_PLATFORM')
+override = os.getenv('SDL3DLL_PLATFORM')
 platform = get_platform() if not override else override
 
 
@@ -31,10 +31,10 @@ class CustomCommand(Command):
         if self.get_dlls:
             # Create the bdist and binary output paths
             self.bdist_dir.mkdir(parents=True, exist_ok=True)
-            dllpath = os.path.join(self.bdist_dir, 'sdl2dll', 'dll')
+            dllpath = os.path.join(self.bdist_dir, 'sdl3dll', 'dll')
             os.makedirs(dllpath)
 
-            # Get or build the necessary SDL2 DLLs for the platform
+            # Get or build the necessary SDL3 DLLs for the platform
             try:
                 getDLLs(platform, dllpath)
             except Exception as e:
@@ -49,7 +49,7 @@ class CustomBuild(build):
 # Install the package
 
 setup(
-	packages=['sdl2dll'],
+	packages=['sdl3dll'],
 	cmdclass={'build': CustomBuild, 'build_custom': CustomCommand},
     include_package_data=True
 )

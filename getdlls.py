@@ -147,7 +147,7 @@ def getDLLs(platform_name, dlldir):
                 lib_outpath = os.path.join(dlldir, libname)
                 shutil.copy(fpath, lib_outpath)
 
-        # Update library runpaths to allow loading from within sdl2dll folder
+        # Update library runpaths to allow loading from within sdl3dll folder
         set_relative_runpaths(dlldir)
 
         # If release, strip debug symbols from the binaries to reduce file size

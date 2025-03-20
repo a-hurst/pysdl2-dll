@@ -3,9 +3,9 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pysdl2-dll"
-version = "2.32.10"
-description = "Pre-built SDL2 binaries for PySDL2"
+name = "pysdl3-dll"
+version = "3.4.8"
+description = "Pre-built SDL3 binaries"
 readme = "README.md"
 license = "MPL-2.0"
 requires-python = ">=2.7"
