@@ -33,16 +33,15 @@ if command -v yum &> /dev/null; then
 
     fi
 
-    # Install audio libraries and backends (ALSA, PulseAudio, libsamplerate)
-    yum install -y alsa-lib-devel pulseaudio-libs-devel libsamplerate-devel
+    # Install audio libraries and backends (ALSA, PulseAudio)
+    yum install -y alsa-lib-devel pulseaudio-libs-devel
 
     # Build sndio from source
     python3.10 build_extras.py sndio
 
     # Install X11 and related libraries
     yum install -y libX11-devel libXext-devel libXrandr-devel libXcursor-devel \
-        libXfixes-devel libXi-devel libXinerama-devel libXxf86vm-devel \
-        libXScrnSaver-devel
+        libXfixes-devel libXi-devel libXScrnSaver-devel
 
     # Install OpenGL renderers (OpenGL, OpenGL ES v2)
     yum install -y mesa-libGL-devel mesa-libGLES-devel mesa-libEGL-devel \
@@ -79,20 +78,19 @@ else
     make && make install
     cd ..
 
-    # Install audio libraries and backends (ALSA, PulseAudio, JACK, sndio, NAS, libsamplerate)
-    apt-get install -y libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev \
-        libsamplerate0-dev
+    # Install audio libraries and backends (ALSA, PulseAudio, JACK, sndio, NAS)
+    apt-get install -y libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev
 
     # Install X11, Wayland, and related libraries
     apt-get install -y libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev \
-        libxi-dev libxinerama-dev libxxf86vm-dev libxss-dev libwayland-dev
+        libxi-dev libxss-dev libwayland-dev
 
     # Install OpenGL renderers (OpenGL, OpenGL ES v1, OpenGL ES v2)
     apt-get install -y libgl1-mesa-dev libgles1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev
 
     # Install input libraries
     apt-get install -y libdbus-1-dev libudev-dev libusb-1.0-0-dev libibus-1.0-dev \
-        fcitx-libs-dev libxkbcommon-dev
+        libxkbcommon-dev
 
     # Update Wayland to a supported version (=> 1.18.0 required as of SDL 2.0.22)
     apt-get install -y libffi-dev libxml2-dev
