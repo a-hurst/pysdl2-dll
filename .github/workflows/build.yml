@@ -29,9 +29,9 @@ jobs:
 
       - name: Install and run tests
         run: |
-          python3 -m pip install -U --force-reinstall ./dist/pysdl2_dll*.tar.gz
-          python3 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
-          pytest -v -rP
+          python3 -m pip install -U --force-reinstall ./dist/pysdl3_dll*.tar.gz
+#          python3 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
+#          pytest -v -rP
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
@@ -62,9 +62,9 @@ jobs:
 
       - name: Install and run tests
         run: |
-          python3 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
-          python3 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
-          pytest -v -rP
+          python3 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl3-dll
+#          python3 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
+#          pytest -v -rP
 
       - name: Upload universal wheel
         uses: actions/upload-artifact@v7
@@ -97,7 +97,7 @@ jobs:
         uses: maus007/docker-run-action-fork@v1
         with:
           image: quay.io/pypa/${{ matrix.platform }}_i686
-          options: -v ${{ github.workspace }}:/io -e SDL2DLL_PLATFORM=${{ matrix.platform }}
+          options: -v ${{ github.workspace }}:/io -e SDL3DLL_PLATFORM=${{ matrix.platform }}
           run: cd io && linux32 ./manylinux.sh
 
       - name: Upload build artifacts
@@ -125,7 +125,7 @@ jobs:
         uses: maus007/docker-run-action-fork@v1
         with:
           image: quay.io/pypa/${{ matrix.platform }}_x86_64
-          options: -v ${{ github.workspace }}:/io -e SDL2DLL_PLATFORM=${{ matrix.platform }}
+          options: -v ${{ github.workspace }}:/io -e SDL3DLL_PLATFORM=${{ matrix.platform }}
           run: cd io && ./manylinux.sh
 
       - name: Upload build artifacts
@@ -153,7 +153,7 @@ jobs:
         uses: maus007/docker-run-action-fork@v1
         with:
           image: quay.io/pypa/${{ matrix.platform }}_aarch64
-          options: -v ${{ github.workspace }}:/io -e SDL2DLL_PLATFORM=${{ matrix.platform }}
+          options: -v ${{ github.workspace }}:/io -e SDL3DLL_PLATFORM=${{ matrix.platform }}
           run: cd io && ./manylinux.sh
 
       - name: Upload build artifacts
