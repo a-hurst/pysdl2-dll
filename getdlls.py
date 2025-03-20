@@ -14,41 +14,41 @@ except ImportError:
     from urllib2 import urlopen # Python 2
 
 
-libraries = ['SDL2', 'SDL2_mixer', 'SDL2_ttf', 'SDL2_image', 'SDL2_gfx']
+libraries = ['SDL', 'SDL_mixer', 'SDL_ttf', 'SDL_image', 'SDL_gfx']
 
 libversions = {
-    'SDL2': '2.32.0',
-    'SDL2_mixer': '2.8.1',
-    'SDL2_ttf': '2.24.0',
-    'SDL2_image': '2.8.6',
-    'SDL2_gfx': '1.0.4'
+    'SDL': '2.32.0',
+    'SDL_mixer': '2.8.1',
+    'SDL_ttf': '2.24.0',
+    'SDL_image': '2.8.6',
+    'SDL_gfx': '1.0.4'
 }
 
 url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/SDL2{LIB}-{0}{1}'
 url_fmt_pre = url_fmt.replace('release-', 'prerelease-')
-sdl2_urls = {
-    'SDL2': url_fmt.replace('{LIB}', ''),
-    'SDL2_mixer': url_fmt.replace('{LIB}', '_mixer'),
-    'SDL2_ttf': url_fmt.replace('{LIB}', '_ttf'),
-    'SDL2_image': url_fmt.replace('{LIB}', '_image'),
-    'SDL2_gfx': 'https://github.com/a-hurst/sdl2gfx-builds/releases/download/{0}/SDL2_gfx-{0}{1}'
+sdl_urls = {
+    'SDL': url_fmt.replace('{LIB}', ''),
+    'SDL_mixer': url_fmt.replace('{LIB}', '_mixer'),
+    'SDL_ttf': url_fmt.replace('{LIB}', '_ttf'),
+    'SDL_image': url_fmt.replace('{LIB}', '_image'),
+    'SDL_gfx': 'https://github.com/a-hurst/sdl2gfx-builds/releases/download/{0}/SDL2_gfx-{0}{1}'
 }
 
 cmake_opts = {
-    #'SDL2': {
+    #'SDL': {
     #    'SDL_SSE2': 'ON',
     #    'SDL_ARMNEON': 'ON',
     #},
-    'SDL2_mixer': {
+    'SDL_mixer': {
         'SDL2MIXER_VENDORED': 'ON',
         'SDL2MIXER_GME': 'ON',
         'SDL2MIXER_FLAC_LIBFLAC': 'OFF', # Match macOS and Windows binaries, which use dr_flac
     },
-    'SDL2_ttf': {
+    'SDL_ttf': {
         'SDL2TTF_VENDORED': 'ON',
         'SDL2TTF_HARFBUZZ': 'ON',
     },
-    'SDL2_image': {
+    'SDL_image': {
         'SDL2IMAGE_VENDORED': 'ON',
         'SDL2IMAGE_TIF': 'ON',
         'SDL2IMAGE_WEBP': 'ON',
@@ -88,7 +88,7 @@ def getDLLs(platform_name):
             # Download disk image containing library
             outpath = os.path.join('temp', lib + '.dmg')
             libversion = libversions[lib]
-            download(sdl2_urls[lib].format(libversion, '.dmg'), outpath)
+            download(sdl_urls[lib].format(libversion, '.dmg'), outpath)
             
             # Mount image, extract framework (and any optional frameworks), then unmount
             sub.check_call(['hdiutil', 'attach', outpath, '-mountpoint', mountpoint])
@@ -127,7 +127,7 @@ def getDLLs(platform_name):
             # Download zip archive containing library
             libversion = libversions[lib]
             outpath = os.path.join('temp', lib + '.zip')
-            download(sdl2_urls[lib].format(libversion, suffix), outpath)
+            download(sdl_urls[lib].format(libversion, suffix), outpath)
             
             # Extract dlls and license files from archive
             with ZipFile(outpath, 'r') as z:
@@ -158,7 +158,7 @@ def getDLLs(platform_name):
             # Download zip archive containing library
             libversion = libversions[lib]
             outpath = os.path.join('temp', lib + '.zip')
-            download(sdl2_urls[lib].format(libversion, '-win32-x64.zip'), outpath)
+            download(sdl_urls[lib].format(libversion, '-win32-x64.zip'), outpath)
 
             # Extract license files from archive
             with ZipFile(outpath, 'r') as z:
@@ -173,7 +173,7 @@ def getDLLs(platform_name):
                     shutil.move(os.path.join(optdir, f), os.path.join(licensedir, f))
 
         # Build and install everything into the custom prefix
-        sdl2_urls['SDL2_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
+        sdl_urls['SDL_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
         buildDLLs(libraries, basedir, libdir)
 
         # Copy all compiled binaries to dll folder for bundling in wheel
@@ -251,7 +251,7 @@ def buildDLLs(libraries, basedir, libdir):
 
         # Disable dav1d ASM on manylinux2014 since nasm version is too old
         if os.getenv("AUDITWHEEL_POLICY", "") == "manylinux2014":
-            cmake_opts["SDL2_image"]["DAV1D_ASM"] = "OFF"
+            cmake_opts["SDL_image"]["DAV1D_ASM"] = "OFF"
 
         for lib in libraries:
 
@@ -259,21 +259,21 @@ def buildDLLs(libraries, basedir, libdir):
             print('\n======= Downloading {0} {1} =======\n'.format(lib, libversion))
 
             # Download and extract tar archive containing source
-            liburl = sdl2_urls[lib].format(libversion, suffix)
+            liburl = sdl_urls[lib].format(libversion, suffix)
             libfolder = lib + '-' + libversion
             sourcepath = fetch_source(libfolder, liburl, outdir='temp')
 
             # Check for and download any external dependencies
             ext_dir = os.path.join(sourcepath, 'external')
             download_sh = os.path.join(ext_dir, 'download.sh')
-            if os.path.exists(download_sh) and not lib == "SDL2_ttf":
+            if os.path.exists(download_sh) and not lib == "SDL_ttf":
                 # NOTE: As of 2.22.0, ttf includes external sources in .tar.gz
                 print('======= Downloading optional libraries for {0} =======\n'.format(lib))
                 download_external(ext_dir)
                 print('')
 
             # Apply any patches to the source if necessary
-            if lib == 'SDL2_image':
+            if lib == 'SDL_image':
                 # Ensure libwebp isn't compiled with mandatory SSE4.1 support
                 cpu_cmake = os.path.join(ext_dir, 'libwebp', 'cmake', 'cpu.cmake')
                 old = 'NOT ENABLE_SIMD'
@@ -289,9 +289,9 @@ def buildDLLs(libraries, basedir, libdir):
             else:
                 # Build using autotools
                 xtra_args = None
-                if lib == 'SDL2':
+                if lib == 'SDL':
                     xtra_args = ['--enable-libudev=no']
-                elif lib == 'SDL2_gfx' and not arch in ['i686', 'x86_64']:
+                elif lib == 'SDL_gfx' and not arch in ['i686', 'x86_64']:
                     xtra_args = ['--disable-mmx']
                 success = make_install_lib(sourcepath, libdir, buildenv, xtra_args, cfgfiles)
 
