@@ -271,8 +271,7 @@ def buildDLLs(libraries, basedir, libdir):
             # Check for and download any external dependencies
             ext_dir = os.path.join(sourcepath, 'external')
             download_sh = os.path.join(ext_dir, 'download.sh')
-            if os.path.exists(download_sh) and not lib == "SDL3_ttf":
-                # NOTE: As of 2.22.0, ttf includes external sources in .tar.gz
+            if os.path.exists(download_sh):
                 print('======= Downloading optional libraries for {0} =======\n'.format(lib))
                 download_external(ext_dir)
                 print('')
