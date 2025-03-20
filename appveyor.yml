@@ -17,7 +17,7 @@ install:
 build: off
 
 test_script:
-  - "pip install --no-index --find-links=dist pysdl2-dll"
+  - "pip install --no-index --find-links=dist pysdl3-dll"
 #  - "pip install pytest git+https://github.com/py-sdl/py-sdl2.git"
 #  - "pytest -v -rP"
 
