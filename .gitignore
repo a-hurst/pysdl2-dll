@@ -11,7 +11,7 @@
 *.egg-info
 **/LICENSE*
 dlls
-sdl2dll/dll
+sdl3dll/dll
 sdl_licenses
 dist
 build
