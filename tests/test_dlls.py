@@ -3,7 +3,7 @@ import os
 import sys
 import pytest
 
-platform = os.getenv('SDL2DLL_PLATFORM')
+platform = os.getenv('SDL3DLL_PLATFORM')
 manylinux = platform and 'manylinux' in platform
 is_macos = sys.platform == 'darwin'
 nodlls = not manylinux and sys.platform not in ('win32', 'darwin')

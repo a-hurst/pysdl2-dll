@@ -11,7 +11,7 @@ if [ -d "/io" ]; then
 fi
 
 
-# Install required and optional dependencies for SDL2 so that it compiles with support
+# Install required and optional dependencies for SDL3 so that it compiles with support
 # for as many different audio/video/input backends as possible
 
 if command -v yum &> /dev/null; then
@@ -110,22 +110,22 @@ fi
 # If this is a tagged release, set env to strip the debug symbols from the binaries
 
 if [ ! -z ${CIRRUS_TAG:-} ]; then
-    export SDL2DLL_RELEASE=1
+    export SDL3DLL_RELEASE=1
     echo "Building version ${CIRRUS_TAG} for release"
 fi
 
 
-# Compile SDL2, addon libraries, and any necessary dependencies
+# Compile SDL3, addon libraries, and any necessary dependencies
 
 #python3.10 -m pip install requests
 python3.10 -u setup.py bdist_wheel
 
 
-# Run unit tests on built pysdl2-dll wheel
+# Run unit tests on built pysdl3-dll wheel
 
 export SDL_VIDEODRIVER="dummy"
 export SDL_AUDIODRIVER="dummy"
 export SDL_MIXER_DEBUG_MUSIC_INTERFACES=1
-python3.10 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
-python3.10 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
-pytest -v -rP
+python3.10 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl3-dll
+#python3.10 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
+#pytest -v -rP

@@ -14,45 +14,41 @@ except ImportError:
     from urllib2 import urlopen # Python 2
 
 
-libraries = ['SDL', 'SDL_mixer', 'SDL_ttf', 'SDL_image', 'SDL_gfx']
+#libraries = ['SDL', 'SDL_mixer', 'SDL_ttf', 'SDL_image', 'SDL_gfx']
+libraries = ['SDL', 'SDL_ttf', 'SDL_image']
 
 libversions = {
-    'SDL': '2.32.0',
-    'SDL_mixer': '2.8.1',
-    'SDL_ttf': '2.24.0',
-    'SDL_image': '2.8.6',
-    'SDL_gfx': '1.0.4'
+    'SDL': '3.2.8',
+#    'SDL_mixer': '2.8.1',
+    'SDL_ttf': '3.2.0',
+    'SDL_image': '3.2.4',
+#    'SDL_gfx': '1.0.4'
 }
 
-url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/SDL2{LIB}-{0}{1}'
+url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/SDL3{LIB}-{0}{1}'
 url_fmt_pre = url_fmt.replace('release-', 'prerelease-')
 sdl_urls = {
     'SDL': url_fmt.replace('{LIB}', ''),
     'SDL_mixer': url_fmt.replace('{LIB}', '_mixer'),
     'SDL_ttf': url_fmt.replace('{LIB}', '_ttf'),
     'SDL_image': url_fmt.replace('{LIB}', '_image'),
-    'SDL_gfx': 'https://github.com/a-hurst/sdl2gfx-builds/releases/download/{0}/SDL2_gfx-{0}{1}'
+#    'SDL_gfx': 'https://github.com/a-hurst/sdl2gfx-builds/releases/download/{0}/SDL2_gfx-{0}{1}'
 }
 
 cmake_opts = {
-    #'SDL': {
-    #    'SDL_SSE2': 'ON',
-    #    'SDL_ARMNEON': 'ON',
-    #},
+    'SDL': {
+        'SDL_SSE4_2': 'OFF',
+    },
     'SDL_mixer': {
-        'SDL2MIXER_VENDORED': 'ON',
-        'SDL2MIXER_GME': 'ON',
-        'SDL2MIXER_FLAC_LIBFLAC': 'OFF', # Match macOS and Windows binaries, which use dr_flac
+        'SDLMIXER_VENDORED': 'ON',
+        'SDLMIXER_GME': 'ON',
+        'SDLMIXER_FLAC_LIBFLAC': 'OFF', # Match macOS and Windows binaries, which use dr_flac
     },
     'SDL_ttf': {
-        'SDL2TTF_VENDORED': 'ON',
-        'SDL2TTF_HARFBUZZ': 'ON',
+        'SDLTTF_VENDORED': 'ON',
     },
     'SDL_image': {
-        'SDL2IMAGE_VENDORED': 'ON',
-        'SDL2IMAGE_TIF': 'ON',
-        'SDL2IMAGE_WEBP': 'ON',
-        'SDL2IMAGE_AVIF': 'ON',
+        'SDLIMAGE_VENDORED': 'ON',
         'DAV1D_WITH_AVX': 'OFF',
     }
 }
@@ -67,11 +63,11 @@ def getDLLs(platform_name):
             shutil.rmtree(d)
         os.mkdir(d)
 
-    # Generate license disclaimer for SDL2 libraries (all under zlib)
-    sdl_licensepath = os.path.join(licensedir, 'LICENSE.SDL2.txt')
+    # Generate license disclaimer for SDL libraries (all under zlib)
+    sdl_licensepath = os.path.join(licensedir, 'LICENSE.SDL3.txt')
     with open(sdl_licensepath, 'w') as l:
-        l.write("SDL2 License Info\n---\n\n")
-        l.write("SDL2, SDL2_mixer, SDL2_ttf, SDL2_image, and SDL2_gfx are all distributed\n")
+        l.write("SDL3 License Info\n---\n\n")
+        l.write("SDL3, SDL3_mixer, SDL3_ttf, SDL3_image, and SDL3_gfx are all distributed\n")
         l.write("under the terms of the zlib license: http://www.zlib.net/zlib_license.html\n")
     
     if 'macosx' in platform_name:
@@ -144,9 +140,9 @@ def getDLLs(platform_name):
                     for f in os.listdir(optdir):
                         shutil.move(os.path.join(optdir, f), os.path.join(d, f))
 
-    elif 'manylinux' in platform_name or os.getenv('SDL2DLL_UNIX_COMPILE', '0') == '1':
+    elif 'manylinux' in platform_name or os.getenv('SDL3DLL_UNIX_COMPILE', '0') == '1':
 
-        # Create custom prefix in which to install the SDL2 libs + dependencies
+        # Create custom prefix in which to install the SDL3 libs + dependencies
         basedir = os.getcwd()
         libdir = os.path.join(basedir, 'sdlprefix')
         if os.path.isdir(libdir):
@@ -173,7 +169,7 @@ def getDLLs(platform_name):
                     shutil.move(os.path.join(optdir, f), os.path.join(licensedir, f))
 
         # Build and install everything into the custom prefix
-        sdl_urls['SDL_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
+        #sdl_urls['SDL_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
         buildDLLs(libraries, basedir, libdir)
 
         # Copy all compiled binaries to dll folder for bundling in wheel
@@ -204,7 +200,7 @@ def getDLLs(platform_name):
         set_relative_runpaths(dlldir)
 
         # If release, strip debug symbols from the binaries to reduce file size
-        if int(os.getenv("SDL2DLL_RELEASE", 0)) == 1:
+        if int(os.getenv("SDL3DLL_RELEASE", 0)) == 1:
             success = strip_debug_symbols(dlldir)
             if success:
                 print("*** Successfully stripped debug symbols from binaries ***\n")
@@ -216,7 +212,7 @@ def getDLLs(platform_name):
 
     else:
 
-        # Create dummy file indicating that SDL2 binaries are not available on this platform
+        # Create dummy file indicating that SDL3 binaries are not available on this platform
         dummyfile = os.path.join(dlldir, '.unsupported')
         with open(dummyfile, 'w') as f:
             f.write("No dlls available for this platform!")
@@ -306,7 +302,7 @@ def buildDLLs(libraries, basedir, libdir):
 def find_symlinks(path, names):
     """'ignore' filter for shutil.copytree that identifies whether files are
     symlinks or not. For excluding symlinks when copying .frameworks, since
-    they're not needed for pysdl2 and Python wheels don't support them.
+    they're not needed for pysdl3 and Python wheels don't support them.
     """
     links = []
     for f in os.listdir(path):
@@ -429,7 +425,7 @@ def cmake_install_lib(src_path, prefix, buildenv, opts=None):
     opts['CMAKE_INSTALL_PREFIX'] = prefix
     opts['CMAKE_INSTALL_LIBDIR'] = 'lib'
     opts['CMAKE_INSTALL_RPATH'] = prefix
-    if int(os.getenv("SDL2DLL_RELEASE", 0)) == 1:
+    if int(os.getenv("SDL3DLL_RELEASE", 0)) == 1:
         opts['CMAKE_BUILD_TYPE'] = 'Release'
     else:
         opts['CMAKE_BUILD_TYPE'] = 'Debug'

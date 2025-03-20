@@ -1,4 +1,4 @@
-"""Utilities to check the pysdl2-dll environment for problems on import."""
+"""Utilities to check the pysdl3-dll environment for problems on import."""
 
 import os
 import sys
@@ -48,7 +48,7 @@ def _using_ms_store_python():
 
 
 def is_sdist():
-    """Checks whether pysdl2-dll was installed as a binary-less source dist."""
+    """Checks whether pysdl3-dll was installed as a binary-less source dist."""
     root_path = os.path.abspath(os.path.dirname(__file__))
     dll_dir = os.path.join(root_path, 'dll')
     no_dll_dir = os.path.isdir(dll_dir) == False
@@ -56,14 +56,14 @@ def is_sdist():
 
 
 def init_check():
-    """Checks the pysdl2-dll environment and warns about any important issues."""
+    """Checks the pysdl3-dll environment and warns about any important issues."""
     sdist_msg = (
-        "pysdl2-dll is installed as source-only, meaning that it does not "
-        "contain any binaries and will be ignored by PySDL2."
+        "pysdl3-dll is installed as source-only, meaning that it does not "
+        "contain any binaries and will be ignored by PySDL3."
     )
     pip_update_msg = (
-        "NOTE: Binary SDL2 wheels may be available for this platform. Please "
-        "update pip to the latest version and try reinstalling pysdl2-dll."
+        "NOTE: Binary SDL3 wheels may be available for this platform. Please "
+        "update pip to the latest version and try reinstalling pysdl3-dll."
     )
 
     if is_sdist():

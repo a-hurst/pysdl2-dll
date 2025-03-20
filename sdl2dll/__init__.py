@@ -1,6 +1,6 @@
-"""Adds the SDL2 DLLs in the package to the PySDL2 DLL search path"""
+"""Adds the SDL3 DLLs in the package to the PySDL3 DLL search path"""
 
-__version__ = "2.32.0"
+__version__ = "3.2.8"
 
 import os
 from .initcheck import is_sdist, init_check
@@ -10,6 +10,6 @@ def get_dllpath():
     return os.path.join(root_path, 'dll')
 
 init_check()
-dll_path = os.getenv('PYSDL2_DLL_PATH')
+dll_path = os.getenv('PYSDL3_DLL_PATH')
 if dll_path == None and is_sdist() == False:
-    os.environ['PYSDL2_DLL_PATH'] = get_dllpath()
+    os.environ['PYSDL3_DLL_PATH'] = get_dllpath()
