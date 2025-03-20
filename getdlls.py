@@ -14,40 +14,40 @@ except ImportError:
     from urllib2 import urlopen # Python 2
 
 
-#libraries = ['SDL', 'SDL_mixer', 'SDL_ttf', 'SDL_image', 'SDL_gfx']
-libraries = ['SDL', 'SDL_ttf', 'SDL_image']
+#libraries = ['SDL3', 'SDL3_mixer', 'SDL3_ttf', 'SDL3_image', 'SDL3_gfx']
+libraries = ['SDL3', 'SDL3_ttf', 'SDL3_image']
 
 libversions = {
-    'SDL': '3.2.8',
-#    'SDL_mixer': '2.8.1',
-    'SDL_ttf': '3.2.0',
-    'SDL_image': '3.2.4',
-#    'SDL_gfx': '1.0.4'
+    'SDL3': '3.2.8',
+#    'SDL3_mixer': '2.8.1',
+    'SDL3_ttf': '3.2.0',
+    'SDL3_image': '3.2.4',
+#    'SDL3_gfx': '1.0.4'
 }
 
 url_fmt = 'https://github.com/libsdl-org/SDL{LIB}/releases/download/release-{0}/SDL3{LIB}-{0}{1}'
 url_fmt_pre = url_fmt.replace('release-', 'prerelease-')
 sdl_urls = {
-    'SDL': url_fmt.replace('{LIB}', ''),
-    'SDL_mixer': url_fmt.replace('{LIB}', '_mixer'),
-    'SDL_ttf': url_fmt.replace('{LIB}', '_ttf'),
-    'SDL_image': url_fmt.replace('{LIB}', '_image'),
-#    'SDL_gfx': 'https://github.com/a-hurst/sdl2gfx-builds/releases/download/{0}/SDL2_gfx-{0}{1}'
+    'SDL3': url_fmt.replace('{LIB}', ''),
+    'SDL3_mixer': url_fmt.replace('{LIB}', '_mixer'),
+    'SDL3_ttf': url_fmt.replace('{LIB}', '_ttf'),
+    'SDL3_image': url_fmt.replace('{LIB}', '_image'),
+#    'SDL3_gfx': 'https://github.com/a-hurst/sdl2gfx-builds/releases/download/{0}/SDL2_gfx-{0}{1}'
 }
 
 cmake_opts = {
-    'SDL': {
+    'SDL3': {
         'SDL_SSE4_2': 'OFF',
     },
-    'SDL_mixer': {
+    'SDL3_mixer': {
         'SDLMIXER_VENDORED': 'ON',
         'SDLMIXER_GME': 'ON',
         'SDLMIXER_FLAC_LIBFLAC': 'OFF', # Match macOS and Windows binaries, which use dr_flac
     },
-    'SDL_ttf': {
+    'SDL3_ttf': {
         'SDLTTF_VENDORED': 'ON',
     },
-    'SDL_image': {
+    'SDL3_image': {
         'SDLIMAGE_VENDORED': 'ON',
         'DAV1D_WITH_AVX': 'OFF',
     }
@@ -169,7 +169,7 @@ def getDLLs(platform_name):
                     shutil.move(os.path.join(optdir, f), os.path.join(licensedir, f))
 
         # Build and install everything into the custom prefix
-        #sdl_urls['SDL_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
+        #sdl_urls['SDL3_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
         buildDLLs(libraries, basedir, libdir)
 
         # Copy all compiled binaries to dll folder for bundling in wheel
@@ -247,7 +247,7 @@ def buildDLLs(libraries, basedir, libdir):
 
         # Disable dav1d ASM on manylinux2014 since nasm version is too old
         if os.getenv("AUDITWHEEL_POLICY", "") == "manylinux2014":
-            cmake_opts["SDL_image"]["DAV1D_ASM"] = "OFF"
+            cmake_opts["SDL3_image"]["DAV1D_ASM"] = "OFF"
 
         for lib in libraries:
 
@@ -262,14 +262,14 @@ def buildDLLs(libraries, basedir, libdir):
             # Check for and download any external dependencies
             ext_dir = os.path.join(sourcepath, 'external')
             download_sh = os.path.join(ext_dir, 'download.sh')
-            if os.path.exists(download_sh) and not lib == "SDL_ttf":
+            if os.path.exists(download_sh) and not lib == "SDL3_ttf":
                 # NOTE: As of 2.22.0, ttf includes external sources in .tar.gz
                 print('======= Downloading optional libraries for {0} =======\n'.format(lib))
                 download_external(ext_dir)
                 print('')
 
             # Apply any patches to the source if necessary
-            if lib == 'SDL_image':
+            if lib == 'SDL3_image':
                 # Ensure libwebp isn't compiled with mandatory SSE4.1 support
                 cpu_cmake = os.path.join(ext_dir, 'libwebp', 'cmake', 'cpu.cmake')
                 old = 'NOT ENABLE_SIMD'
@@ -285,9 +285,9 @@ def buildDLLs(libraries, basedir, libdir):
             else:
                 # Build using autotools
                 xtra_args = None
-                if lib == 'SDL':
+                if lib == 'SDL3':
                     xtra_args = ['--enable-libudev=no']
-                elif lib == 'SDL_gfx' and not arch in ['i686', 'x86_64']:
+                elif lib == 'SDL3_gfx' and not arch in ['i686', 'x86_64']:
                     xtra_args = ['--disable-mmx']
                 success = make_install_lib(sourcepath, libdir, buildenv, xtra_args, cfgfiles)
 
