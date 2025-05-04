@@ -38,6 +38,7 @@ sdl_urls = {
 cmake_opts = {
     'SDL3': {
         'SDL_SSE4_2': 'OFF',
+        'SDL_AVX': 'OFF',
     },
     'SDL3_mixer': {
         'SDLMIXER_VENDORED': 'ON',
