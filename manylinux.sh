@@ -16,8 +16,8 @@ fi
 
 if command -v yum &> /dev/null; then
     # For manylinux2014 & manylinux_2_28 (based on CentOS)
-    yum install -y libtool dbus-devel nasm cmake
-    #python3.10 -m pip install cmake
+    yum install -y libtool dbus-devel nasm
+    python3.10 -m pip install cmake==3.31.6 # needed to avoid error with older minimums
 
     # Install additional audio backends from source
     if [[ "$AUDITWHEEL_POLICY" == "manylinux_2_28" ]]; then
