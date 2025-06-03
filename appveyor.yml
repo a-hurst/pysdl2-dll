@@ -11,8 +11,8 @@ environment:
 
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-  - "pip install wheel twine"
-  - "python setup.py bdist_wheel"
+  - "pip install build twine"
+  - "python -m build"
 
 build: off
 

@@ -118,8 +118,8 @@ fi
 
 # Compile SDL2, addon libraries, and any necessary dependencies
 
-#python3.10 -m pip install requests
-python3.10 -u setup.py bdist_wheel
+python3.10 -m pip install build
+python3.10 -u -m build
 
 
 # Run unit tests on built pysdl2-dll wheel
