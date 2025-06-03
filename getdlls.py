@@ -88,6 +88,7 @@ def getDLLs(platform_name):
             # Download disk image containing library
             outpath = os.path.join('temp', lib + '.dmg')
             libversion = libversions[lib]
+            print('\n * Downloading {0} {1}...\n'.format(lib, libversion))
             download(sdl2_urls[lib].format(libversion, '.dmg'), outpath)
             
             # Mount image, extract framework (and any optional frameworks), then unmount
@@ -127,6 +128,7 @@ def getDLLs(platform_name):
             # Download zip archive containing library
             libversion = libversions[lib]
             outpath = os.path.join('temp', lib + '.zip')
+            print(' * Downloading {0} {1}...'.format(lib, libversion))
             download(sdl2_urls[lib].format(libversion, suffix), outpath)
             
             # Extract dlls and license files from archive
