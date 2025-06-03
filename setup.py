@@ -3,31 +3,44 @@
 import os
 from setuptools import setup
 from distutils.util import get_platform
+try:
+    from setuptools.command.build import build as BuildCommand
+except ImportError:
+    from distutils.command.build import build as BuildCommand
 
 from getdlls import getDLLs
 
 
-# Get the necessary SDL2 DLLs for the platform
+dllfiles = []
+cmdclass = {}
 
 override = os.getenv('SDL2DLL_PLATFORM')
 platform = get_platform() if not override else override
-getDLLs(platform)
 
 
-# Gather list of all dll files so that they can be included in wheels, but not sdist
+# Define custom build method that gathers platform-specific SDL binaries
 
-dllpath = os.path.join('sdl2dll', 'dll')
-dllfiles = []
-for path, _, files in os.walk(dllpath):
-    for f in files:
-        parentdir = 'sdl2dll' + os.sep
-        filepath = os.path.join(path, f).replace(parentdir, '')
-        dllfiles.append(filepath)
+class CustomBuild(BuildCommand):
+
+    def run(self):
+
+        # Get the necessary SDL2 DLLs for the platform
+        getDLLs(platform)
+
+        # Gather list of dlls so that they can be included in wheels but not sdists
+        dllpath = os.path.join('sdl2dll', 'dll')
+        for path, _, files in os.walk(dllpath):
+            for f in files:
+                parentdir = 'sdl2dll' + os.sep
+                filepath = os.path.join(path, f).replace(parentdir, '')
+                dllfiles.append(filepath)
+
+        BuildCommand.run(self)
+
+cmdclass['build'] = CustomBuild
 
 
 # Patch wheel naming to be platform-specific but Python version/ABI independent
-
-cmdclass = {}
 
 try:
     from wheel.bdist_wheel import bdist_wheel
