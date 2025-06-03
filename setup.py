@@ -77,7 +77,7 @@ setup(
 	version='2.32.6',
 	author='Austin Hurst',
 	author_email='mynameisaustinhurst@gmail.com',
-    license='Mozilla Public License Version 2.0',
+    license='MPL-2.0',
     description='Pre-built SDL2 binaries for PySDL2',
     long_description=long_description,
     long_description_content_type='text/markdown',
