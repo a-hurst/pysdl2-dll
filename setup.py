@@ -1,5 +1,6 @@
 import os
 import sys
+import traceback
 from pathlib import Path
 from contextlib import suppress
 from sysconfig import get_platform
@@ -34,7 +35,11 @@ class CustomCommand(Command):
             os.makedirs(dllpath)
 
             # Get or build the necessary SDL2 DLLs for the platform
-            getDLLs(platform, dllpath)
+            try:
+                getDLLs(platform, dllpath)
+            except Exception as e:
+                print(traceback.format_exc())
+                raise e
 
 
 class CustomBuild(build):
