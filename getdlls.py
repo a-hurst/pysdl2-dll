@@ -58,11 +58,10 @@ cmake_opts = {
 }
 
 
-def getDLLs(platform_name):
+def getDLLs(platform_name, dlldir):
     
-    dlldir = os.path.join('sdl2dll', 'dll')
     licensedir = os.path.join('sdl_licenses')
-    for d in ['temp', 'build', dlldir, licensedir]:
+    for d in ['temp', 'build', licensedir]:
         if os.path.isdir(d):
             shutil.rmtree(d)
         os.mkdir(d)

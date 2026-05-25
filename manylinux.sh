@@ -120,6 +120,7 @@ fi
 
 python3.10 -m pip install build
 python3.10 -u -m build
+python3.10 fix_wheels.py
 
 
 # Run unit tests on built pysdl2-dll wheel
