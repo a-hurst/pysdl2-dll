@@ -4,14 +4,14 @@ image:
 environment:
   TWINE_USERNAME: __token__ # password set in Appveyor settings
   matrix:
-    - PYTHON: "C:\\Python38"
+    - PYTHON: "C:\\Python310"
       PYTHON_ARCH: "32"
-    - PYTHON: "C:\\Python38-x64"
+    - PYTHON: "C:\\Python310-x64"
       PYTHON_ARCH: "64"
 
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-  - "pip install build twine"
+  - "pip install -U setuptools wheel build twine"
   - "python -m build"
   - "python fix_wheels.py"
 

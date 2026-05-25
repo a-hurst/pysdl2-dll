@@ -1,4 +1,5 @@
 import os
+import sys
 import glob
 import subprocess as sub
 from sysconfig import get_platform
@@ -16,7 +17,7 @@ def find_wheel():
 
 
 def retag_wheel(path, platform, replace=True):
-    base_cmd = ['wheel', 'tags']
+    base_cmd = [sys.executable, '-m', 'wheel', 'tags']
     if replace:
         base_cmd += ['--remove']
     opts = [

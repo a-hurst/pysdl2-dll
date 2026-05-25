@@ -8,7 +8,7 @@ task:
     memory: 1G
 
   install_script:
-    - python3 -m pip install build
+    - python3 -m pip install setuptools build
     - python3 -m build -s
 
   script:
