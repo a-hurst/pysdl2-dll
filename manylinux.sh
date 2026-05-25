@@ -118,8 +118,8 @@ fi
 
 # Compile SDL2, addon libraries, and any necessary dependencies
 
-python3.10 -m pip install build
-python3.10 -u -m build
+python3.10 -m pip install -U setuptools wheel build
+python3.10 -u -m build -w
 python3.10 fix_wheels.py
 
 

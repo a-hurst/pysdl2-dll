@@ -37,7 +37,7 @@ task:
     - brew install python
     - python3 -m pip config set global.break-system-packages true
     - python3 -m pip install -U setuptools build twine
-    - python3 -m build
+    - python3 -m build -w
     - python3 fix_wheels.py
 
   script:

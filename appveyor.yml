@@ -12,7 +12,7 @@ environment:
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "pip install -U setuptools wheel build twine"
-  - "python -m build"
+  - "python -m build -w"
   - "python fix_wheels.py"
 
 build: off
