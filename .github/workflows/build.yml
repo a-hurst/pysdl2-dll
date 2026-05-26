@@ -84,9 +84,6 @@ jobs:
       fail-fast: false
       matrix:
         platform: ['manylinux2014']
-
-    env:
-      SDL2DLL_PLATFORM: ${{ matrix.platform }}
     
     steps:
       - uses: actions/checkout@v4
@@ -95,7 +92,7 @@ jobs:
         uses: maus007/docker-run-action-fork@v1
         with:
           image: quay.io/pypa/${{ matrix.platform }}_x86_64
-          options: -v ${{ github.workspace }}:/io
+          options: -v ${{ github.workspace }}:/io -e SDL2DLL_PLATFORM=${{ matrix.platform }}
           run: cd io && ./manylinux.sh
 
       - name: Upload build artifacts
