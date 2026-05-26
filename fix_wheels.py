@@ -6,12 +6,12 @@ import subprocess as sub
 from zipfile import ZipFile
 from sysconfig import get_platform
 
-from getdlls import libraries, libversions, sdl2_urls, download
+from getdlls import libraries, libversions, sdl_urls, download
 
 
 def find_wheel(d):
     if os.path.isdir(d):
-        wheels = glob.glob(os.path.join(d, "pysdl2_dll*.whl"))
+        wheels = glob.glob(os.path.join(d, "pysdl3_dll*.whl"))
         if len(wheels):
             return wheels[0]
     return None
@@ -30,7 +30,7 @@ def repack_wheel(wheeldir, outdir):
 
 def add_licenses(wheeldir):
     distdir = os.path.join(wheeldir, os.path.basename(wheeldir) + '.dist-info')
-    zipdir = tempfile.mkdtemp(prefix='pysdl2-dll-libs')
+    zipdir = tempfile.mkdtemp(prefix='pysdl3-dll-libs')
     licensedir = os.path.join(distdir, 'licenses', 'libs')
     metadata_path = os.path.join(distdir, 'METADATA')
     new_licenses = []
@@ -42,7 +42,7 @@ def add_licenses(wheeldir):
         # Download zip archive containing library
         libversion = libversions[lib]
         outpath = os.path.join(zipdir, lib + '.zip')
-        download(sdl2_urls[lib].format(libversion, '-win32-x64.zip'), outpath)
+        download(sdl_urls[lib].format(libversion, '-win32-x64.zip'), outpath)
 
         # Extract license files from archive
         license_libdir = os.path.join(licensedir, lib)
@@ -78,13 +78,13 @@ def retag_wheel(path, platform, replace=True):
 
 
 
-# Add SDL2 + bundled dynamic library licenses to wheels for distribution
+# Add SDL3 + bundled dynamic library licenses to wheels for distribution
 
 wheelpath = find_wheel('dist')
 if not wheelpath:
     raise RuntimeError("No wheels found in dist!")
 
-tmpdir = tempfile.mkdtemp(prefix='pysdl2-dll-wheel')
+tmpdir = tempfile.mkdtemp(prefix='pysdl3-dll-wheel')
 wheeldir = unpack_wheel(wheelpath, tmpdir)
 add_licenses(wheeldir)
 os.remove(wheelpath)
@@ -93,7 +93,7 @@ repack_wheel(wheeldir, 'dist')
 
 # Update wheel tags to reflect platform-specific binaries
 
-override = os.getenv('SDL2DLL_PLATFORM')
+override = os.getenv('SDL3DLL_PLATFORM')
 platform = get_platform() if not override else override
 
 if 'macosx' in platform:
