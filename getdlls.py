@@ -172,9 +172,6 @@ def getDLLs(platform_name, dlldir):
         with open(dummyfile, 'w') as f:
             f.write("No dlls available for this platform!")
 
-        # Remove unneeded license file
-        os.remove(sdl_licensepath)
-
     shutil.rmtree('temp')
 
 
