@@ -87,7 +87,7 @@ if not wheelpath:
 tmpdir = tempfile.mkdtemp(prefix='pysdl2-dll-wheel')
 wheeldir = unpack_wheel(wheelpath, tmpdir)
 add_licenses(wheeldir)
-os.rename(wheelpath, wheelpath + '.bak')
+os.remove(wheelpath)
 repack_wheel(wheeldir, 'dist')
 
 
