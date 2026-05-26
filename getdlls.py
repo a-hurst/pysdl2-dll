@@ -58,21 +58,11 @@ cmake_opts = {
 }
 
 
-def getDLLs(platform_name):
+def getDLLs(platform_name, dlldir):
     
-    dlldir = os.path.join('sdl2dll', 'dll')
-    licensedir = os.path.join('sdl_licenses')
-    for d in ['temp', 'build', dlldir, licensedir]:
-        if os.path.isdir(d):
-            shutil.rmtree(d)
-        os.mkdir(d)
-
-    # Generate license disclaimer for SDL2 libraries (all under zlib)
-    sdl_licensepath = os.path.join(licensedir, 'LICENSE.SDL2.txt')
-    with open(sdl_licensepath, 'w') as l:
-        l.write("SDL2 License Info\n---\n\n")
-        l.write("SDL2, SDL2_mixer, SDL2_ttf, SDL2_image, and SDL2_gfx are all distributed\n")
-        l.write("under the terms of the zlib license: http://www.zlib.net/zlib_license.html\n")
+    if os.path.isdir('temp'):
+        shutil.rmtree('temp')
+    os.mkdir('temp')
     
     if 'macosx' in platform_name:
         
@@ -88,6 +78,7 @@ def getDLLs(platform_name):
             # Download disk image containing library
             outpath = os.path.join('temp', lib + '.dmg')
             libversion = libversions[lib]
+            print('\n * Downloading {0} {1}...\n'.format(lib, libversion))
             download(sdl2_urls[lib].format(libversion, '.dmg'), outpath)
             
             # Mount image, extract framework (and any optional frameworks), then unmount
@@ -99,25 +90,6 @@ def getDLLs(platform_name):
                 )
             sub.call(['hdiutil', 'unmount', mountpoint])
 
-            # Extract license info from frameworks bundled within main framework
-            if os.path.exists(extraframeworkpath):
-                for f in os.listdir(extraframeworkpath):
-                    resourcepath = os.path.join(extraframeworkpath, f, 'Versions', 'A', 'Resources')
-                    if os.path.exists(resourcepath):
-                        for name in os.listdir(resourcepath):
-                            if 'LICENSE' in name:
-                                licensepath = os.path.join(resourcepath, name)
-                                outpath = os.path.join(licensedir, name)
-                                shutil.copyfile(licensepath, outpath)
-
-            # Extract license info for statically-linked libraries
-            resourcepath = os.path.join(dlloutpath, 'Versions', 'A', 'Resources')
-            for name in os.listdir(resourcepath):
-                if 'LICENSE' in name or name == "FTL.TXT":
-                    licensepath = os.path.join(resourcepath, name)
-                    outpath = os.path.join(licensedir, name)
-                    shutil.copyfile(licensepath, outpath)
-
     elif platform_name in ['win32', 'win-amd64']:
         
         suffix = '-win32-x64.zip' if platform_name == 'win-amd64' else '-win32-x86.zip'
@@ -127,22 +99,20 @@ def getDLLs(platform_name):
             # Download zip archive containing library
             libversion = libversions[lib]
             outpath = os.path.join('temp', lib + '.zip')
+            print(' * Downloading {0} {1}...'.format(lib, libversion))
             download(sdl2_urls[lib].format(libversion, suffix), outpath)
             
-            # Extract dlls and license files from archive
+            # Extract dlls from archive
             with ZipFile(outpath, 'r') as z:
                 for name in z.namelist():
                     if name[-4:] == '.dll':
                         z.extract(name, dlldir)
-                    elif 'LICENSE' in name:
-                        z.extract(name, licensedir)
 
-            # Move any optional dlls and licenses into their respective root folders
-            for d in [dlldir, licensedir]:
-                optdir = os.path.join(d, 'optional')
-                if os.path.isdir(optdir):
-                    for f in os.listdir(optdir):
-                        shutil.move(os.path.join(optdir, f), os.path.join(d, f))
+            # Move any optional dlls into the root folder
+            optdir = os.path.join(dlldir, 'optional')
+            if os.path.isdir(optdir):
+                for f in os.listdir(optdir):
+                    shutil.move(os.path.join(optdir, f), os.path.join(dlldir, f))
 
     elif 'manylinux' in platform_name or os.getenv('SDL2DLL_UNIX_COMPILE', '0') == '1':
 
@@ -152,25 +122,6 @@ def getDLLs(platform_name):
         if os.path.isdir(libdir):
             shutil.rmtree(libdir)
         os.mkdir(libdir)
-
-        # Download and use license files from official Windows binaries
-        for lib in libraries:
-            # Download zip archive containing library
-            libversion = libversions[lib]
-            outpath = os.path.join('temp', lib + '.zip')
-            download(sdl2_urls[lib].format(libversion, '-win32-x64.zip'), outpath)
-
-            # Extract license files from archive
-            with ZipFile(outpath, 'r') as z:
-                for name in z.namelist():
-                    if 'LICENSE' in name:
-                        z.extract(name, licensedir)
-
-            # Move any optional licenses into the root license folder
-            optdir = os.path.join(licensedir, 'optional')
-            if os.path.isdir(optdir):
-                for f in os.listdir(optdir):
-                    shutil.move(os.path.join(optdir, f), os.path.join(licensedir, f))
 
         # Build and install everything into the custom prefix
         sdl2_urls['SDL2_gfx'] = 'http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-{0}{1}'
@@ -221,9 +172,6 @@ def getDLLs(platform_name):
         with open(dummyfile, 'w') as f:
             f.write("No dlls available for this platform!")
 
-        # Remove unneeded license file
-        os.remove(sdl_licensepath)
-
     shutil.rmtree('temp')
 
 
@@ -245,7 +193,7 @@ def buildDLLs(libraries, basedir, libdir):
         # Fetch updated config.guess/config.sub scripts (needed for gfx on non-x86)
         cfgfiles = {}
         cfgnames = ['config.guess', 'config.sub']
-        cfgurl = 'https://git.savannah.gnu.org/cgit/config.git/plain/{0}'
+        cfgurl = 'https://cgit.git.savannah.gnu.org/cgit/config.git/plain/{0}'
         for name in cfgnames:
             cfgfiles[name] = urlopen(cfgurl.format(name)).read()
 

@@ -8,10 +8,11 @@ task:
     memory: 1G
 
   install_script:
-    - python setup.py sdist
+    - python3 -m pip install setuptools build
+    - python3 -m build -s
 
   script:
-    - python3 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
+    - python3 -m pip install -U --force-reinstall ./dist/pysdl2_dll*.tar.gz
     - python3 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
     - pytest -v -rP
 
@@ -35,9 +36,9 @@ task:
   install_script:
     - brew install python
     - python3 -m pip config set global.break-system-packages true
-    - python3 -m pip install -U setuptools wheel twine
-    - python3 setup.py bdist_wheel
-    - MACOS_LEGACY_WHEEL=1 python3 setup.py bdist_wheel
+    - python3 -m pip install -U setuptools build twine
+    - python3 -m build -w
+    - python3 fix_wheels.py
 
   script:
     - python3 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
