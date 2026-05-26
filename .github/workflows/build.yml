@@ -96,7 +96,7 @@ jobs:
         with:
           image: quay.io/pypa/${{ matrix.platform }}_x86_64
           options: -v ${{ github.workspace }}:/io
-          run: ./manylinux.sh
+          run: cd io && ./manylinux.sh
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
