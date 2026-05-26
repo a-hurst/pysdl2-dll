@@ -16,7 +16,7 @@ jobs:
   build-sdist:
 
     name: Build sdist for unsupported platforms
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     container: python:3.11
     
     steps:
@@ -56,7 +56,7 @@ jobs:
 
       - name: Build wheels
         run: |
-          python3 -m pip install -U setuptools build
+          python3 -m pip install -U setuptools build wheel
           python3 -m build -w
           python3 fix_wheels.py
 
@@ -76,9 +76,9 @@ jobs:
   # Build 64-bit x86 manylinux wheels
   build-manylinux-x86_64:
 
-    name: Build ${{ matrix.platform }}) (x86_64) wheel
-    runs-on: ubuntu-latest
-    container: quay.io/pypa/${{ matrix.platform }}
+    name: Build ${{ matrix.platform }} (x86_64) wheel
+    runs-on: ubuntu-24.04
+    container: quay.io/pypa/${{ matrix.platform }}_x86_64
 
     strategy:
       fail-fast: false
@@ -89,7 +89,35 @@ jobs:
       SDL2DLL_PLATFORM: ${{ matrix.platform }}
     
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
+
+      - name: Build and test manylinux wheels
+        run: ./manylinux.sh
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: manylinux-wheels
+          path: dist/*.whl
+
+
+  # Build 64-bit ARM manylinux wheel
+  build-manylinux-x86_64:
+
+    name: Build ${{ matrix.platform }} (ARM64) wheel
+    runs-on: ubuntu-24.04-arm
+    container: quay.io/pypa/${{ matrix.platform }}_aarch64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ['manylinux_2_28']
+
+    env:
+      SDL2DLL_PLATFORM: ${{ matrix.platform }}
+    
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Build and test manylinux wheels
         run: ./manylinux.sh
