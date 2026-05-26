@@ -79,6 +79,34 @@ jobs:
           archive: false
 
 
+  # Build 32-bit x86 manylinux wheel
+  build-manylinux-i686:
+
+    name: Build ${{ matrix.platform }} (i686) wheel
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ['manylinux2014']
+    
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build and test manylinux wheels
+        uses: maus007/docker-run-action-fork@v1
+        with:
+          image: quay.io/pypa/${{ matrix.platform }}_i686
+          options: -v ${{ github.workspace }}:/io -e SDL2DLL_PLATFORM=${{ matrix.platform }}
+          run: cd io && linux32 ./manylinux.sh
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/*.whl
+          archive: false
+
+
   # Build 64-bit x86 manylinux wheels
   build-manylinux-x86_64:
 
