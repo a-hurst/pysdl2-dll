@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysdl2-dll"
-version = "2.32.6"
+version = "2.32.10"
 description = "Pre-built SDL2 binaries for PySDL2"
 readme = "README.md"
 license = "MPL-2.0"
