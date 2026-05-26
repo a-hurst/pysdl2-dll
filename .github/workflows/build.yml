@@ -102,7 +102,7 @@ jobs:
 
 
   # Build 64-bit ARM manylinux wheel
-  build-manylinux-x86_64:
+  build-manylinux-aarch64:
 
     name: Build ${{ matrix.platform }} (ARM64) wheel
     runs-on: ubuntu-24.04-arm
