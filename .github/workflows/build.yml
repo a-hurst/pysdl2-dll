@@ -1,0 +1,163 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  create:
+    branches: [master]
+    tags: ['**']
+
+
+jobs:
+
+  # Build source distribution
+  build-sdist:
+
+    name: Build sdist for unsupported platforms
+    runs-on: ubuntu-latest
+    container: python:3.11
+    
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build sdist
+        run: |
+          python3 -m pip install setuptools build
+          python3 -m build -s
+
+      - name: Install and run tests
+        run: |
+          python3 -m pip install -U --force-reinstall ./dist/pysdl2_dll*.tar.gz
+          python3 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
+          pytest -v -rP
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/*.tar.gz
+          archive: false
+
+
+  # Build macOS wheels
+  build-macos:
+
+    name: Build macOS (x86_64 & ARM64) wheels
+    runs-on: macos-latest
+    
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.12
+
+      - name: Build wheels
+        run: |
+          python3 -m pip install -U setuptools build wheel
+          python3 -m build -w
+          python3 fix_wheels.py
+
+      - name: Install and run tests
+        run: |
+          python3 -m pip install -U --force-reinstall --no-index --find-links=./dist pysdl2-dll
+          python3 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
+          pytest -v -rP
+
+      - name: Upload universal wheel
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/*universal2.whl
+          archive: false
+
+      - name: Upload legacy x86_64 wheel
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/*x86_64.whl
+          archive: false
+
+
+  # Build 32-bit x86 manylinux wheel
+  build-manylinux-i686:
+
+    name: Build ${{ matrix.platform }} (i686) wheel
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ['manylinux2014']
+    
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build and test manylinux wheels
+        uses: maus007/docker-run-action-fork@v1
+        with:
+          image: quay.io/pypa/${{ matrix.platform }}_i686
+          options: -v ${{ github.workspace }}:/io -e SDL2DLL_PLATFORM=${{ matrix.platform }}
+          run: cd io && linux32 ./manylinux.sh
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/*.whl
+          archive: false
+
+
+  # Build 64-bit x86 manylinux wheels
+  build-manylinux-x86_64:
+
+    name: Build ${{ matrix.platform }} (x86_64) wheel
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ['manylinux2014', 'manylinux_2_28']
+    
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build and test manylinux wheels
+        uses: maus007/docker-run-action-fork@v1
+        with:
+          image: quay.io/pypa/${{ matrix.platform }}_x86_64
+          options: -v ${{ github.workspace }}:/io -e SDL2DLL_PLATFORM=${{ matrix.platform }}
+          run: cd io && ./manylinux.sh
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/*.whl
+          archive: false
+
+
+  # Build 64-bit ARM manylinux wheel
+  build-manylinux-aarch64:
+
+    name: Build ${{ matrix.platform }} (ARM64) wheel
+    runs-on: ubuntu-24.04-arm
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ['manylinux_2_28']
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build and test manylinux wheels
+        uses: maus007/docker-run-action-fork@v1
+        with:
+          image: quay.io/pypa/${{ matrix.platform }}_aarch64
+          options: -v ${{ github.workspace }}:/io -e SDL2DLL_PLATFORM=${{ matrix.platform }}
+          run: cd io && ./manylinux.sh
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/*.whl
+          archive: false
