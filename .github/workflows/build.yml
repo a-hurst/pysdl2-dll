@@ -66,10 +66,16 @@ jobs:
           python3 -m pip install pytest git+https://github.com/py-sdl/py-sdl2.git
           pytest -v -rP
 
-      - name: Upload build artifacts
+      - name: Upload universal wheel
         uses: actions/upload-artifact@v7
         with:
-          path: dist/*.whl
+          path: dist/*universal2.whl
+          archive: false
+
+      - name: Upload legacy x86_64 wheel
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/*x86_64.whl
           archive: false
 
 
