@@ -34,7 +34,7 @@ jobs:
           pytest -v -rP
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: sdist
           path: dist/*.tar.gz
@@ -67,7 +67,7 @@ jobs:
           pytest -v -rP
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: macos-wheels
           path: dist/*.whl
@@ -78,12 +78,12 @@ jobs:
 
     name: Build ${{ matrix.platform }} (x86_64) wheel
     runs-on: ubuntu-24.04
-    container: quay.io/pypa/${{ matrix.platform }}_x86_64
+#    container: quay.io/pypa/${{ matrix.platform }}_x86_64
 
     strategy:
       fail-fast: false
       matrix:
-        platform: ['manylinux2014', 'manylinux_2_28']
+        platform: ['manylinux2014']
 
     env:
       SDL2DLL_PLATFORM: ${{ matrix.platform }}
@@ -92,7 +92,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build and test manylinux wheels
-        run: ./manylinux.sh
+        uses: maus007/docker-run-action-fork@v1
+        with:
+          image: quay.io/pypa/${{ matrix.platform }}_x86_64
+          options: -v ${{ github.workspace }}:/io
+          run: ./manylinux.sh
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -101,29 +105,29 @@ jobs:
           path: dist/*.whl
 
 
-  # Build 64-bit ARM manylinux wheel
-  build-manylinux-aarch64:
-
-    name: Build ${{ matrix.platform }} (ARM64) wheel
-    runs-on: ubuntu-24.04-arm
-    container: quay.io/pypa/${{ matrix.platform }}_aarch64
-
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: ['manylinux_2_28']
-
-    env:
-      SDL2DLL_PLATFORM: ${{ matrix.platform }}
-    
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build and test manylinux wheels
-        run: ./manylinux.sh
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: manylinux-wheels
-          path: dist/*.whl
+#  # Build 64-bit ARM manylinux wheel
+#  build-manylinux-aarch64:
+#
+#    name: Build ${{ matrix.platform }} (ARM64) wheel
+#    runs-on: ubuntu-24.04-arm
+#    container: quay.io/pypa/${{ matrix.platform }}_aarch64
+#
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        platform: ['manylinux_2_28']
+#
+#    env:
+#      SDL2DLL_PLATFORM: ${{ matrix.platform }}
+#    
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Build and test manylinux wheels
+#        run: ./manylinux.sh
+#
+#      - name: Upload build artifacts
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: manylinux-wheels
+#          path: dist/*.whl
