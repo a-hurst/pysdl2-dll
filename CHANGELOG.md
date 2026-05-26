@@ -1,9 +1,12 @@
 # pysdl2-dll changelog
 
-### Version 2.32.6 (Unreleased)
+### Version 2.32.10 (Unreleased)
 
-- Bumped the SDL2 binary version from 2.32.0 to 2.32.6.
-- Bumped the SDL2\_image binary version from 2.8.6 to 2.8.8.
+- Bumped the SDL2 binary version from 2.32.0 to 2.32.10.
+- Bumped the SDL2\_image binary version from 2.8.6 to 2.8.12.
+- Bumped the SDL2\_mixer binary version from 2.8.1 to 2.8.2.
+- Fixed wheel compatibility with Python 2.7 on macOS ARM.
+- Rewrote the build system to align better with modern setuptools.
 
 
 ### Version 2.32.0
