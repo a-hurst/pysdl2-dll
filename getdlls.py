@@ -193,7 +193,8 @@ def buildDLLs(libraries, basedir, libdir):
         # Fetch updated config.guess/config.sub scripts (needed for gfx on non-x86)
         cfgfiles = {}
         cfgnames = ['config.guess', 'config.sub']
-        cfgurl = 'https://cgit.git.savannah.gnu.org/cgit/config.git/plain/{0}'
+        cfgurl_repo = 'https://raw.githubusercontent.com/autotools-mirror/automake/'
+        cfgurl = cfgurl_repo + 'refs/tags/v1.18.1/lib/{0}'
         for name in cfgnames:
             cfgfiles[name] = urlopen(cfgurl.format(name)).read()
 
